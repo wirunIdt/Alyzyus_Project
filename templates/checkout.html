@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Checkout · Alyzyus{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="/static/css/customer-pages.css">{% endblock %}
+{% block content %}
+<div class="page-shell customer-page checkout-page" id="checkout-page">
+  <div class="customer-breadcrumb"><a href="/">{{tr('หน้าหลัก','Home','首页')}}</a><span>/</span>{{tr('ชำระเงิน','Checkout','结账')}}</div>
+  <div class="customer-page-heading"><div>{{tr('อีกนิดเดียวก็เรียบร้อย','A FEW DETAILS, THEN IT’S YOURS','填写信息，即刻拥有','p','customer-eyebrow')}}{{tr('ชำระเงิน','The final little details.','确认您的订单。','h1')}}{{tr('ตรวจสอบสินค้าที่คุณเลือก แล้วบอกเราว่าจะให้ส่งไปที่ไหน','Check your picks and tell us where to send them.','确认心仪好物，并告诉我们配送地址。','p')}}</div><span class="customer-secure">{{icon('card',16)}}{{tr('การชำระเงินที่ปลอดภัย','Secure checkout','安全结账')}}</span></div>
+  <div id="checkout-notices" aria-live="polite"></div>
+  <section class="customer-empty" id="checkout-empty" hidden><div class="customer-icon-badge">{{icon('bag',29)}}</div>{{tr('ตะกร้ายังว่างอยู่','Your bag has room for something good.','购物袋正等待您的心仪好物。','h2')}}{{tr('เริ่มจากสิ่งเล็ก ๆ ที่ทำให้ทุกวันของคุณดีขึ้น','Start with a little something that makes your everyday better.','从一件让日常更美好的小物开始。','p')}}<a href="/shop" class="button">{{tr('เลือกซื้อสินค้า','Explore the collection','浏览商品')}}{{icon('arrow',17)}}</a></section>
+  <form class="checkout-layout" id="checkout-form">
+    <div class="checkout-main">
+      <section class="checkout-section"><div class="checkout-section-title"><span class="checkout-step">01</span><div>{{tr('ข้อมูลจัดส่ง','Where should it go?','配送信息','h2')}}{{tr('กรอกข้อมูลที่ติดต่อได้และที่อยู่ให้ครบถ้วน','A few details so your order finds its way to you.','请填写完整的联系信息和收货地址。','p')}}</div>{{icon('truck',21)}}</div>
+        <div class="checkout-fields">
+          <label class="field" for="checkout-name">{{tr('ชื่อ–นามสกุลผู้รับ','Full name','收件人姓名')}}<input id="checkout-name" name="name" class="input" required minlength="2" maxlength="120" autocomplete="shipping name"></label>
+          <label class="field" for="checkout-phone">{{tr('เบอร์โทรศัพท์','Phone number','联系电话')}}<input id="checkout-phone" name="phone" class="input" type="tel" required minlength="8" maxlength="24" autocomplete="shipping tel" placeholder="08x xxx xxxx"></label>
+          <label class="field checkout-field-full" for="checkout-email">{{tr('อีเมลติดต่อ','Contact email','联系邮箱')}}<input id="checkout-email" name="email" class="input" type="email" required maxlength="254" autocomplete="shipping email"></label>
+          <label class="field checkout-field-full" for="checkout-address">{{tr('ที่อยู่จัดส่ง','Delivery address','收货地址')}}<textarea id="checkout-address" name="address" class="input" required minlength="10" maxlength="1000" rows="3" autocomplete="shipping street-address"></textarea>{{tr('บ้านเลขที่ ถนน ตำบล/แขวง อำเภอ/เขต จังหวัด และรหัสไปรษณีย์ · จัดส่งภายในประเทศไทย','Street, building, district, province, and postal code · Delivery within Thailand','请填写街道、门牌号、区县、省份及邮政编码 · 仅配送至泰国','small')}}</label>
+        </div>
+      </section>
+      <section class="checkout-section"><div class="checkout-section-title"><span class="checkout-step">02</span><div>{{tr('เลือกวิธีชำระเงิน','How would you like to pay?','选择支付方式','h2')}}{{tr('เลือกช่องทางที่สะดวกสำหรับคุณ','Choose the method that works for you.','选择适合您的支付方式。','p')}}</div>{{icon('card',21)}}</div><fieldset class="payment-methods" id="checkout-payments"><legend class="customer-sr-only">{{tr('วิธีชำระเงิน','Payment method','支付方式')}}</legend></fieldset><p class="payment-assurance">{{icon('card',15)}}{{tr('ยอดสินค้าและสต็อกจะตรวจสอบจากร้านอีกครั้งก่อนยืนยันคำสั่งซื้อ','Prices and inventory are verified with the store before your order is confirmed.','订单确认前，将再次核实商品价格与库存。')}}</p></section>
+      <a href="/shop" class="customer-text-button checkout-back">{{icon('arrow',15)}}{{tr('กลับไปเลือกสินค้า','Continue shopping','继续购物')}}</a>
+    </div>
+    <aside class="checkout-summary"><div class="checkout-summary-title">{{tr('ถุงที่คุณเลือก','Your good finds','您的心仪好物','h2')}}<span id="checkout-item-count"></span></div><div class="checkout-items" id="checkout-items"></div>
+      <label class="field checkout-coupon" for="checkout-coupon"><span>{{tr('มีโค้ดส่วนลด?','Have a discount code?','有优惠码？')}}</span><input id="checkout-coupon" name="coupon" class="input" maxlength="30" autocomplete="off" placeholder="ALYZYUS…"></label>
+      <dl class="checkout-totals" id="checkout-totals"></dl>{{tr('ยอดส่วนลดและยอดสุดท้ายจะคำนวณจากร้านก่อนยืนยัน','Discounts and final pricing are verified when you confirm.','确认时将核实折扣及最终金额。','p','checkout-total-note')}}
+      <div id="checkout-error" class="customer-error" role="alert" hidden></div><button type="submit" class="button customer-wide checkout-submit" id="checkout-submit" disabled>{{tr('ยืนยันคำสั่งซื้อ','Place your order','确认下单')}}{{icon('arrow',17)}}</button><p class="checkout-shipping-note">{{icon('truck',15)}}{{tr('ส่งฟรี เมื่อยอดสินค้าครบ ฿2,500','Free shipping on orders over ฿2,500','满 ฿2,500 免运费')}}</p>
+    </aside>
+  </form>
+  <section class="order-receipt" id="checkout-receipt" hidden></section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/checkout.js" defer></script>{% endblock %}

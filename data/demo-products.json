@@ -1,0 +1,206 @@
+[
+  {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "slug": "form-wireless",
+    "name": {
+      "en": "Form Wireless",
+      "th": "หูฟัง Form Wireless",
+      "zh": "Form 无线耳机"
+    },
+    "description": {
+      "en": "A little more sound. A little less noise. Soft over-ear comfort for your everyday rhythm.",
+      "th": "เสียงที่ชัดขึ้น โลกที่เงียบลง หูฟังครอบหูนุ่มสบายสำหรับจังหวะชีวิตของคุณ",
+      "zh": "多一点好声音，少一点噪音。柔软包耳设计，伴随日常每一刻。"
+    },
+    "category": "audio",
+    "price": 3290,
+    "compareAt": 3990,
+    "stock": 24,
+    "images": [
+      "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=900&q=85"
+    ],
+    "colors": [
+      "#ddd9d0",
+      "#323236"
+    ],
+    "featured": true,
+    "badge": "bestseller"
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000002",
+    "slug": "arc-desk-light",
+    "name": {
+      "en": "Arc Desk Light",
+      "th": "โคมไฟ Arc",
+      "zh": "Arc 桌灯"
+    },
+    "description": {
+      "en": "Make room for a softer glow. An adjustable companion for late chapters and bright ideas.",
+      "th": "เติมแสงอุ่นให้มุมโปรด ปรับทิศทางได้สำหรับเวลาทำงานและอ่านหนังสือ",
+      "zh": "给生活一束柔光。可调节灯身，陪伴阅读与灵感时刻。"
+    },
+    "category": "home",
+    "price": 1890,
+    "stock": 16,
+    "images": [
+      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=900&q=85"
+    ],
+    "colors": [
+      "#ece5d8",
+      "#1f2924"
+    ],
+    "featured": true,
+    "badge": "new"
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000003",
+    "slug": "daily-carry",
+    "name": {
+      "en": "Daily Carry",
+      "th": "กระเป๋า Daily Carry",
+      "zh": "Daily 日常手提包"
+    },
+    "description": {
+      "en": "Everything you need, nothing you don't. A versatile canvas carry for workdays and weekends.",
+      "th": "พกสิ่งสำคัญไปทุกวัน กระเป๋าผ้าใบที่เข้ากับทั้งวันทำงานและวันพักผ่อน",
+      "zh": "装下日常所需。简洁帆布包，工作休闲都合适。"
+    },
+    "category": "style",
+    "price": 890,
+    "stock": 32,
+    "images": [
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=85"
+    ],
+    "colors": [
+      "#b6a18c",
+      "#404543"
+    ],
+    "featured": true
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000004",
+    "slug": "studio-keys",
+    "name": {
+      "en": "Studio Keys",
+      "th": "คีย์บอร์ด Studio Keys",
+      "zh": "Studio 键盘"
+    },
+    "description": {
+      "en": "Thoughtful details, down to the last keystroke. A compact keyboard that clears space for ideas.",
+      "th": "ใส่ใจทุกรายละเอียดจนถึงทุกการกด คีย์บอร์ดขนาดกะทัดรัดสำหรับโต๊ะทำงาน",
+      "zh": "每一次敲击，都有细节。紧凑键盘，为灵感腾出空间。"
+    },
+    "category": "workspace",
+    "price": 2490,
+    "stock": 12,
+    "images": [
+      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=900&q=85"
+    ],
+    "colors": [
+      "#e5e0d7",
+      "#383b3e"
+    ],
+    "featured": true,
+    "badge": "new"
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000005",
+    "slug": "slow-morning",
+    "name": {
+      "en": "Slow Morning",
+      "th": "แก้ว Slow Morning",
+      "zh": "Slow Morning 陶瓷杯"
+    },
+    "description": {
+      "en": "For the ritual, not the rush. A beautiful ceramic mug to start your day a little slower.",
+      "th": "เริ่มเช้าอย่างไม่รีบร้อน แก้วเซรามิกเรียบง่ายสำหรับเครื่องดื่มแก้วโปรด",
+      "zh": "让清晨慢下来。一只质感陶瓷杯，盛满每日的小确幸。"
+    },
+    "category": "home",
+    "price": 490,
+    "stock": 40,
+    "images": [
+      "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=900&q=85"
+    ],
+    "colors": [
+      "#e0d3bb",
+      "#9d7661"
+    ],
+    "featured": false
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000006",
+    "slug": "pocket-sound",
+    "name": {
+      "en": "Pocket Sound",
+      "th": "ลำโพง Pocket Sound",
+      "zh": "Pocket 便携音箱"
+    },
+    "description": {
+      "en": "Bring your soundtrack along. A compact speaker for small spaces and good company.",
+      "th": "พกเสียงเพลงไปด้วย ลำโพงขนาดกะทัดรัดสำหรับพื้นที่เล็กและช่วงเวลาดี ๆ",
+      "zh": "让音乐随行。小巧音箱，为小空间带来好声音。"
+    },
+    "category": "audio",
+    "price": 1590,
+    "stock": 20,
+    "images": [
+      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=900&q=85"
+    ],
+    "colors": [
+      "#373b3a",
+      "#a6ab9b"
+    ],
+    "featured": false
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000007",
+    "slug": "everyday-time",
+    "name": {
+      "en": "Everyday Time",
+      "th": "นาฬิกา Everyday Time",
+      "zh": "Everyday 腕表"
+    },
+    "description": {
+      "en": "Keep the essentials close. A pared-back timepiece that goes with everything.",
+      "th": "ดีไซน์เรียบง่ายที่ใส่ได้ทุกวัน นาฬิกาสำหรับทุกสไตล์ของคุณ",
+      "zh": "把重要的时刻留在身边。简约腕表，百搭日常。"
+    },
+    "category": "style",
+    "price": 2290,
+    "stock": 8,
+    "images": [
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85"
+    ],
+    "colors": [
+      "#dedad1",
+      "#272b2d"
+    ],
+    "featured": false
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000008",
+    "slug": "field-notes",
+    "name": {
+      "en": "Field Notes",
+      "th": "สมุด Field Notes",
+      "zh": "Field 随行笔记本"
+    },
+    "description": {
+      "en": "A place for the ideas worth keeping. Your everyday space to think, sketch, and begin again.",
+      "th": "พื้นที่สำหรับไอเดียที่อยากเก็บไว้ จด วาด และเริ่มต้นสิ่งใหม่ในทุกวัน",
+      "zh": "留住值得记录的灵感。书写、绘画，开启新的一页。"
+    },
+    "category": "everyday",
+    "price": 390,
+    "stock": 50,
+    "images": [
+      "https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&w=900&q=85"
+    ],
+    "colors": [
+      "#ac9c7d",
+      "#333a32"
+    ],
+    "featured": false
+  }
+]

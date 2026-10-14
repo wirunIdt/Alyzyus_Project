@@ -1,0 +1,15 @@
+legacy/
+.venv/
+.git/
+.env*
+**/__pycache__/
+*.pyc
+node_modules/
+artifacts/
+portfolio/
+docs/
+tests/
+scripts/
+supabase/
+tasks.json
+users.json

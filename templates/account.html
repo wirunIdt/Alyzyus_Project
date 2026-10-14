@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Your account · Alyzyus{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="/static/css/customer-pages.css">{% endblock %}
+{% block content %}
+<div class="page-shell customer-page account-page">
+  <div class="customer-breadcrumb"><a href="/">{{tr('หน้าหลัก','Home','首页')}}</a><span>/</span>{{tr('บัญชีของฉัน','My account','我的账户')}}</div>
+  <div class="account-layout">
+    <aside class="account-story"><div class="customer-eyebrow">ALYZYUS / YOUR EVERYDAY, ELEVATED</div>
+      {{tr('ทุกสิ่งที่ชอบ\nในที่เดียวกัน','All your favorites.\nOne little space.','心仪好物，\n尽在一处。','h1')}}
+      {{tr('เก็บทุกการสั่งซื้อไว้ด้วยกัน ติดตามการจัดส่ง และค้นพบสิ่งที่เหมาะกับคุณในทุกวัน','Keep your orders together, follow every delivery, and find a little more of what you love.','管理所有订单，追踪每次配送，发现更多让您心动的日常好物。','p')}}
+      <div class="account-orbit" aria-hidden="true"><div class="orbit-circle orbit-one"></div><div class="orbit-circle orbit-two"></div><div class="orbit-center">a<span>✦</span></div></div>
+      <div class="account-benefits"><span>{{icon('package',17)}}{{tr('ติดตามทุกออเดอร์','Every order, in view','掌握每笔订单')}}</span><span>{{icon('user',17)}}{{tr('ข้อมูลของคุณเป็นส่วนตัว','Your details stay private','保护您的隐私')}}</span></div>
+    </aside>
+    <section class="account-panel" id="account-panel" aria-live="polite"><div class="customer-loading" role="status">{{tr('กำลังตรวจสอบบัญชี…','Checking your account…','正在检查账户…')}}</div></section>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/account.js" defer></script>{% endblock %}

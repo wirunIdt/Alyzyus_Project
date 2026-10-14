@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.vercel/
+.env*
+!.env.example
+*.tsbuildinfo
+__pycache__/
+.venv/
+legacy/private/
+legacy/empty-build-folders/
+tests/node_modules/
+artifacts/
+tasks.json
+users.json

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Your orders · Alyzyus{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="/static/css/customer-pages.css">{% endblock %}
+{% block content %}
+<div class="page-shell customer-page tracking-page">
+  <div class="customer-breadcrumb"><a href="/">{{tr('หน้าหลัก','Home','首页')}}</a><span>/</span>{{tr('คำสั่งซื้อของฉัน','My orders','我的订单')}}</div>
+  <div class="customer-page-heading"><div>{{tr('ทุกออเดอร์ ในพื้นที่ของคุณ','YOUR ORDERS, ALL TOGETHER','您的订单，尽在一处','p','customer-eyebrow')}}{{tr('ติดตามสิ่งดี ๆ ที่กำลังมา','Good things, on their way.','美好好物，即将送达。','h1')}}{{tr('เช็กสถานะ รายละเอียด และการจัดส่งของคำสั่งซื้อคุณ','Follow the details, from the first click to your doorstep.','查看您的订单详情和配送状态。','p')}}</div><button class="button secondary tracking-refresh" id="tracking-refresh" type="button">{{tr('รีเฟรชสถานะ','Refresh status','刷新状态')}}</button></div>
+  <div id="tracking-content" aria-live="polite"><div class="customer-loading" role="status">{{tr('กำลังตรวจสอบบัญชี…','Checking your account…','正在检查账户…')}}</div></div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/tracking.js" defer></script>{% endblock %}
