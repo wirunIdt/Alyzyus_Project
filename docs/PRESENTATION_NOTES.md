@@ -32,7 +32,7 @@ Mr. Wirun Earmvorakul ระยะเวลาประมาณ 5 ถึง 7 �
 
 ## สไลด์ 8
 
-35 วินาที แสดงคำสั่ง python -B -m unittest discover -s tests -p test_*.py และ npm --prefix tests test มี Python 30 และ Node 9 กรณี โดย Node รวม database suite 1 กรณีใหญ่กับ queue 8 กรณี อย่าอ้างว่าปราศจากข้อผิดพลาด Security advisor ล่าสุดหลัง hardening ไม่พบ alert แต่ไม่ใช่การตรวจเจาะระบบเต็มรูปแบบ
+35 วินาที แสดงคำสั่ง python -B -m unittest discover -s tests -p test_*.py และ npm --prefix tests test รุ่น 15 ตุลาคม 2026 มี Python 38 และ Node 15 กรณี โดย Node รวม database/audit 2 suite, PWA 5 และ queue 8 กรณี อย่าอ้างว่าปราศจากข้อผิดพลาด Security advisor ไม่พบปัญหา RLS ของ Log แต่ยังมีคำเตือน Leaked Password Protection ที่เจ้าของบัญชีต้องตรวจตั้งค่า ดู docs/ACTIVITY_LOGS.md การตรวจนี้ไม่ใช่การตรวจเจาะระบบเต็มรูปแบบ
 
 ## สไลด์ 9
 
