@@ -8,6 +8,7 @@ from flask import Blueprint, current_app, g, jsonify, request
 
 from . import validation as v
 from .auth import require_admin, require_user
+from .audit import read_logs
 from .config import commerce_configured
 from .database import catalog, db, map_order, map_product, single
 from .errors import ApiError
@@ -90,6 +91,12 @@ def save_product():
         values["id"] = product_id
     rows, _ = db().call(request.method, "/rest/v1/products", token=g.access_token, params={"id": "eq." + product_id} if partial else None, body=values, prefer="return=representation")
     return jsonify(product=map_product(single(rows, "PRODUCT_NOT_FOUND"))), 200 if partial else 201
+
+
+@bp.get("/api/admin/logs")
+def activity_logs():
+    require_admin()
+    return jsonify(read_logs())
 
 
 @bp.patch("/api/admin/orders")

@@ -59,3 +59,14 @@ const result = await Shop.api('/api/checkout', {
 การเปลี่ยนค่า environment ต้อง redeploy บน Vercel ห้ามฝัง service role key, Stripe secret, รหัสผ่าน หรือข้อมูลลูกค้าจริงในไฟล์ HTML/JavaScript
 
 รายละเอียดฐานข้อมูล สิทธิ์แอดมิน webhook และการคืนเงินอยู่ใน `supabase/OPERATIONS.md`
+
+
+## ส่วนแอปและประสบการณ์ผู้ใช้
+
+- `public/static/js/experience.js` / `css/experience.css`: dialog ปรับหน้าตา, palette, ตัวหนังสืออ่านสบาย, รูปพื้นหลังใน IndexedDB และ animation แบบทำครั้งเดียวเมื่อเลื่อนเห็น
+- `public/static/js/install.js` / `css/install.css`: ตรวจความสามารถเบราว์เซอร์และ UI ติดตั้งที่ผู้ใช้กดเอง
+- `public/manifest.webmanifest`, `public/sw.js`, `public/offline.html`: metadata ของ PWA และ cache เฉพาะไฟล์สาธารณะที่กำหนด
+- `templates/install.html`: คำแนะนำติดตั้งแต่ละอุปกรณ์
+- `templates/logs.html`, `public/static/js/logs.js`, `css/logs.css`: หน้ากิจกรรมของผู้ดูแล อ่านล่าสุดก่อนและโหลดหน้าก่อนหน้าด้วย cursor
+
+การเพิ่มไฟล์ต้องปรับ allowlist ใน `scripts/package-vercel.py` เพื่อให้เข้า Deploy และตรวจ `scripts/package-github.py` เพื่อให้ source ส่งขึ้น GitHub โดยไม่รวมไฟล์ส่วนตัว

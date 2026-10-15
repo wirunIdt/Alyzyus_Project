@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Store activity · Alyzyus{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="/static/css/logs.css">{% endblock %}
+{% block content %}
+<section class="page-shell log-page">
+  <a class="text-link" href="/admin">{{icon('arrow',16)}}{{tr('กลับไปจัดการร้านค้า','Back to store studio','返回商店管理')}}</a>
+  <div class="log-heading"><div><span class="eyebrow">ALYZYUS / ACTIVITY</span>{{tr('บันทึกกิจกรรมร้านค้า','Your store, on record.','商店活动，一目了然。','h1')}}{{tr('ตรวจสอบว่าเกิดอะไรขึ้น เมื่อไร และโดยใคร ข้อมูลนี้ดูได้เฉพาะผู้ดูแลร้าน','See what changed, when, and who made the change. Only store admins can view this log.','了解发生了什么、何时发生以及操作人。仅商店管理员可查看日志。','p')}}</div></div>
+  <div id="activity-log" aria-live="polite"><p role="status">{{tr('กำลังตรวจสิทธิ์ผู้ดูแล…','Checking admin access…','正在检查管理员权限…')}}</p></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="/static/js/logs.js" defer></script>{% endblock %}

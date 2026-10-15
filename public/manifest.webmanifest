@@ -1,0 +1,24 @@
+{
+  "id": "/",
+  "name": "Alyzyus",
+  "short_name": "Alyzyus",
+  "description": "เลือกซื้อสินค้าและติดตามคำสั่งซื้อกับ Alyzyus · Thoughtfully chosen everyday goods.",
+  "lang": "th",
+  "start_url": "/?source=installed-app",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#fcfbf8",
+  "theme_color": "#7157ce",
+  "categories": ["shopping", "lifestyle"],
+  "prefer_related_applications": false,
+  "icons": [
+    {"src": "/static/icons/app-icon-192-v1.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/static/icons/app-icon-512-v1.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/static/icons/app-maskable-512-v1.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "เลือกซื้อสินค้า · Shop", "short_name": "Shop", "url": "/shop"},
+    {"name": "ติดตามคำสั่งซื้อ · Track", "short_name": "Track", "url": "/tracking"}
+  ]
+}

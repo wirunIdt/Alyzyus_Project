@@ -309,7 +309,8 @@ const PARAMETERS = {
   });
   const motionWords={th:'การเคลื่อนไหว',en:'Animate process',zh:'流程动画'};
   $('motion-label').textContent=motionWords[locale];
-  try{reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;if(reducedMotion){productMotion=false;$('product-motion').setAttribute('aria-pressed','false');}}catch(_){}
+  // ใช้ตัวเลือกลดการเคลื่อนไหวเดียวกับหน้าร้าน โดยยังลากหมุนกล้องได้ตามต้องการ
+  try{const appearance=JSON.parse(localStorage.getItem('alyzyus-appearance-v1')||'null');reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches||appearance?.motion===false;if(reducedMotion){productMotion=false;$('product-motion').setAttribute('aria-pressed','false');}}catch(_){}
   function cameraControls(){
     const pointers=new Map();let lastPinch=null;
     const canvas=renderer.domElement;

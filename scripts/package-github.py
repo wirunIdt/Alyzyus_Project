@@ -14,7 +14,7 @@ spec.loader.exec_module(module)
 allowed = module.files()
 for name in ('.env.example','.gitignore','.vercelignore','README.md','CODE_GUIDE.md','ASSETS.md'):
     allowed[name] = ROOT/name
-for folder,pattern in (('scripts','*.py'),('tests','*.py'),('tests','*.mjs'),('tests','package*.json'),('supabase','*.md'),('supabase','*.sql'),('supabase/migrations','*.sql'),('docs','*.md')):
+for folder,pattern in (('scripts','*.py'),('tests','*.py'),('tests','*.mjs'),('tests','package*.json'),('supabase','*.md'),('supabase','*.sql'),('supabase/migrations','*.sql'),('docs','*.md'),('.github/workflows','*.yml')):
     for file in (ROOT/folder).glob(pattern):
         allowed[file.relative_to(ROOT).as_posix()] = file
 for name in ('Alyzyus_Introduction.pdf','Alyzyus_Presentation.pdf','Alyzyus_Portfolio.pptx'):

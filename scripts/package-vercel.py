@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 ROOT_FILES = ['app.py', 'requirements.txt', 'vercel.json', 'pyproject.toml']
-TEMPLATES = ['base.html','macros.html','index.html','shop.html','product.html','admin.html','checkout.html','account.html','tracking.html','help.html','error.html','auth_callback.html']
+TEMPLATES = ['base.html','macros.html','index.html','shop.html','product.html','admin.html','checkout.html','account.html','tracking.html','help.html','error.html','auth_callback.html','install.html','logs.html']
 
 def files():
     result = [ROOT / name for name in ROOT_FILES if (ROOT / name).is_file()]
@@ -22,6 +22,8 @@ def files():
         assets = ROOT/'static'
     result += list((assets/'js').glob('*.js'))
     result += list((assets/'css').glob('*.css'))
+    result += list((assets/'icons').glob('*.png'))
+    result += [ROOT/'public'/name for name in ('manifest.webmanifest','sw.js','offline.html')]
     result += [ROOT/'data'/'demo-products.json', assets/'images'/'alyzyus-hero.webp', assets/'images'/'favicon.svg',assets/'queue3d.html']
     return {p.relative_to(ROOT).as_posix():p for p in result if p.is_file()}
 

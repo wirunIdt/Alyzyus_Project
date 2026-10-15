@@ -31,6 +31,9 @@ def create_app(overrides=None):
     if not app.config.get("HTTP_CLIENT"):
         atexit.register(pool.client.close)
 
+    from .audit import init_audit, mark_error
+    init_audit(app)
+
     from .api import bp as api
     from .auth import apply_cookies, bp as auth
     from .views import bp as pages
@@ -72,12 +75,14 @@ def create_app(overrides=None):
 
     @app.errorhandler(ApiError)
     def known_error(error):
+        mark_error(error.code)
         if request.path.startswith("/api/"):
             return error_response(error)
         return render_template("error.html", status=error.status, bootstrap={"products": [], "configured": database_configured(app.config)}), error.status
 
     @app.errorhandler(HTTPException)
     def http_error(error):
+        mark_error("HTTP_" + str(error.code))
         if request.path.startswith("/api/"):
             codes = {404: "NOT_FOUND", 405: "METHOD_NOT_ALLOWED", 413: "PAYLOAD_TOO_LARGE"}
             return error_response(ApiError(codes.get(error.code, "INVALID_INPUT"), error.code))
@@ -85,6 +90,7 @@ def create_app(overrides=None):
 
     @app.errorhandler(Exception)
     def unexpected_error(error):
+        mark_error("INTERNAL_ERROR")
         # Log the exception class only; request payloads or provider tokens may contain secrets.
         app.logger.error("Request failed (%s)", type(error).__name__)
         if request.path.startswith("/api/"):
