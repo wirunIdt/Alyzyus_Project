@@ -70,3 +70,12 @@ const result = await Shop.api('/api/checkout', {
 - `templates/logs.html`, `public/static/js/logs.js`, `css/logs.css`: หน้ากิจกรรมของผู้ดูแล อ่านล่าสุดก่อนและโหลดหน้าก่อนหน้าด้วย cursor
 
 การเพิ่มไฟล์ต้องปรับ allowlist ใน `scripts/package-vercel.py` เพื่อให้เข้า Deploy และตรวจ `scripts/package-github.py` เพื่อให้ source ส่งขึ้น GitHub โดยไม่รวมไฟล์ส่วนตัว
+
+
+## Customer Service และสิทธิ์แต่งแอป
+
+- `server/support.py`: API ที่ตรวจสิทธิ์และเรียกธุรกรรมคำร้องใน Supabase
+- `templates/support.html`, `public/static/js/support.js`, `css/support.css`: ใช้ร่วมกันสำหรับศูนย์ช่วยเหลือลูกค้าและกล่องรับเรื่องของ Admin
+- `server/preferences.py`: ตรวจบัญชีที่ยืนยันอีเมลก่อนอนุญาตตัวเลือกแต่งแอป
+- การตั้งค่าแต่งแอปไม่เชื่อข้อมูลบัญชีที่กรอกเองใน localStorage; สีและรูปพื้นหลังแยก key ตาม UUID ที่เซิร์ฟเวอร์ยืนยันแล้ว
+- `public/sw.js`: ยกเว้น `/support` และ API จากการจัดเก็บออฟไลน์ ข้อความคำร้องต้องอ่านจากเครือข่าย

@@ -1,7 +1,7 @@
 /* Alyzyus PWA: เก็บเฉพาะไอคอนและหน้าแจ้งออฟไลน์สาธารณะ ไม่เก็บข้อมูลผู้ใช้ */
 'use strict';
 const CACHE_PREFIX = 'alyzyus-public-shell-';
-const CACHE_NAME = `${CACHE_PREFIX}20261015-v1`;
+const CACHE_NAME = `${CACHE_PREFIX}20261015-v2`;
 const OFFLINE_URL = '/offline.html?v=20261015';
 const PUBLIC_ASSETS = new Map([
   [OFFLINE_URL, 'text/html'],
@@ -10,7 +10,7 @@ const PUBLIC_ASSETS = new Map([
   ['/static/icons/app-maskable-512-v1.png', 'image/png'],
   ['/static/icons/apple-touch-180-v1.png', 'image/png'],
 ]);
-const PRIVATE_PATH = /^\/(?:api|account|admin|auth|cart|checkout|tracking|payment|payments)(?:\/|$)/;
+const PRIVATE_PATH = /^\/(?:api|account|admin|auth|cart|checkout|tracking|support|payment|payments)(?:\/|$)/;
 
 function approvedResponse(response, key) {
   if (!response || response.status !== 200 || response.redirected) return false;

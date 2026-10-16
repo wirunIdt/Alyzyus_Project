@@ -24,7 +24,36 @@
   function removeFromCart(id){cart=cart.filter(l=>l.product.id!==id);emit('cart');}
   function clearCart(){cart=[];emit('cart');}
   function toggleWishlist(id){wishlist=wishlist.includes(id)?wishlist.filter(x=>x!==id):[...wishlist,id];emit('wishlist');}
-  async function api(url,options={}){const headers=new Headers(options.headers||{});headers.set('Accept','application/json');let body=options.body;if(body&&typeof body!=='string'&&!(body instanceof FormData)){headers.set('Content-Type','application/json');body=JSON.stringify(body);}else if(typeof body==='string')headers.set('Content-Type','application/json');if(boot.csrf)headers.set('X-CSRF-Token',boot.csrf);const response=await fetch(url,{...options,body,headers,credentials:'same-origin'});let data;try{data=await response.json();}catch{data={error:{code:'SERVER_ERROR',message:'Request failed'}};}if(!response.ok){const info=data.error||data;const err=new Error(typeof info==='string'?info:(info.message||'Request failed'));err.code=info.code||data.code||'REQUEST_FAILED';err.status=response.status;err.details=info.details;throw err;}return data;}
+  function authSignal(authenticated,reason) {
+    window.dispatchEvent(new CustomEvent('alyzyus:auth',{detail:{authenticated,reason}}));
+    if(['login','signup','logout'].includes(reason)){
+      try {localStorage.setItem('alyzyus-auth-sync',reason+':'+String(Date.now())+':'+Math.random().toString(36).slice(2));}catch{}
+    }
+  }
+  async function api(url,options={}) {
+    const headers=new Headers(options.headers||{});
+    headers.set('Accept','application/json');
+    let body=options.body;
+    if(body&&typeof body!=='string'&&!(body instanceof FormData)){headers.set('Content-Type','application/json');body=JSON.stringify(body);}
+    else if(typeof body==='string')headers.set('Content-Type','application/json');
+    if(boot.csrf)headers.set('X-CSRF-Token',boot.csrf);
+    const authAction=typeof url==='string'&&/^\/api\/auth\/(login|signup|logout)$/.exec(url)?.[1];
+    // ยกเลิกสีและภาพส่วนตัวทันทีที่กดออกจากระบบ แม้เครือข่ายตอบช้า
+    if(authAction==='logout')authSignal(false,'logout');
+    const response=await fetch(url,{...options,body,headers,credentials:'same-origin'});
+    if(authAction==='logout')authSignal(false,'logout');
+    let data;
+    try{data=await response.json();}catch{data={error:{code:'SERVER_ERROR',message:'Request failed'}};}
+    if(!response.ok){
+      if(response.status===401)authSignal(false,'expired');
+      const info=data.error||data;
+      const err=new Error(typeof info==='string'?info:(info.message||'Request failed'));
+      err.code=info.code||data.code||'REQUEST_FAILED';err.status=response.status;err.details=info.details;
+      throw err;
+    }
+    if(authAction&&authAction!=='logout')authSignal(!!data.user,authAction);
+    return data;
+  }
   function openCart(){const dialog=document.getElementById('cart-dialog');renderCart();if(dialog&&!dialog.open)dialog.showModal();document.body.style.overflow='hidden';}
   function closeCart(){document.getElementById('cart-dialog')?.close();document.body.style.overflow='';}
   function renderCart(){const root=document.getElementById('cart-content');if(!root)return;const subtotal=cart.reduce((s,l)=>s+l.product.price*l.quantity,0);if(!cart.length){root.innerHTML=`<div class="empty-state">${icon('bag',44)}<h3>${escape(t({th:'พื้นที่สำหรับชิ้นโปรดของคุณ',en:'Room for something good',zh:'留给心爱好物的空间'}))}</h3><p>${escape(t({th:'เลือกสิ่งที่ชอบ แล้วเพิ่มลงในถุงได้เลย',en:'Find a little something for your everyday.',zh:'挑选喜爱的商品，加入购物袋。'}))}</p><a href="/shop" class="button">${escape(t({th:'สำรวจสินค้า',en:'Explore the collection',zh:'探索商品'}))}${icon('arrow',17)}</a></div>`;return;}

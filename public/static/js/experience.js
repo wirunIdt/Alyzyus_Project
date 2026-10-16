@@ -1,10 +1,10 @@
-/* การตั้งค่าหน้าตาเก็บบนอุปกรณ์นี้เท่านั้น รูปพื้นหลังไม่ถูกส่งขึ้นเซิร์ฟเวอร์ */
+/* ตั้งค่าส่วนตัวได้หลังเซิร์ฟเวอร์ยืนยันสมาชิกเท่านั้น และแยกข้อมูลตามบัญชีบนอุปกรณ์ */
 (() => {
   'use strict';
   const S = window.Shop;
   if (!S) return;
   const ROOT = document.documentElement;
-  const KEY = 'alyzyus-appearance-v1';
+  const KEY = 'alyzyus-appearance-member-v2:';
   const DEFAULTS = Object.freeze({palette:'iris', mode:'system', readable:false, motion:true});
   const PALETTES = Object.freeze({
     iris: {name:['ม่วงไอริส','Iris','鸢尾紫'], light:['#5f43b2','#eee9fb'], dark:['#c2adff','#342b4b']},
@@ -38,21 +38,37 @@
     tooLarge:['กรุณาเลือกรูปไม่เกิน 12 MB และ 20 ล้านพิกเซล','Choose a photo under 12 MB and 20 megapixels.','请选择小于 12 MB、2000 万像素的图片。'],
     unavailable:['เบราว์เซอร์นี้บันทึกรูปบนอุปกรณ์ไม่ได้ ลองใช้เบราว์เซอร์ปกติที่ไม่ใช่โหมดส่วนตัว','This browser cannot save photos locally. Try a regular browser window.','此浏览器无法在本地保存图片，请尝试普通浏览窗口。'],
     storeFail:['เปลี่ยนหน้าตาได้แล้ว แต่เบราว์เซอร์ไม่อนุญาตให้บันทึกการตั้งค่า','Appearance updated. Your browser could not save the preference.','外观已更新，但浏览器未允许保存设置。'],
-    done:['เรียบร้อย','Done','完成']
+    done:['เรียบร้อย','Done','完成'],
+    memberTitle:['พื้นที่ส่วนตัวสำหรับสมาชิก','Your space starts with an account','登录后打造专属空间'],
+    memberLead:['เข้าสู่ระบบและยืนยันอีเมลก่อนเลือกโทนสีหรือภาพพื้นหลัง การตั้งค่าจะแยกตามบัญชีบนอุปกรณ์นี้','Sign in with a confirmed email to choose your colours and background. Settings stay separate for each account on this device.','请使用已验证邮箱的账户登录后选择配色和背景。此设备上的设置将按账户分别保存。'],
+    signIn:['เข้าสู่ระบบ','Sign in','登录'],
+    signUp:['สมัครสมาชิก','Create an account','注册账户'],
+    memberComfort:['ยังเปลี่ยนภาษาและสลับหน้าจอสว่าง/มืดได้จากแถบด้านบน','Language and light/dark mode are available in the header.','您仍可在顶部切换语言及浅色/深色模式。'],
+    checking:['กำลังตรวจสอบสมาชิก…','Checking your membership…','正在验证账户…'],
+    verifyTitle:['ยืนยันอีเมลเพื่อแต่งแอป','Confirm your email to personalise','验证邮箱后设置外观'],
+    verifyLead:['บัญชีนี้ยังไม่ได้ยืนยันอีเมล กรุณาเปิดลิงก์ยืนยันในกล่องอีเมลหรือจดหมายขยะ แล้วกลับมาเปิดการตั้งค่าอีกครั้ง','This account still needs email confirmation. Open the confirmation link in your inbox or spam folder, then reopen these settings.','此账户尚未验证邮箱。请打开收件箱或垃圾邮件中的验证链接，然后重新打开设置。'],
+    checkAccount:['ดูบัญชีของฉัน','Open my account','查看我的账户'],
+    connectionTitle:['ตรวจสอบสมาชิกไม่ได้ในตอนนี้','We could not verify your account','暂时无法验证账户'],
+    connectionLead:['กรุณาตรวจสอบการเชื่อมต่อแล้วลองเปิดการตั้งค่าอีกครั้ง สีและภาพส่วนตัวจะไม่ถูกแสดงจนกว่าจะยืนยันสมาชิกได้','Check your connection and reopen settings. Personal colours and photos remain hidden until your account can be verified.','请检查网络并重新打开设置。成功验证账户前，将不会显示个人配色或照片。']
   };
   const locale = () => ({th:0,en:1,zh:2}[S.locale] ?? 0);
   const tr = key => COPY[key][locale()];
   const name = palette => PALETTES[palette].name[locale()];
   const esc = S.escape;
   let prefs = {...DEFAULTS, mode:S.theme};
-  try {
-    const saved = JSON.parse(localStorage.getItem(KEY));
-    if (saved && typeof saved === 'object') prefs = {
+  let memberId = null, authEpoch = 0, verifying = null, deniedReason='guest';
+  // ไม่อ่านค่า global รุ่นเก่าหรือรูปของผู้ใช้เดิมก่อนยืนยันตัวตนจากเซิร์ฟเวอร์
+  function readPreferences(id) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(KEY+id));
+      if (saved && typeof saved === 'object') return {
       palette:Object.hasOwn(PALETTES,saved.palette)?saved.palette:DEFAULTS.palette,
       mode:['light','dark','system'].includes(saved.mode)?saved.mode:DEFAULTS.mode,
       readable:saved.readable===true, motion:saved.motion!==false
-    };
-  } catch { /* โหมดส่วนตัวอาจไม่ให้ใช้พื้นที่จัดเก็บ */ }
+      };
+    } catch { /* โหมดส่วนตัวอาจไม่ให้ใช้พื้นที่จัดเก็บ */ }
+    return {...DEFAULTS,mode:S.theme};
+  }
   const darkQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
   const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   let syncing = false;
@@ -60,12 +76,18 @@
   let revealObserver;
 
   function persist() {
-    try { localStorage.setItem(KEY,JSON.stringify(prefs)); return true; }
+    if(!memberId)return false;
+    try { localStorage.setItem(KEY+memberId,JSON.stringify(prefs)); return true; }
     catch { return false; }
   }
 
   function refreshPalette() {
     const dark = S.theme === 'dark';
+    if(!memberId){
+      ['--accent','--accent-soft','--accent-contrast','--exp-accent-light'].forEach(key=>ROOT.style.removeProperty(key));
+      delete ROOT.dataset.palette;
+      return;
+    }
     const palette = PALETTES[prefs.palette];
     const colors = palette[dark?'dark':'light'];
     ROOT.style.setProperty('--accent',colors[0]);
@@ -78,7 +100,7 @@
   }
 
   function syncDialog() {
-    if (!dialog) return;
+    if (!dialog||!memberId||!dialog.querySelector('#exp-readable')) return;
     dialog.querySelectorAll('[data-exp-palette]').forEach(button => {
       const selected = button.dataset.expPalette===prefs.palette;
       button.setAttribute('aria-pressed',String(selected));
@@ -100,6 +122,7 @@
   function status(key,error=false) {
     if(!dialog)return;
     const node=dialog.querySelector('#exp-status');
+    if(!node)return;
     node.textContent=tr(key);
     node.classList.toggle('exp-status-error',error);
   }
@@ -140,12 +163,15 @@
     return dbPromise;
   }
 
-  async function storePhoto(blob) {
+  async function storePhoto(blob,id=memberId) {
+    if(!id||id!==memberId)throw new Error('MEMBER_REQUIRED');
     const db=await database();
+    if(id!==memberId)throw new Error('MEMBER_REQUIRED');
     return new Promise((resolve,reject)=>{
       const tx=db.transaction('appearance',blob===undefined?'readonly':'readwrite');
       const store=tx.objectStore('appearance');
-      const request=blob===undefined?store.get('wallpaper'):blob===null?store.delete('wallpaper'):store.put(blob,'wallpaper');
+      const key='wallpaper:'+id;
+      const request=blob===undefined?store.get(key):blob===null?store.delete(key):store.put(blob,key);
       let value;
       request.onsuccess=()=>{value=request.result;};
       tx.oncomplete=()=>resolve(value);
@@ -162,6 +188,50 @@
     else ROOT.style.removeProperty('--exp-wallpaper');
     ROOT.classList.toggle('has-wallpaper',!!wallpaperURL);
     syncDialog();
+  }
+
+  function revokeMember() {
+    authEpoch++;
+    verifying=null;
+    closeDialog();
+    memberId=null;
+    prefs={...DEFAULTS,mode:S.theme};
+    imageBusy=false;
+    displayPhoto(null);
+    apply();
+    if(dialog)renderDialog();
+  }
+
+  async function verifyMember() {
+    if(verifying)return verifying;
+    const epoch=authEpoch;
+    let pending;
+    pending=(async()=>{
+      try {
+        const result=await S.api('/api/account/appearance',{cache:'no-store'});
+        if(epoch!==authEpoch)return false;
+        if(result.allowed!==true||typeof result.userId!=='string'||! /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(result.userId))throw new Error('MEMBER_REQUIRED');
+        if(memberId!==result.userId){
+          displayPhoto(null);
+          memberId=result.userId;
+          prefs=readPreferences(memberId);
+          apply();
+          try {
+            const blob=await storePhoto(undefined,result.userId);
+            if(epoch===authEpoch&&memberId===result.userId&&blob instanceof Blob&&['image/jpeg','image/png','image/webp'].includes(blob.type)&&blob.size<=600*1024)displayPhoto(blob);
+          } catch { /* รูปใช้ไม่ได้ยังคงตั้งสีได้ โดยไม่อ่านรูปจากบัญชีอื่น */ }
+        }
+        return epoch===authEpoch&&!!memberId;
+      } catch(error) {
+        if(epoch===authEpoch){
+          deniedReason=error.code==='EMAIL_NOT_VERIFIED'?'unverified':error.status===401?'guest':'connection';
+          revokeMember();
+        }
+        return false;
+      } finally {if(verifying===pending)verifying=null;}
+    })();
+    verifying=pending;
+    return pending;
   }
 
   async function decodeImage(file) {
@@ -237,6 +307,12 @@
 
   function renderDialog() {
     if(!dialog)return;
+    if(!memberId){
+      const unverified=deniedReason==='unverified',connection=deniedReason==='connection';
+      const next=['/support','/admin/support','/install','/shop','/checkout','/tracking','/admin'].includes(location.pathname)?'?next='+encodeURIComponent(location.pathname):'';
+      dialog.innerHTML=`<div class="exp-dialog-header"><div><p class="exp-eyebrow">ALYZYUS / YOUR SPACE</p><h2 id="exp-title">${esc(tr(unverified?'verifyTitle':connection?'connectionTitle':'memberTitle'))}</h2></div><button type="button" class="exp-close icon-button" data-exp-close aria-label="${esc(tr('close'))}">${S.icon('close',20)}</button></div><div class="exp-member-invite"><div class="exp-member-symbol" aria-hidden="true">${S.icon('user',30)}</div><p>${esc(tr(unverified?'verifyLead':connection?'connectionLead':'memberLead'))}</p><div class="exp-member-actions"><a class="button" href="/account${next}">${esc(tr(unverified?'checkAccount':'signIn'))}${S.icon('arrow',16)}</a>${unverified||connection?'':`<a class="button secondary" href="/account${next?next+'&':'?'}mode=signup">${esc(tr('signUp'))}</a>`}</div><small>${esc(tr('memberComfort'))}</small></div>`;
+      return;
+    }
     dialog.innerHTML=`<div class="exp-dialog-header"><div><p class="exp-eyebrow">ALYZYUS / YOUR SPACE</p><h2 id="exp-title">${esc(tr('title'))}</h2><p>${esc(tr('lead'))}</p></div><button type="button" class="exp-close icon-button" data-exp-close aria-label="${esc(tr('close'))}">${S.icon('close',20)}</button></div>
       <div class="exp-dialog-body"><fieldset class="exp-fieldset"><legend>${esc(tr('palette'))}</legend><div class="exp-palettes">${Object.keys(PALETTES).map(key=>`<button type="button" class="exp-palette" data-exp-palette="${key}" aria-pressed="${key===prefs.palette}"><span class="exp-palette-dot" style="background:${PALETTES[key].light[0]}"><span class="exp-palette-check" aria-hidden="true">${key===prefs.palette?'✓':''}</span></span><span>${esc(name(key))}</span></button>`).join('')}</div></fieldset>
       <fieldset class="exp-fieldset"><legend>${esc(tr('theme'))}</legend><div class="exp-theme-options">${['light','dark','system'].map(mode=>`<label><input type="radio" name="exp-theme" value="${mode}" ${mode===prefs.mode?'checked':''}><span>${esc(tr(mode))}</span></label>`).join('')}</div></fieldset>
@@ -255,34 +331,38 @@
     lastFocus?.focus?.();
   }
 
-  function openDialog() {
+  function showDialog() {
     if(!dialog){
       dialog=document.createElement('dialog');dialog.id='appearance-dialog';dialog.className='exp-dialog';
       dialog.setAttribute('aria-labelledby','exp-title');document.body.append(dialog);renderDialog();
       dialog.addEventListener('click',async event=>{
         if(event.target===dialog){const box=dialog.getBoundingClientRect();if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)closeDialog();return;}
         if(event.target.closest('[data-exp-close]')){closeDialog();return;}
+        if(!memberId)return;
+        const owner=memberId,epoch=authEpoch;
         const chip=event.target.closest('[data-exp-palette]');
         if(chip){prefs.palette=chip.dataset.expPalette;apply({save:true});return;}
         const remove=event.target.closest('[data-exp-remove]');
         const reset=event.target.closest('[data-exp-reset]');
         if((remove||reset)&&!imageBusy){
           imageBusy=true;syncDialog();
-          try { await storePhoto(null);displayPhoto(null);if(reset){prefs={...DEFAULTS};apply({save:true});}status('saved'); }
-          catch {if(!wallpaperBlob&&reset){prefs={...DEFAULTS};apply({save:true});}else status('unavailable',true);}
-          finally {imageBusy=false;syncDialog();}
+          try { await storePhoto(null,owner);if(owner!==memberId||epoch!==authEpoch)return;displayPhoto(null);if(reset){prefs={...DEFAULTS};apply({save:true});}status('saved'); }
+          catch {if(owner!==memberId||epoch!==authEpoch)return;if(!wallpaperBlob&&reset){prefs={...DEFAULTS};apply({save:true});}else status('unavailable',true);}
+          finally {if(owner===memberId&&epoch===authEpoch){imageBusy=false;syncDialog();}}
         }
       });
       dialog.addEventListener('change',async event=>{
+        if(!memberId)return;
+        const owner=memberId,epoch=authEpoch;
         const input=event.target;
         if(input.name==='exp-theme'){prefs.mode=input.value;apply({save:true});return;}
         if(input.id==='exp-readable'){prefs.readable=input.checked;apply({save:true});return;}
         if(input.id==='exp-motion'){prefs.motion=input.checked;apply({save:true});return;}
         if(input.id==='exp-photo'&&input.files?.length&&!imageBusy){
           imageBusy=true;syncDialog();status('loading');
-          try {const blob=await compressPhoto(input.files[0]);await storePhoto(blob);displayPhoto(blob);status('saved');}
-          catch(error){status(error.message==='IMAGE_TOO_LARGE'?'tooLarge':error.message?.startsWith('IMAGE_')?'error':'unavailable',true);}
-          finally {input.value='';imageBusy=false;syncDialog();}
+          try {const blob=await compressPhoto(input.files[0]);if(owner!==memberId||epoch!==authEpoch)return;await storePhoto(blob,owner);if(owner!==memberId||epoch!==authEpoch)return;displayPhoto(blob);status('saved');}
+          catch(error){if(owner===memberId&&epoch===authEpoch)status(error.message==='IMAGE_TOO_LARGE'?'tooLarge':error.message?.startsWith('IMAGE_')?'error':'unavailable',true);}
+          finally {input.value='';if(owner===memberId&&epoch===authEpoch){imageBusy=false;syncDialog();}}
         }
       });
       dialog.addEventListener('cancel',event=>{event.preventDefault();closeDialog();});
@@ -290,18 +370,26 @@
       dialog.addEventListener('keydown',event=>{
         if(event.key==='Escape'){event.preventDefault();closeDialog();return;}
         if(event.key!=='Tab')return;
-        const items=[...dialog.querySelectorAll('button:not(:disabled),input:not(:disabled),[tabindex="0"]')].filter(item=>item.getClientRects().length);
+        const items=[...dialog.querySelectorAll('a[href],button:not(:disabled),input:not(:disabled),[tabindex="0"]')].filter(item=>item.getClientRects().length);
         if(!items.length)return;
         if(event.shiftKey&&document.activeElement===items[0]){event.preventDefault();items.at(-1).focus();}
         else if(!event.shiftKey&&document.activeElement===items.at(-1)){event.preventDefault();items[0].focus();}
       });
     }
+    renderDialog();
     if(dialogIsOpen())return;
     lastFocus=document.activeElement;
     if(typeof dialog.showModal==='function')dialog.showModal();
     else {dialog.setAttribute('open','');dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.classList.add('exp-fallback');}
     document.body.classList.add('exp-dialog-open');
     dialog.querySelector('[data-exp-close]').focus();
+  }
+
+  async function openDialog() {
+    const trigger=document.activeElement;
+    await verifyMember();
+    lastFocus=trigger;
+    showDialog();
   }
 
   function setupReveals() {
@@ -328,7 +416,25 @@
   mediaListener(darkQuery,()=>{if(prefs.mode==='system')apply();});
   mediaListener(motionQuery,()=>apply());
   apply();
-  storePhoto().then(blob=>{if(blob instanceof Blob&&['image/jpeg','image/png','image/webp'].includes(blob.type)&&blob.size<=600*1024)displayPhoto(blob);}).catch(()=>{});
-  window.addEventListener('pagehide',event=>{if(!event.persisted&&wallpaperURL){URL.revokeObjectURL(wallpaperURL);wallpaperURL='';}});
-  window.AlyzyusExperience=Object.freeze({open:openDialog,get settings(){return {...prefs,effectiveMotion:motionAllowed(),hasWallpaper:!!wallpaperBlob};}});
+  verifyMember();
+  // เหตุการณ์เป็นเพียงสัญญาณให้ตรวจเซสชันใหม่ ห้ามใช้ข้อมูล user จากเบราว์เซอร์เป็นสิทธิ์
+  window.addEventListener('alyzyus:auth',event=>{
+    deniedReason='guest';
+    revokeMember();
+    if(event.detail?.authenticated===true)verifyMember();
+  });
+  window.addEventListener('storage',event=>{
+    if(event.key!=='alyzyus-auth-sync')return;
+    deniedReason='guest';revokeMember();
+    // ออกจากระบบข้ามแท็บต้องล้างทันที โดยไม่แข่งตรวจ cookie ก่อนเซิร์ฟเวอร์ลบเสร็จ
+    if(!String(event.newValue||'').startsWith('logout:'))verifyMember();
+  });
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')verifyMember();});
+  window.addEventListener('pageshow',event=>{if(event.persisted){revokeMember();verifyMember();}});
+  window.addEventListener('pagehide',event=>{
+    // ไม่เก็บภาพส่วนตัวไว้ใน snapshot ของหน้าที่พักใน back/forward cache
+    if(event.persisted){revokeMember();return;}
+    if(wallpaperURL){URL.revokeObjectURL(wallpaperURL);wallpaperURL='';}
+  });
+  window.AlyzyusExperience=Object.freeze({open:openDialog,get settings(){return {...prefs,effectiveMotion:motionAllowed(),hasWallpaper:!!wallpaperBlob,member:!!memberId};}});
 })();

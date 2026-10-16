@@ -1,6 +1,6 @@
 /* ชั้นปรับหน้าตาที่ใช้ตัวแปรชุดเดียวกับหน้าร้านและหลังบ้าน */
 :root{--muted:#625f6c;--accent-contrast:#fff;--exp-accent-light:#5f43b2}
-:root[data-theme=dark]{--muted:#b8b3c4}
+:root[data-theme=dark]{--muted:#b8b3c4;--accent-contrast:#17171d}
 body{min-width:260px;overflow-wrap:break-word}
 button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
@@ -30,6 +30,12 @@ input[type=checkbox],input[type=radio]{accent-color:var(--accent)}
 .page-shell,.home-shell,.adm-main,.customer-page-heading,.account-panel,.checkout-panel{min-width:0}
 img{max-width:100%}
 body.exp-dialog-open{overflow:hidden}
+.exp-member-invite{padding:10px 28px 32px;line-height:1.9;color:var(--muted)}
+.exp-member-symbol{display:grid;place-items:center;width:64px;height:64px;margin:0 0 18px;border-radius:20px;background:var(--accent-soft);color:var(--accent)}
+.exp-member-invite p{margin:0 0 22px;font-size:14px}
+.exp-member-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.exp-member-actions .button{flex:1;min-width:120px;justify-content:center}
+.exp-member-invite small{display:block;font-size:12px}
 
 /* รูปใช้ Blob URL บนอุปกรณ์ เนื้อหาวางบนพื้นทึบจึงไม่เสียความชัดของตัวหนังสือ */
 .has-wallpaper body{background-image:var(--exp-wallpaper);background-position:center top;background-repeat:repeat-y;background-size:cover}

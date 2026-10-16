@@ -43,3 +43,6 @@ PostgreSQL แบบฝังตัว: เรียก `npm test` จากโ�
 
 
 ผลตรวจ Supabase Security Advisor วันที่ 15 ตุลาคม 2026: ไม่พบปัญหา RLS/สิทธิ์เข้าถึงตาราง Log แต่บัญชีมีคำเตือนว่า Leaked Password Protection ยังไม่เปิด เจ้าของโปรเจกต์ควรตรวจฟีเจอร์ใน Authentication และแผนที่ใช้งาน: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection การตรวจนี้ไม่ใช่การรับรองความปลอดภัยครบทุกด้าน
+
+
+ระบบ Customer Service บันทึก `support.created`, `support.replied` และ `support.status_changed` ในหมวด system โดยเก็บเฉพาะเลขคำร้อง หมวด สถานะ และสิทธิ์ผู้ตอบ ไม่คัดลอกหัวข้อหรือเนื้อหาบทสนทนาลง activity_logs เนื้อหาจริงอยู่ในตารางคำร้องที่ RLS จำกัดเจ้าของเรื่องและผู้ดูแล

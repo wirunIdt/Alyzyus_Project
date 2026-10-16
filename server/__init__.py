@@ -38,10 +38,14 @@ def create_app(overrides=None):
     from .auth import apply_cookies, bp as auth
     from .views import bp as pages
     from .media import bp as media
+    from .preferences import bp as appearance
+    from .support import bp as support
     app.register_blueprint(api)
     app.register_blueprint(auth)
     app.register_blueprint(pages)
     app.register_blueprint(media)
+    app.register_blueprint(appearance)
+    app.register_blueprint(support)
 
     @app.before_request
     def protect_mutations():

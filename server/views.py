@@ -44,6 +44,17 @@ def activity_logs():
     return page("logs.html")
 
 
+@bp.get("/support")
+def support():
+    return page("support.html", admin_mode=False)
+
+
+@bp.get("/admin/support")
+def support_inbox():
+    # หน้า HTML ไม่มีเนื้อหาคำร้อง ข้อมูลโหลดผ่าน API ที่ตรวจสิทธิ์ Admin เท่านั้น
+    return page("support.html", admin_mode=True)
+
+
 @bp.get("/install")
 def install():
     return page("install.html")

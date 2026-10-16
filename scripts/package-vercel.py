@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 ROOT_FILES = ['app.py', 'requirements.txt', 'vercel.json', 'pyproject.toml']
-TEMPLATES = ['base.html','macros.html','index.html','shop.html','product.html','admin.html','checkout.html','account.html','tracking.html','help.html','error.html','auth_callback.html','install.html','logs.html']
+TEMPLATES = ['base.html','macros.html','index.html','shop.html','product.html','admin.html','checkout.html','account.html','tracking.html','help.html','error.html','auth_callback.html','install.html','logs.html','support.html']
 
 def files():
     result = [ROOT / name for name in ROOT_FILES if (ROOT / name).is_file()]

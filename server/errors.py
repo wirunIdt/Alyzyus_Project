@@ -8,6 +8,7 @@ STATUS = {
     "ORDER_NOT_FOUND": 404, "INVALID_STATUS_TRANSITION": 409, "REFUND_REQUIRED": 409,
     "FORBIDDEN": 403, "UNAUTHORIZED": 401, "RATE_LIMITED": 429, "PAYMENT_MISMATCH": 409,
     "PAYMENT_PROVIDER_MANAGED": 409, "ORDER_CANCELLED": 409,
+    "SUPPORT_NOT_FOUND": 404, "SUPPORT_CLOSED": 409, "SUPPORT_RATE_LIMITED": 429,
 }
 MESSAGES = {
     "STORE_NOT_CONFIGURED": "The store is not connected yet. Please try again later.",
@@ -27,6 +28,9 @@ MESSAGES = {
     "REFUND_REQUIRED": "A paid order requires a refund before cancellation.",
     "INVALID_ORIGIN": "This request must come from the store website.",
     "RATE_LIMITED": "Too many requests. Please try again shortly.",
+    "SUPPORT_NOT_FOUND": "This support request could not be found.",
+    "SUPPORT_CLOSED": "This request is closed. Please open a new request or ask staff to reopen it.",
+    "SUPPORT_RATE_LIMITED": "The hourly support limit has been reached. Please try again later.",
 }
 
 

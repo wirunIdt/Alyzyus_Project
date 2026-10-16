@@ -189,7 +189,7 @@ def safe_next(value):
         if parsed.scheme or parsed.netloc:
             if f"{parsed.scheme}://{parsed.netloc}" != origin:
                 return "/account"
-        if parsed.path in ("/account", "/checkout", "/tracking", "/admin") and not parsed.fragment and "\r" not in value and "\n" not in value:
+        if parsed.path in ("/account", "/checkout", "/tracking", "/admin", "/support", "/admin/support", "/install", "/shop") and not parsed.fragment and "\r" not in value and "\n" not in value:
             return parsed.path + ("?" + parsed.query if parsed.query else "")
     except ValueError:
         pass

@@ -67,7 +67,7 @@ test('service worker leaves API, authentication, checkout and private navigation
   const worker = workerHarness();
   await worker.lifecycle('install');
   const initial = worker.writes.length;
-  for (const path of ['/api/products','/api/admin/logs?token=never-cache','/account','/admin/orders','/checkout','/tracking?order=123','/auth/callback?code=secret','/cart','/payments/callback','https://third-party.example/file.png']) {
+  for (const path of ['/api/products','/support','/api/admin/logs?token=never-cache','/account','/admin/orders','/checkout','/tracking?order=123','/auth/callback?code=secret','/cart','/payments/callback','https://third-party.example/file.png']) {
     assert.equal(await worker.request(path),undefined,path);
   }
   assert.equal(await worker.request('/shop',{method:'POST'}),undefined);

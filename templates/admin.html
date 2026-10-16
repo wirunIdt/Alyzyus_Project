@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
 {% block title %}Store Studio · Alyzyus{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="/static/css/admin.css">{% endblock %}
-{% block content %}<div class="studio-shortcuts"><a href="/admin/logs" class="text-link">{{icon('filter',16)}}{{tr('บันทึกกิจกรรมร้านค้า','Store activity log','商店活动日志')}}</a></div><div id="admin-root"><div class="adm-loading" role="status">{{tr('กำลังโหลดร้านค้า…','Loading your store…','正在加载商店…')}}</div></div><dialog id="admin-dialog" class="adm-modal" aria-labelledby="admin-dialog-title"></dialog>{% endblock %}
+{% block content %}<div class="studio-shortcuts"><a href="/admin/support" class="text-link">{{icon('user',16)}}{{tr('ดูแลลูกค้า','Customer service','客户服务')}}</a> <a href="/admin/logs" class="text-link">{{icon('filter',16)}}{{tr('บันทึกกิจกรรมร้านค้า','Store activity log','商店活动日志')}}</a></div><div id="admin-root"><div class="adm-loading" role="status">{{tr('กำลังโหลดร้านค้า…','Loading your store…','正在加载商店…')}}</div></div><dialog id="admin-dialog" class="adm-modal" aria-labelledby="admin-dialog-title"></dialog>{% endblock %}
 {% block scripts %}<script src="/static/js/admin.js" defer></script>{% endblock %}
