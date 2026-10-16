@@ -1,6 +1,7 @@
 """Alyzyus Flask entrypoint for local development and Vercel."""
-import os
+
 import logging
+import os
 
 from server import create_app
 

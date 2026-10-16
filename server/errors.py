@@ -1,14 +1,30 @@
 """Safe public error codes; provider messages never cross this boundary."""
+
 from flask import jsonify
 
 STATUS = {
-    "OUT_OF_STOCK": 409, "PRODUCT_UNAVAILABLE": 409, "INVALID_QUANTITY": 400,
-    "INVALID_CART": 400, "INVALID_CUSTOMER": 400, "INVALID_PAYMENT": 400, "INVALID_INPUT": 400,
-    "INVALID_COUPON": 400, "COUPON_NOT_ELIGIBLE": 409, "IDEMPOTENCY_CONFLICT": 409,
-    "ORDER_NOT_FOUND": 404, "INVALID_STATUS_TRANSITION": 409, "REFUND_REQUIRED": 409,
-    "FORBIDDEN": 403, "UNAUTHORIZED": 401, "RATE_LIMITED": 429, "PAYMENT_MISMATCH": 409,
-    "PAYMENT_PROVIDER_MANAGED": 409, "ORDER_CANCELLED": 409,
-    "SUPPORT_NOT_FOUND": 404, "SUPPORT_CLOSED": 409, "SUPPORT_RATE_LIMITED": 429,
+    "OUT_OF_STOCK": 409,
+    "PRODUCT_UNAVAILABLE": 409,
+    "INVALID_QUANTITY": 400,
+    "INVALID_CART": 400,
+    "INVALID_CUSTOMER": 400,
+    "INVALID_PAYMENT": 400,
+    "INVALID_INPUT": 400,
+    "INVALID_COUPON": 400,
+    "COUPON_NOT_ELIGIBLE": 409,
+    "IDEMPOTENCY_CONFLICT": 409,
+    "ORDER_NOT_FOUND": 404,
+    "INVALID_STATUS_TRANSITION": 409,
+    "REFUND_REQUIRED": 409,
+    "FORBIDDEN": 403,
+    "UNAUTHORIZED": 401,
+    "RATE_LIMITED": 429,
+    "PAYMENT_MISMATCH": 409,
+    "PAYMENT_PROVIDER_MANAGED": 409,
+    "ORDER_CANCELLED": 409,
+    "SUPPORT_NOT_FOUND": 404,
+    "SUPPORT_CLOSED": 409,
+    "SUPPORT_RATE_LIMITED": 429,
 }
 MESSAGES = {
     "STORE_NOT_CONFIGURED": "The store is not connected yet. Please try again later.",
@@ -42,7 +58,12 @@ class ApiError(Exception):
 
 
 def error_response(error: ApiError):
-    response = jsonify(error={"code": error.code, "message": MESSAGES.get(error.code, error.code.replace("_", " ").capitalize() + ".")})
+    response = jsonify(
+        error={
+            "code": error.code,
+            "message": MESSAGES.get(error.code, error.code.replace("_", " ").capitalize() + "."),
+        }
+    )
     response.status_code = error.status
     response.headers["Cache-Control"] = "private, no-store"
     return response

@@ -1,4 +1,5 @@
 """App factory for local tests and the Vercel Python runtime."""
+
 import atexit
 import os
 
@@ -17,7 +18,12 @@ def create_app(overrides=None):
     static_path = ROOT / "public" / "static"
     if not static_path.exists():
         static_path = ROOT / "static"
-    app = Flask(__name__, template_folder=str(ROOT / "templates"), static_folder=str(static_path), static_url_path="/static")
+    app = Flask(
+        __name__,
+        template_folder=str(ROOT / "templates"),
+        static_folder=str(static_path),
+        static_url_path="/static",
+    )
     app.config.update(environment())
     if overrides:
         app.config.update(overrides)
@@ -32,14 +38,17 @@ def create_app(overrides=None):
         atexit.register(pool.client.close)
 
     from .audit import init_audit, mark_error
+
     init_audit(app)
 
     from .api import bp as api
-    from .auth import apply_cookies, bp as auth
-    from .views import bp as pages
+    from .auth import apply_cookies
+    from .auth import bp as auth
     from .media import bp as media
     from .preferences import bp as appearance
     from .support import bp as support
+    from .views import bp as pages
+
     app.register_blueprint(api)
     app.register_blueprint(auth)
     app.register_blueprint(pages)
@@ -49,7 +58,11 @@ def create_app(overrides=None):
 
     @app.before_request
     def protect_mutations():
-        if request.path.startswith("/api/") and request.method in ("POST", "PATCH", "PUT", "DELETE") and request.path != "/api/webhooks/stripe":
+        if (
+            request.path.startswith("/api/")
+            and request.method in ("POST", "PATCH", "PUT", "DELETE")
+            and request.path != "/api/webhooks/stripe"
+        ):
             expected = request.host_url.rstrip("/")
             canonical = valid_origin(current_app.config["SITE_URL"])
             # Use the configured HTTPS scheme on its exact host behind Vercel's proxy.
@@ -59,7 +72,11 @@ def create_app(overrides=None):
                 raise ApiError("INVALID_ORIGIN", 403)
             if request.headers.get("Sec-Fetch-Site") not in (None, "same-origin", "none"):
                 raise ApiError("INVALID_ORIGIN", 403)
-            expected_type = "multipart/form-data" if request.path == "/api/admin/images" and request.method == "POST" else "application/json"
+            expected_type = (
+                "multipart/form-data"
+                if request.path == "/api/admin/images" and request.method == "POST"
+                else "application/json"
+            )
             if request.mimetype != expected_type:
                 raise ApiError("INVALID_CONTENT_TYPE", 415)
 
@@ -82,7 +99,11 @@ def create_app(overrides=None):
         mark_error(error.code)
         if request.path.startswith("/api/"):
             return error_response(error)
-        return render_template("error.html", status=error.status, bootstrap={"products": [], "configured": database_configured(app.config)}), error.status
+        return render_template(
+            "error.html",
+            status=error.status,
+            bootstrap={"products": [], "configured": database_configured(app.config)},
+        ), error.status
 
     @app.errorhandler(HTTPException)
     def http_error(error):
@@ -90,7 +111,11 @@ def create_app(overrides=None):
         if request.path.startswith("/api/"):
             codes = {404: "NOT_FOUND", 405: "METHOD_NOT_ALLOWED", 413: "PAYLOAD_TOO_LARGE"}
             return error_response(ApiError(codes.get(error.code, "INVALID_INPUT"), error.code))
-        return render_template("error.html", status=error.code, bootstrap={"products": [], "configured": database_configured(app.config)}), error.code
+        return render_template(
+            "error.html",
+            status=error.code,
+            bootstrap={"products": [], "configured": database_configured(app.config)},
+        ), error.code
 
     @app.errorhandler(Exception)
     def unexpected_error(error):
@@ -99,6 +124,10 @@ def create_app(overrides=None):
         app.logger.error("Request failed (%s)", type(error).__name__)
         if request.path.startswith("/api/"):
             return error_response(ApiError("INTERNAL_ERROR", 500))
-        return render_template("error.html", status=500, bootstrap={"products": [], "configured": database_configured(app.config)}), 500
+        return render_template(
+            "error.html",
+            status=500,
+            bootstrap={"products": [], "configured": database_configured(app.config)},
+        ), 500
 
     return app

@@ -31,16 +31,9 @@ jobs:
           cache: npm
           cache-dependency-path: tests/package-lock.json
       - name: Install Python dependencies
-        run: python -m pip install -r requirements.txt
-      - name: Check Python boundaries and authorization
-        run: python -m unittest discover -s tests -p 'test_*.py'
-      - name: Check browser scripts
-        run: for file in public/static/js/*.js public/sw.js; do node --check "$file"; done
-      - name: Install isolated database test runtime
+        run: python -m pip install -r requirements-dev.txt
+      - name: Install development format and database tools
         working-directory: tests
         run: npm ci --ignore-scripts
-      - name: Verify database transactions, audit privacy and PWA
-        working-directory: tests
-        run: npm test
-      - name: Verify shareable file allowlist
-        run: python scripts/package-github.py > /dev/null
+      - name: Check code style, syntax, templates, privacy and behavior
+        run: python scripts/check.py

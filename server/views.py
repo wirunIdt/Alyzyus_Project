@@ -1,11 +1,12 @@
 """HTML pages share a public catalog bootstrap and never expose account credentials."""
+
 import re
 from urllib.parse import urlencode
 
 from flask import Blueprint, abort, redirect, render_template, request, send_from_directory
 
-from .database import catalog
 from .config import ROOT
+from .database import catalog
 
 bp = Blueprint("pages", __name__)
 
@@ -62,12 +63,16 @@ def install():
 
 @bp.get("/manifest.webmanifest")
 def manifest():
-    return send_from_directory(ROOT / "public", "manifest.webmanifest", mimetype="application/manifest+json")
+    return send_from_directory(
+        ROOT / "public", "manifest.webmanifest", mimetype="application/manifest+json"
+    )
 
 
 @bp.get("/sw.js")
 def service_worker():
-    response = send_from_directory(ROOT / "public", "sw.js", mimetype="application/javascript", max_age=0)
+    response = send_from_directory(
+        ROOT / "public", "sw.js", mimetype="application/javascript", max_age=0
+    )
     response.headers["Service-Worker-Allowed"] = "/"
     return response
 

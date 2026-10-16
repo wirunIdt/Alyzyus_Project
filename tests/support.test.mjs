@@ -1,101 +1,262 @@
 // ตรวจ transaction, RLS และสิทธิ์ service_role ด้วย PostgreSQL ที่รันจริงในเครื่อง
-import {test} from 'node:test';
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile,readdir} from 'node:fs/promises';
-import {PGlite} from '@electric-sql/pglite';
+import { readFile, readdir } from 'node:fs/promises';
+import { PGlite } from '@electric-sql/pglite';
 
-test('support keeps conversations private, validates owner order, retries safely and enforces statuses and hourly limits',async()=>{
- const db=new PGlite();
- try {
-  await db.exec(`create schema extensions;create schema auth;create role anon;create role authenticated;create role service_role bypassrls;
+test('support keeps conversations private, validates owner order, retries safely and enforces statuses and hourly limits', async () => {
+  const db = new PGlite();
+  try {
+    await db.exec(`create schema extensions;create schema auth;create role anon;create role authenticated;create role service_role bypassrls;
    create table auth.users(id uuid primary key,email text);
    create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid; $$;
    grant usage on schema auth to anon,authenticated,service_role;
    create function extensions.gen_random_uuid() returns uuid language sql as $$ select pg_catalog.gen_random_uuid(); $$;`);
-  const folder=new URL('../supabase/migrations/',import.meta.url);
-  for(const file of (await readdir(folder)).filter(f=>f.endsWith('.sql')).sort()) await db.exec((await readFile(new URL(file,folder),'utf8')).replace('create extension if not exists pgcrypto with schema extensions;',''));
-  const user='30000000-0000-4000-8000-000000000001',other='30000000-0000-4000-8000-000000000002',staff='30000000-0000-4000-8000-000000000003';
-  await db.query('insert into auth.users(id,email) values($1,$2),($3,$4),($5,$6)',[user,'private@example.test',other,'other@example.test',staff,'staff@example.test']);
-  await db.query("update public.profiles set role='admin' where id=$1",[staff]);
-  const order='40000000-0000-4000-8000-000000000001';
-  // เติม order เพื่อทดสอบ owner check โดยไม่รบกวน business logic การซื้อ
-  await db.query("insert into public.orders(id,user_id,idempotency_key,request_fingerprint,customer_name,email,phone,address,payment_method,subtotal,shipping,discount,total) values($1,$2,$3,$4,'Private Name','private@example.test','0800000000','Private Address','cod',100,80,0,180)",[order,user,'40000000-0000-4000-8000-000000000002','a'.repeat(64)]);
-  let seq=1;
-  const key=()=>`50000000-0000-4000-8000-${String(seq++).padStart(12,'0')}`;
-  const create=async({actor=user,category='order',subject='PRIVATE SUBJECT',body='PRIVATE MESSAGE CONTENT',orderId=null,idempotency=key(),fingerprint='b'.repeat(64)}={})=>(await db.query('select public.create_support_ticket($1,$2,$3,$4,$5,$6,$7) id',[actor,category,subject,body,orderId,idempotency,fingerprint])).rows[0].id;
-  const reply=async(ticket,{actor=user,body='MORE PRIVATE MESSAGE',asStaff=false,idempotency=key(),fingerprint='c'.repeat(64)}={})=>(await db.query('select public.reply_support_ticket($1,$2,$3,$4,$5,$6) id',[actor,ticket,body,asStaff,idempotency,fingerprint])).rows[0].id;
-  const action=async(ticket,name,actor=user,asStaff=false)=>db.query('select public.change_support_ticket($1,$2,$3,$4)',[actor,ticket,name,asStaff]);
-  const status=async(ticket)=>(await db.query('select status from public.support_tickets where id=$1',[ticket])).rows[0].status;
-  const firstKey=key();
-  await db.exec('set role service_role;');
-  const ticket=await create({orderId:order,idempotency:firstKey});
-  assert.equal(typeof ticket,'string');
-  assert.equal(await create({orderId:order,idempotency:firstKey}),ticket);
-  await assert.rejects(create({idempotency:firstKey,fingerprint:'d'.repeat(64)}),/IDEMPOTENCY_CONFLICT/);
-  await assert.rejects(create({actor:other,orderId:order}),/ORDER_NOT_FOUND/);
-  await assert.rejects(create({category:'not-valid'}),/INVALID_INPUT/);
-  await assert.rejects(create({subject:'x'}),/INVALID_INPUT/);
-  await assert.rejects(reply(ticket,{actor:other}),/SUPPORT_NOT_FOUND/);
-  await assert.rejects(reply(ticket,{asStaff:true}),/FORBIDDEN/);
-  assert.equal((await db.query('select count(*) from public.support_messages')).rows[0].count,1);
-  const replyKey=key(),message=await reply(ticket,{idempotency:replyKey});
-  assert.equal(await reply(ticket,{idempotency:replyKey}),message);
-  await assert.rejects(reply(ticket,{idempotency:replyKey,fingerprint:'d'.repeat(64)}),/IDEMPOTENCY_CONFLICT/);
-  await reply(ticket,{actor:staff,asStaff:true});assert.equal(await status(ticket),'pending');
-  await reply(ticket);assert.equal(await status(ticket),'open');
-  await action(ticket,'resolve');assert.equal(await status(ticket),'resolved');
-  await reply(ticket);assert.equal(await status(ticket),'open');
-  await assert.rejects(action(ticket,'close'),/FORBIDDEN/);
-  await action(ticket,'close',staff,true);assert.equal(await status(ticket),'closed');
-  await assert.rejects(reply(ticket),/SUPPORT_CLOSED/);
-  await assert.rejects(action(ticket,'reopen'),/SUPPORT_CLOSED/);
-  await action(ticket,'reopen',staff,true);assert.equal(await status(ticket),'open');
-  const ownCount=(await db.query('select count(*) from public.support_messages where ticket_id=$1',[ticket])).rows[0].count;
-  const audit=JSON.stringify((await db.query("select details from public.activity_logs where action like 'support.%'")).rows);
-  for(const secret of ['PRIVATE SUBJECT','PRIVATE MESSAGE','private@example.test','Private Name']) assert.equal(audit.includes(secret),false);
-  await db.exec(`set role authenticated;set request.jwt.claim.sub='${other}';`);
-  assert.equal((await db.query('select * from public.support_tickets')).rows.length,0);
-  assert.equal((await db.query('select * from public.support_messages')).rows.length,0);
-  await assert.rejects(create(),/permission denied/);
-  await assert.rejects(reply(ticket),/permission denied/);
-  await assert.rejects(action(ticket,'resolve'),/permission denied/);
-  await assert.rejects(db.query("update public.support_tickets set status='closed'"),/permission denied/);
-  await assert.rejects(db.query('delete from public.support_messages'),/permission denied/);
-  await db.exec(`set request.jwt.claim.sub='${user}';`);
-  assert.equal((await db.query('select * from public.support_tickets')).rows.length,1);
-  assert.equal((await db.query('select * from public.support_messages')).rows.length,Number(ownCount));
-  await db.exec(`set request.jwt.claim.sub='${staff}';`);
-  assert.equal((await db.query('select * from public.support_tickets')).rows.length,1);
-  await db.exec('set role anon;');await assert.rejects(db.query('select * from public.support_tickets'),/permission denied/);
-  await db.exec('set role service_role;');
-  for(let i=0;i<4;i++)await create();
-  await assert.rejects(create(),/SUPPORT_RATE_LIMITED/);
-  assert.equal(await create({orderId:order,idempotency:firstKey}),ticket,'successful retry works after quota reached');
-  let sent=Number((await db.query('select count(*) from public.support_messages where author_id=$1',[user])).rows[0].count);
-  for(;sent<20;sent++)await reply(ticket);
-  await assert.rejects(reply(ticket),/SUPPORT_RATE_LIMITED/);
-  assert.equal(await reply(ticket,{idempotency:replyKey}),message,'message retry works after quota reached');
-  await db.exec('reset role;');
-  await db.query("update public.support_tickets set created_at=clock_timestamp()-interval '2 hours' where user_id=$1",[user]);
-  await db.query("update public.support_messages set created_at=clock_timestamp()-interval '2 hours' where author_id=$1",[user]);
-  await db.exec('set role service_role;');await create();await reply(ticket);
-  let changed=Number((await db.query("select count(*) from public.activity_logs where actor_id=$1 and action='support.status_changed'",[user])).rows[0].count);
-  for(;changed<30;changed++)await action(ticket,(await status(ticket))==='open'?'resolve':'reopen');
-  const beforeLogs=Number((await db.query("select count(*) from public.activity_logs where action='support.status_changed'")).rows[0].count);
-  await action(ticket,(await status(ticket))==='open'?'reopen':'resolve');
-  assert.equal(Number((await db.query("select count(*) from public.activity_logs where action='support.status_changed'")).rows[0].count),beforeLogs,'same-state retry creates no audit log');
-  await assert.rejects(action(ticket,(await status(ticket))==='open'?'resolve':'reopen'),/SUPPORT_RATE_LIMITED/);
-  // Admin ตอบลูกค้าหลายคนได้มากกว่า แต่ยังมีเพดานคงทนและ retry ไม่กินโควตาซ้ำ
-  const staffKey=key(),staffMessage=await reply(ticket,{actor:staff,asStaff:true,idempotency:staffKey});
-  let staffSent=Number((await db.query('select count(*) from public.support_messages where author_id=$1',[staff])).rows[0].count);
-  for(;staffSent<200;staffSent++)await reply(ticket,{actor:staff,asStaff:true});
-  await assert.rejects(reply(ticket,{actor:staff,asStaff:true}),/SUPPORT_RATE_LIMITED/);
-  assert.equal(await reply(ticket,{actor:staff,asStaff:true,idempotency:staffKey}),staffMessage);
-  let staffChanged=Number((await db.query("select count(*) from public.activity_logs where actor_id=$1 and action='support.status_changed'",[staff])).rows[0].count);
-  for(;staffChanged<200;staffChanged++)await action(ticket,(await status(ticket))==='open'?'resolve':'reopen',staff,true);
-  await action(ticket,(await status(ticket))==='open'?'reopen':'resolve',staff,true);
-  await assert.rejects(action(ticket,(await status(ticket))==='open'?'resolve':'reopen',staff,true),/SUPPORT_RATE_LIMITED/);
-  const grants=(await db.query("select has_function_privilege('anon','public.create_support_ticket(uuid,text,text,text,uuid,uuid,text)','execute') a,has_function_privilege('authenticated','public.reply_support_ticket(uuid,bigint,text,boolean,uuid,text)','execute') b")).rows[0];
-  assert.equal(grants.a,false);assert.equal(grants.b,false);
- }finally{await db.close();}
+    const folder = new URL('../supabase/migrations/', import.meta.url);
+    for (const file of (await readdir(folder)).filter((f) => f.endsWith('.sql')).sort())
+      await db.exec(
+        (await readFile(new URL(file, folder), 'utf8')).replace(
+          'create extension if not exists pgcrypto with schema extensions;',
+          ''
+        )
+      );
+    const user = '30000000-0000-4000-8000-000000000001',
+      other = '30000000-0000-4000-8000-000000000002',
+      staff = '30000000-0000-4000-8000-000000000003';
+    await db.query('insert into auth.users(id,email) values($1,$2),($3,$4),($5,$6)', [
+      user,
+      'private@example.test',
+      other,
+      'other@example.test',
+      staff,
+      'staff@example.test',
+    ]);
+    await db.query("update public.profiles set role='admin' where id=$1", [staff]);
+    const order = '40000000-0000-4000-8000-000000000001';
+    // เติม order เพื่อทดสอบ owner check โดยไม่รบกวน business logic การซื้อ
+    await db.query(
+      "insert into public.orders(id,user_id,idempotency_key,request_fingerprint,customer_name,email,phone,address,payment_method,subtotal,shipping,discount,total) values($1,$2,$3,$4,'Private Name','private@example.test','0800000000','Private Address','cod',100,80,0,180)",
+      [order, user, '40000000-0000-4000-8000-000000000002', 'a'.repeat(64)]
+    );
+    let seq = 1;
+    const key = () => `50000000-0000-4000-8000-${String(seq++).padStart(12, '0')}`;
+    const create = async ({
+      actor = user,
+      category = 'order',
+      subject = 'PRIVATE SUBJECT',
+      body = 'PRIVATE MESSAGE CONTENT',
+      orderId = null,
+      idempotency = key(),
+      fingerprint = 'b'.repeat(64),
+    } = {}) =>
+      (
+        await db.query('select public.create_support_ticket($1,$2,$3,$4,$5,$6,$7) id', [
+          actor,
+          category,
+          subject,
+          body,
+          orderId,
+          idempotency,
+          fingerprint,
+        ])
+      ).rows[0].id;
+    const reply = async (
+      ticket,
+      {
+        actor = user,
+        body = 'MORE PRIVATE MESSAGE',
+        asStaff = false,
+        idempotency = key(),
+        fingerprint = 'c'.repeat(64),
+      } = {}
+    ) =>
+      (
+        await db.query('select public.reply_support_ticket($1,$2,$3,$4,$5,$6) id', [
+          actor,
+          ticket,
+          body,
+          asStaff,
+          idempotency,
+          fingerprint,
+        ])
+      ).rows[0].id;
+    const action = async (ticket, name, actor = user, asStaff = false) =>
+      db.query('select public.change_support_ticket($1,$2,$3,$4)', [actor, ticket, name, asStaff]);
+    const status = async (ticket) =>
+      (await db.query('select status from public.support_tickets where id=$1', [ticket])).rows[0]
+        .status;
+    const firstKey = key();
+    await db.exec('set role service_role;');
+    const ticket = await create({ orderId: order, idempotency: firstKey });
+    assert.equal(typeof ticket, 'string');
+    assert.equal(await create({ orderId: order, idempotency: firstKey }), ticket);
+    await assert.rejects(
+      create({ idempotency: firstKey, fingerprint: 'd'.repeat(64) }),
+      /IDEMPOTENCY_CONFLICT/
+    );
+    await assert.rejects(create({ actor: other, orderId: order }), /ORDER_NOT_FOUND/);
+    await assert.rejects(create({ category: 'not-valid' }), /INVALID_INPUT/);
+    await assert.rejects(create({ subject: 'x' }), /INVALID_INPUT/);
+    await assert.rejects(reply(ticket, { actor: other }), /SUPPORT_NOT_FOUND/);
+    await assert.rejects(reply(ticket, { asStaff: true }), /FORBIDDEN/);
+    assert.equal((await db.query('select count(*) from public.support_messages')).rows[0].count, 1);
+    const replyKey = key(),
+      message = await reply(ticket, { idempotency: replyKey });
+    assert.equal(await reply(ticket, { idempotency: replyKey }), message);
+    await assert.rejects(
+      reply(ticket, { idempotency: replyKey, fingerprint: 'd'.repeat(64) }),
+      /IDEMPOTENCY_CONFLICT/
+    );
+    await reply(ticket, { actor: staff, asStaff: true });
+    assert.equal(await status(ticket), 'pending');
+    await reply(ticket);
+    assert.equal(await status(ticket), 'open');
+    await action(ticket, 'resolve');
+    assert.equal(await status(ticket), 'resolved');
+    await reply(ticket);
+    assert.equal(await status(ticket), 'open');
+    await assert.rejects(action(ticket, 'close'), /FORBIDDEN/);
+    await action(ticket, 'close', staff, true);
+    assert.equal(await status(ticket), 'closed');
+    await assert.rejects(reply(ticket), /SUPPORT_CLOSED/);
+    await assert.rejects(action(ticket, 'reopen'), /SUPPORT_CLOSED/);
+    await action(ticket, 'reopen', staff, true);
+    assert.equal(await status(ticket), 'open');
+    const ownCount = (
+      await db.query('select count(*) from public.support_messages where ticket_id=$1', [ticket])
+    ).rows[0].count;
+    const audit = JSON.stringify(
+      (await db.query("select details from public.activity_logs where action like 'support.%'"))
+        .rows
+    );
+    for (const secret of [
+      'PRIVATE SUBJECT',
+      'PRIVATE MESSAGE',
+      'private@example.test',
+      'Private Name',
+    ])
+      assert.equal(audit.includes(secret), false);
+    await db.exec(`set role authenticated;set request.jwt.claim.sub='${other}';`);
+    assert.equal((await db.query('select * from public.support_tickets')).rows.length, 0);
+    assert.equal((await db.query('select * from public.support_messages')).rows.length, 0);
+    await assert.rejects(create(), /permission denied/);
+    await assert.rejects(reply(ticket), /permission denied/);
+    await assert.rejects(action(ticket, 'resolve'), /permission denied/);
+    await assert.rejects(
+      db.query("update public.support_tickets set status='closed'"),
+      /permission denied/
+    );
+    await assert.rejects(db.query('delete from public.support_messages'), /permission denied/);
+    await db.exec(`set request.jwt.claim.sub='${user}';`);
+    assert.equal((await db.query('select * from public.support_tickets')).rows.length, 1);
+    assert.equal(
+      (await db.query('select * from public.support_messages')).rows.length,
+      Number(ownCount)
+    );
+    await db.exec(`set request.jwt.claim.sub='${staff}';`);
+    assert.equal((await db.query('select * from public.support_tickets')).rows.length, 1);
+    await db.exec('set role anon;');
+    await assert.rejects(db.query('select * from public.support_tickets'), /permission denied/);
+    await db.exec('set role service_role;');
+    for (let i = 0; i < 4; i++) await create();
+    await assert.rejects(create(), /SUPPORT_RATE_LIMITED/);
+    assert.equal(
+      await create({ orderId: order, idempotency: firstKey }),
+      ticket,
+      'successful retry works after quota reached'
+    );
+    let sent = Number(
+      (await db.query('select count(*) from public.support_messages where author_id=$1', [user]))
+        .rows[0].count
+    );
+    for (; sent < 20; sent++) await reply(ticket);
+    await assert.rejects(reply(ticket), /SUPPORT_RATE_LIMITED/);
+    assert.equal(
+      await reply(ticket, { idempotency: replyKey }),
+      message,
+      'message retry works after quota reached'
+    );
+    await db.exec('reset role;');
+    await db.query(
+      "update public.support_tickets set created_at=clock_timestamp()-interval '2 hours' where user_id=$1",
+      [user]
+    );
+    await db.query(
+      "update public.support_messages set created_at=clock_timestamp()-interval '2 hours' where author_id=$1",
+      [user]
+    );
+    await db.exec('set role service_role;');
+    await create();
+    await reply(ticket);
+    let changed = Number(
+      (
+        await db.query(
+          "select count(*) from public.activity_logs where actor_id=$1 and action='support.status_changed'",
+          [user]
+        )
+      ).rows[0].count
+    );
+    for (; changed < 30; changed++)
+      await action(ticket, (await status(ticket)) === 'open' ? 'resolve' : 'reopen');
+    const beforeLogs = Number(
+      (
+        await db.query(
+          "select count(*) from public.activity_logs where action='support.status_changed'"
+        )
+      ).rows[0].count
+    );
+    await action(ticket, (await status(ticket)) === 'open' ? 'reopen' : 'resolve');
+    assert.equal(
+      Number(
+        (
+          await db.query(
+            "select count(*) from public.activity_logs where action='support.status_changed'"
+          )
+        ).rows[0].count
+      ),
+      beforeLogs,
+      'same-state retry creates no audit log'
+    );
+    await assert.rejects(
+      action(ticket, (await status(ticket)) === 'open' ? 'resolve' : 'reopen'),
+      /SUPPORT_RATE_LIMITED/
+    );
+    // Admin ตอบลูกค้าหลายคนได้มากกว่า แต่ยังมีเพดานคงทนและ retry ไม่กินโควตาซ้ำ
+    const staffKey = key(),
+      staffMessage = await reply(ticket, { actor: staff, asStaff: true, idempotency: staffKey });
+    let staffSent = Number(
+      (await db.query('select count(*) from public.support_messages where author_id=$1', [staff]))
+        .rows[0].count
+    );
+    for (; staffSent < 200; staffSent++) await reply(ticket, { actor: staff, asStaff: true });
+    await assert.rejects(reply(ticket, { actor: staff, asStaff: true }), /SUPPORT_RATE_LIMITED/);
+    assert.equal(
+      await reply(ticket, { actor: staff, asStaff: true, idempotency: staffKey }),
+      staffMessage
+    );
+    let staffChanged = Number(
+      (
+        await db.query(
+          "select count(*) from public.activity_logs where actor_id=$1 and action='support.status_changed'",
+          [staff]
+        )
+      ).rows[0].count
+    );
+    for (; staffChanged < 200; staffChanged++)
+      await action(ticket, (await status(ticket)) === 'open' ? 'resolve' : 'reopen', staff, true);
+    await action(ticket, (await status(ticket)) === 'open' ? 'reopen' : 'resolve', staff, true);
+    await assert.rejects(
+      action(ticket, (await status(ticket)) === 'open' ? 'resolve' : 'reopen', staff, true),
+      /SUPPORT_RATE_LIMITED/
+    );
+    const grants = (
+      await db.query(
+        "select has_function_privilege('anon','public.create_support_ticket(uuid,text,text,text,uuid,uuid,text)','execute') a,has_function_privilege('authenticated','public.reply_support_ticket(uuid,bigint,text,boolean,uuid,text)','execute') b"
+      )
+    ).rows[0];
+    assert.equal(grants.a, false);
+    assert.equal(grants.b, false);
+  } finally {
+    await db.close();
+  }
 });

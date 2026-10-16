@@ -1,4 +1,5 @@
 """ตรวจสิทธิ์ผู้ดูแล การแบ่งหน้า และการไม่รั่วข้อมูลลับใน log จริงของ Flask"""
+
 import json
 import unittest
 from uuid import UUID
@@ -10,8 +11,22 @@ from server.auth import ACCESS
 
 ORIGIN = "https://shop.example"
 ACTOR = "11111111-1111-4111-8111-111111111111"
-USER = {"id": ACTOR, "email": "private-buyer@example.com", "email_confirmed_at": "2026-10-15T00:00:00Z", "is_anonymous": False, "user_metadata": {"role": "admin", "name": "Private Person"}}
-CONFIG = {"TESTING": True, "AUDIT_PERSIST": True, "SITE_URL": ORIGIN, "APP_SECRET_KEY": "a" * 48, "SUPABASE_URL": "https://project.supabase.co", "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_test", "SUPABASE_SERVICE_ROLE_KEY": "sb_secret_test"}
+USER = {
+    "id": ACTOR,
+    "email": "private-buyer@example.com",
+    "email_confirmed_at": "2026-10-15T00:00:00Z",
+    "is_anonymous": False,
+    "user_metadata": {"role": "admin", "name": "Private Person"},
+}
+CONFIG = {
+    "TESTING": True,
+    "AUDIT_PERSIST": True,
+    "SITE_URL": ORIGIN,
+    "APP_SECRET_KEY": "a" * 48,
+    "SUPABASE_URL": "https://project.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_test",
+    "SUPABASE_SERVICE_ROLE_KEY": "sb_secret_test",
+}
 
 
 class AuditTests(unittest.TestCase):
@@ -34,20 +49,50 @@ class AuditTests(unittest.TestCase):
             return httpx.Response(200, json=USER)
         if request.url.path == "/auth/v1/token":
             if self.login_failure:
-                return httpx.Response(400, json={"error_code": "invalid_credentials", "message": "private provider detail"})
-            return httpx.Response(200, json={"user": USER, "access_token": "access-secret", "refresh_token": "refresh-secret"})
+                return httpx.Response(
+                    400,
+                    json={
+                        "error_code": "invalid_credentials",
+                        "message": "private provider detail",
+                    },
+                )
+            return httpx.Response(
+                200,
+                json={
+                    "user": USER,
+                    "access_token": "access-secret",
+                    "refresh_token": "refresh-secret",
+                },
+            )
         if request.url.path == "/rest/v1/profiles":
             return httpx.Response(200, json=[{"role": self.role}])
         if request.url.path == "/rest/v1/activity_logs":
-            rows = [{"id": str(number), "created_at": "2026-10-15T00:00:00Z", "category": "inventory", "action": "inventory.stock_changed", "severity": "info", "source": "database", "actor_id": ACTOR, "entity_type": "product", "entity_id": ACTOR, "details": {"before": {"stock": 4}, "after": {"stock": 3}}, "request_id": None} for number in (9007199254740994, 9007199254740993, 9007199254740992)]
+            rows = [
+                {
+                    "id": str(number),
+                    "created_at": "2026-10-15T00:00:00Z",
+                    "category": "inventory",
+                    "action": "inventory.stock_changed",
+                    "severity": "info",
+                    "source": "database",
+                    "actor_id": ACTOR,
+                    "entity_type": "product",
+                    "entity_id": ACTOR,
+                    "details": {"before": {"stock": 4}, "after": {"stock": 3}},
+                    "request_id": None,
+                }
+                for number in (9007199254740994, 9007199254740993, 9007199254740992)
+            ]
             cursor = request.url.params.get("id")
             if cursor:
                 rows = [row for row in rows if int(row["id"]) < int(cursor.removeprefix("lt."))]
-            return httpx.Response(200, json=rows[:int(request.url.params["limit"])])
+            return httpx.Response(200, json=rows[: int(request.url.params["limit"])])
         if request.url.path == "/rest/v1/rpc/record_activity_event":
             self.persisted.append(json.loads(request.content))
             if self.audit_failure:
-                return httpx.Response(503, json={"message": "private provider detail", "key": "must-never-log"})
+                return httpx.Response(
+                    503, json={"message": "private provider detail", "key": "must-never-log"}
+                )
             return httpx.Response(204)
         raise AssertionError("Unexpected provider path")
 
@@ -58,13 +103,25 @@ class AuditTests(unittest.TestCase):
         return self.client.get(path, base_url=ORIGIN, **kwargs)
 
     def login(self, **kwargs):
-        return self.client.post("/api/auth/login?private=secret-query", json={"email": USER["email"], "password": "private-password-123"}, base_url=ORIGIN, headers={"Origin": ORIGIN, "X-Request-ID": "caller-controlled-secret", "X-Forwarded-For": "192.0.2.21", **kwargs})
+        return self.client.post(
+            "/api/auth/login?private=secret-query",
+            json={"email": USER["email"], "password": "private-password-123"},
+            base_url=ORIGIN,
+            headers={
+                "Origin": ORIGIN,
+                "X-Request-ID": "caller-controlled-secret",
+                "X-Forwarded-For": "192.0.2.21",
+                **kwargs,
+            },
+        )
 
     def test_log_api_cannot_be_read_by_anonymous_or_customer(self):
         self.assertEqual(self.get("/api/admin/logs").status_code, 401)
         self.sign_in()
         self.assertEqual(self.get("/api/admin/logs").status_code, 403)
-        self.assertFalse(any(request.url.path.endswith("activity_logs") for request in self.requests))
+        self.assertFalse(
+            any(request.url.path.endswith("activity_logs") for request in self.requests)
+        )
 
     def test_admin_uses_rls_token_and_bigint_safe_keyset_pagination(self):
         self.role = "admin"
@@ -88,10 +145,24 @@ class AuditTests(unittest.TestCase):
     def test_invalid_filters_are_rejected_before_query(self):
         self.role = "admin"
         self.sign_in()
-        for query in ("limit=0", "limit=101", "limit=1.1", "limit=" + "9" * 3000, "cursor=-1", "cursor=0", "cursor=9223372036854775808", "cursor=1)or(id.gt.0", "category=private", "order=actor_id", "limit=1&limit=2"):
+        for query in (
+            "limit=0",
+            "limit=101",
+            "limit=1.1",
+            "limit=" + "9" * 3000,
+            "cursor=-1",
+            "cursor=0",
+            "cursor=9223372036854775808",
+            "cursor=1)or(id.gt.0",
+            "category=private",
+            "order=actor_id",
+            "limit=1&limit=2",
+        ):
             with self.subTest(query=query):
                 self.assertEqual(self.get("/api/admin/logs?" + query).status_code, 400)
-        self.assertFalse(any(request.url.path.endswith("activity_logs") for request in self.requests))
+        self.assertFalse(
+            any(request.url.path.endswith("activity_logs") for request in self.requests)
+        )
 
     def test_login_records_only_verified_actor_and_generated_request_id(self):
         with self.assertLogs("alyzyus.audit", level="INFO") as captured:
@@ -105,7 +176,16 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(str(UUID(response.headers["X-Request-ID"])), payload["p_request_id"])
         self.assertEqual(self.requests[-1].extensions["timeout"]["read"], 2)
         output = " ".join(captured.output)
-        for private in ("private-password", USER["email"], "access-secret", "refresh-secret", "sb_secret", "secret-query", "caller-controlled-secret", "192.0.2.21"):
+        for private in (
+            "private-password",
+            USER["email"],
+            "access-secret",
+            "refresh-secret",
+            "sb_secret",
+            "secret-query",
+            "caller-controlled-secret",
+            "192.0.2.21",
+        ):
             self.assertNotIn(private, output)
 
     def test_audit_outage_does_not_break_login_or_log_provider_body(self):
@@ -133,8 +213,12 @@ class AuditTests(unittest.TestCase):
             raise RuntimeError(private_value)
 
         with self.assertLogs("alyzyus.audit", level="INFO") as captured:
-            self.assertEqual(self.get("/audit-fault/private-address?token_hash=secret-token").status_code, 500)
-            self.assertEqual(self.get("/unknown-private-value?email=private-email").status_code, 404)
+            self.assertEqual(
+                self.get("/audit-fault/private-address?token_hash=secret-token").status_code, 500
+            )
+            self.assertEqual(
+                self.get("/unknown-private-value?email=private-email").status_code, 404
+            )
         output = " ".join(captured.output)
         self.assertIn("/audit-fault/<private_value>", output)
         self.assertIn("unmatched", output)

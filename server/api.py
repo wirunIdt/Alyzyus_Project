@@ -1,4 +1,5 @@
 """Commerce routes keep privileged writes behind verified server authorization."""
+
 import hashlib
 import hmac
 import json
@@ -7,8 +8,8 @@ from datetime import datetime, timezone
 from flask import Blueprint, current_app, g, jsonify, request
 
 from . import validation as v
-from .auth import require_admin, require_user
 from .audit import read_logs
+from .auth import require_admin, require_user
 from .config import commerce_configured
 from .database import catalog, db, map_order, map_product, single
 from .errors import ApiError
@@ -30,7 +31,16 @@ def store_settings():
 @bp.get("/api/orders")
 def orders():
     user = require_user()
-    rows, _ = db().select("orders", token=g.access_token, params={"select": "*,order_items(*)", "user_id": "eq." + user["id"], "order": "created_at.desc", "limit": "200"})
+    rows, _ = db().select(
+        "orders",
+        token=g.access_token,
+        params={
+            "select": "*,order_items(*)",
+            "user_id": "eq." + user["id"],
+            "order": "created_at.desc",
+            "limit": "200",
+        },
+    )
     return jsonify(orders=[map_order(row) for row in rows or []])
 
 
@@ -43,10 +53,37 @@ def checkout():
     user = require_user()
     if not payment["payments"][value["paymentMethod"]]:
         raise ApiError("PAYMENT_UNAVAILABLE", 409)
-    canonical = {"items": sorted(value["items"], key=lambda item: item["productId"]), "customer": value["customer"], "paymentMethod": value["paymentMethod"], "coupon": value["coupon"]}
-    fingerprint = hashlib.sha256(json.dumps(canonical, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
-    order_id = db().rpc("create_order", {"p_user_id": user["id"], "p_items": value["items"], "p_customer": value["customer"], "p_payment_method": value["paymentMethod"], "p_coupon": value["coupon"] or None, "p_idempotency_key": value["idempotencyKey"], "p_request_fingerprint": fingerprint})
-    rows, _ = db().select("orders", admin=True, params={"select": "*,order_items(*)", "id": "eq." + order_id, "user_id": "eq." + user["id"], "limit": "1"})
+    canonical = {
+        "items": sorted(value["items"], key=lambda item: item["productId"]),
+        "customer": value["customer"],
+        "paymentMethod": value["paymentMethod"],
+        "coupon": value["coupon"],
+    }
+    fingerprint = hashlib.sha256(
+        json.dumps(canonical, ensure_ascii=False, separators=(",", ":")).encode()
+    ).hexdigest()
+    order_id = db().rpc(
+        "create_order",
+        {
+            "p_user_id": user["id"],
+            "p_items": value["items"],
+            "p_customer": value["customer"],
+            "p_payment_method": value["paymentMethod"],
+            "p_coupon": value["coupon"] or None,
+            "p_idempotency_key": value["idempotencyKey"],
+            "p_request_fingerprint": fingerprint,
+        },
+    )
+    rows, _ = db().select(
+        "orders",
+        admin=True,
+        params={
+            "select": "*,order_items(*)",
+            "id": "eq." + order_id,
+            "user_id": "eq." + user["id"],
+            "limit": "1",
+        },
+    )
     row = single(rows)
     order = map_order(row)
     if order["status"] == "cancelled":
@@ -54,7 +91,15 @@ def checkout():
     if order["payment_status"] == "paid" or value["paymentMethod"] == "cod":
         return jsonify(order=order)
     if value["paymentMethod"] == "bank_transfer":
-        return jsonify(order=order, paymentInstructions={"type": "bank_transfer", **payment["bankDetails"], "reference": order["order_number"], "amount": order["total"]})
+        return jsonify(
+            order=order,
+            paymentInstructions={
+                "type": "bank_transfer",
+                **payment["bankDetails"],
+                "reference": order["order_number"],
+                "amount": order["total"],
+            },
+        )
     return jsonify(open_checkout(row, order, user))
 
 
@@ -63,10 +108,23 @@ def admin():
     if not commerce_configured(current_app.config):
         return jsonify(orders=[], products=[], configured=False, totalOrderCount=0, orderLimit=500)
     require_admin()
-    rows, headers = db().select("orders", token=g.access_token, params={"select": "*,order_items(*)", "order": "created_at.desc", "limit": "500"}, count=True)
-    products, _ = db().select("products", token=g.access_token, params={"select": "*", "order": "created_at.desc"})
+    rows, headers = db().select(
+        "orders",
+        token=g.access_token,
+        params={"select": "*,order_items(*)", "order": "created_at.desc", "limit": "500"},
+        count=True,
+    )
+    products, _ = db().select(
+        "products", token=g.access_token, params={"select": "*", "order": "created_at.desc"}
+    )
     total = headers.get("content-range", "").split("/")[-1]
-    return jsonify(orders=[map_order(row) for row in rows or []], products=[map_product(row) for row in products or []], configured=True, totalOrderCount=int(total) if total.isdecimal() else len(rows or []), orderLimit=500)
+    return jsonify(
+        orders=[map_order(row) for row in rows or []],
+        products=[map_product(row) for row in products or []],
+        configured=True,
+        totalOrderCount=int(total) if total.isdecimal() else len(rows or []),
+        orderLimit=500,
+    )
 
 
 @bp.route("/api/admin/products", methods=["POST", "PATCH"])
@@ -80,7 +138,11 @@ def save_product():
         values["compare_at"] = value["compareAt"]
     current = {}
     if partial:
-        rows, _ = db().select("products", token=g.access_token, params={"select": "price,compare_at", "id": "eq." + product_id, "limit": "1"})
+        rows, _ = db().select(
+            "products",
+            token=g.access_token,
+            params={"select": "price,compare_at", "id": "eq." + product_id, "limit": "1"},
+        )
         current = single(rows, "PRODUCT_NOT_FOUND")
     price = value.get("price", current.get("price"))
     comparison = value.get("compareAt", current.get("compare_at"))
@@ -89,7 +151,14 @@ def save_product():
     values["updated_at"] = datetime.now(timezone.utc).isoformat()
     if not partial and product_id:
         values["id"] = product_id
-    rows, _ = db().call(request.method, "/rest/v1/products", token=g.access_token, params={"id": "eq." + product_id} if partial else None, body=values, prefer="return=representation")
+    rows, _ = db().call(
+        request.method,
+        "/rest/v1/products",
+        token=g.access_token,
+        params={"id": "eq." + product_id} if partial else None,
+        body=values,
+        prefer="return=representation",
+    )
     return jsonify(product=map_product(single(rows, "PRODUCT_NOT_FOUND"))), 200 if partial else 201
 
 
@@ -106,10 +175,32 @@ def save_order():
         raise ApiError("STORE_NOT_CONFIGURED", 503)
     value = v.order_patch(v.read_json())
     if value.get("status") == "cancelled":
-        rows, _ = db().select("orders", admin=True, params={"select": "payment_method,payment_status,stripe_session_id,status", "id": "eq." + value["id"], "limit": "1"})
+        rows, _ = db().select(
+            "orders",
+            admin=True,
+            params={
+                "select": "payment_method,payment_status,stripe_session_id,status",
+                "id": "eq." + value["id"],
+                "limit": "1",
+            },
+        )
         close_before_cancellation(single(rows))
-    db().rpc("update_order_admin", {"p_actor_id": user["id"], "p_order_id": value["id"], "p_status": value.get("status"), "p_tracking_number": value.get("tracking_number"), "p_carrier": value.get("carrier"), "p_payment_status": value.get("payment_status")})
-    rows, _ = db().select("orders", admin=True, params={"select": "*,order_items(*)", "id": "eq." + value["id"], "limit": "1"})
+    db().rpc(
+        "update_order_admin",
+        {
+            "p_actor_id": user["id"],
+            "p_order_id": value["id"],
+            "p_status": value.get("status"),
+            "p_tracking_number": value.get("tracking_number"),
+            "p_carrier": value.get("carrier"),
+            "p_payment_status": value.get("payment_status"),
+        },
+    )
+    rows, _ = db().select(
+        "orders",
+        admin=True,
+        params={"select": "*,order_items(*)", "id": "eq." + value["id"], "limit": "1"},
+    )
     return jsonify(order=map_order(single(rows)))
 
 
@@ -121,19 +212,43 @@ def stripe_webhook():
     session = event["data"]["object"]
     if event["type"] == "checkout.session.completed" and session.get("payment_status") != "paid":
         return jsonify(received=True)
-    if event["type"] == "checkout.session.async_payment_succeeded" and session.get("payment_status") != "paid":
+    if (
+        event["type"] == "checkout.session.async_payment_succeeded"
+        and session.get("payment_status") != "paid"
+    ):
         raise ApiError("PAYMENT_MISMATCH", 400)
     metadata = session.get("metadata") or {}
     order_id, user_id = metadata.get("order_id"), metadata.get("user_id")
-    if not order_id or not user_id or session.get("client_reference_id") != order_id or session.get("currency") != "thb" or type(session.get("amount_total")) is not int:
+    if (
+        not order_id
+        or not user_id
+        or session.get("client_reference_id") != order_id
+        or session.get("currency") != "thb"
+        or type(session.get("amount_total")) is not int
+    ):
         raise ApiError("PAYMENT_MISMATCH", 400)
     order_id, user_id = v.uuid(order_id), v.uuid(user_id)
-    rows, _ = db().select("orders", admin=True, params={"select": "user_id,payment_method", "id": "eq." + order_id, "limit": "1"})
+    rows, _ = db().select(
+        "orders",
+        admin=True,
+        params={"select": "user_id,payment_method", "id": "eq." + order_id, "limit": "1"},
+    )
     order = single(rows)
     if order["user_id"] != user_id or metadata.get("checkout_method") != order["payment_method"]:
         raise ApiError("PAYMENT_MISMATCH", 400)
     intent = session.get("payment_intent")
-    db().rpc("apply_stripe_event", {"p_event_id": event["id"], "p_event_type": event["type"], "p_order_id": order_id, "p_session_id": session["id"], "p_amount": session["amount_total"], "p_currency": session["currency"], "p_payment_intent": intent if isinstance(intent, str) else (intent or {}).get("id")})
+    db().rpc(
+        "apply_stripe_event",
+        {
+            "p_event_id": event["id"],
+            "p_event_type": event["type"],
+            "p_order_id": order_id,
+            "p_session_id": session["id"],
+            "p_amount": session["amount_total"],
+            "p_currency": session["currency"],
+            "p_payment_intent": intent if isinstance(intent, str) else (intent or {}).get("id"),
+        },
+    )
     return jsonify(received=True)
 
 

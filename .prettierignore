@@ -1,0 +1,7 @@
+node_modules/
+.venv/
+legacy/
+artifacts/
+templates/
+supabase/
+tests/package-lock.json

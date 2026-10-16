@@ -32,7 +32,7 @@ Mr. Wirun Earmvorakul ระยะเวลาประมาณ 5 ถึง 7 �
 
 ## สไลด์ 8
 
-35 วินาที แสดงคำสั่ง python -B -m unittest discover -s tests -p test_*.py และ npm --prefix tests test รุ่น 16 ตุลาคม 2026 ผ่าน Python 52 และ Node 31 กรณี รวม 83 กรณี ครอบคลุมธุรกรรม/RLS, Customer Service, สิทธิ์แต่งแอป, PWA และแบบจำลองคิว อย่าอ้างว่าปราศจากข้อผิดพลาด Security advisor ไม่พบปัญหา RLS ของ Log แต่ยังมีคำเตือน Leaked Password Protection ที่เจ้าของบัญชีต้องตรวจตั้งค่า ดู docs/ACTIVITY_LOGS.md การตรวจนี้ไม่ใช่การตรวจเจาะระบบเต็มรูปแบบ
+35 วินาที แสดงคำสั่ง python scripts/check.py รุ่น QC วันที่ 16 ตุลาคม 2026 ผ่าน Python 55 และ Node 41 กรณี รวม 96 กรณี พร้อม lint, formatter, syntax และ template checks ครอบคลุมธุรกรรม/RLS, Customer Service, สิทธิ์แต่งแอป, การล้างข้อมูลเมื่อออกจากระบบ, PWA และแบบจำลองคิว อย่าอ้างว่าปราศจากข้อผิดพลาด Security advisor ไม่พบปัญหา RLS ของ Log แต่ยังมีคำเตือน Leaked Password Protection ที่เจ้าของบัญชีต้องตรวจตั้งค่า ดู docs/ACTIVITY_LOGS.md การตรวจนี้ไม่ใช่การตรวจเจาะระบบเต็มรูปแบบ
 
 ## สไลด์ 9
 

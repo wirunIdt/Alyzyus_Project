@@ -1,354 +1,2988 @@
 <!doctype html>
 <html lang="th">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#edf4fb">
-  <title>สำนักงานคณะ: นักศึกษายื่นคำร้อง</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{color-scheme:light;--bg:#f0f5fb;--panel:#fff;--ink:#142e50;--muted:#697b91;--line:#e3ebf4;--blue:#2566b5;--orange:#ee9536;--green:#287257;--soft:#edf4fc;--shadow:0 10px 32px #193b6010}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 'Noto Sans Thai',system-ui,sans-serif}button,input,select{font:inherit}button,select{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #69a8e8;outline-offset:3px}button{color:inherit}button:disabled{cursor:default;opacity:.55}button svg{width:17px;height:17px;flex:none;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}.shell{max-width:1480px;margin:auto;padding:30px 38px 22px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:24px}.eyebrow{display:flex;align-items:center;gap:8px;color:#6685a5;font-size:10px;letter-spacing:.18em;font-weight:700;margin-bottom:6px}.eyebrow i{height:7px;width:7px;border-radius:50%;background:var(--blue)}h1{margin:0;font-weight:700;font-size:clamp(23px,2.6vw,32px);letter-spacing:-.04em;line-height:1.45}.description{margin:8px 0 0;max-width:820px;color:var(--muted);font-size:12px}.actions{display:flex;gap:8px;padding-top:8px;flex:none}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line);background:var(--panel);padding:9px 14px;border-radius:10px;font-size:12px;font-weight:600;transition:background .2s,transform .2s;white-space:nowrap}.btn:hover{background:var(--soft)}.btn:active{transform:translateY(1px)}.btn.primary{background:var(--ink);border-color:var(--ink);color:white}.btn.primary:hover{background:#244768}.modebar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.tabs{display:flex;gap:4px;padding:4px;border:1px solid var(--line);background:#e8eff7;border-radius:12px}.tabs button{border:0;border-radius:8px;padding:7px 17px;background:transparent;color:var(--muted);font-size:12px;font-weight:600}.tabs .active{background:var(--panel);box-shadow:0 2px 5px #243d5910;color:var(--ink)}.mode-note{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:7px}.mode-note::before{content:'';width:6px;height:6px;background:#5e9edb;border-radius:50%}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.metric{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:17px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden}.metric .caption{font-size:11px;font-weight:500;color:var(--muted)}.metric .value{font-size:31px;font-weight:700;line-height:1.35;letter-spacing:-.035em;margin-top:7px;min-height:42px}.metric .value small{font-size:12px;font-weight:500;letter-spacing:0;margin-left:5px}.metric .note{font-size:10px;color:var(--muted);margin-top:4px;min-height:17px}.metric .mark{position:absolute;right:17px;top:17px;background:var(--soft);width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#4e7aa5;font-size:14px}.metric.orange{background:#fff9f1;border-color:#f5dfc4}.metric.orange .value{color:#c26e22;font-size:20px;padding-top:10px}.metric.orange .mark{background:#f9ead6;color:#c8792b}.main{display:grid;grid-template-columns:minmax(0,1fr) 292px;gap:18px}.scene-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);min-width:0}.scene-head{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}.scene-title{font-size:12px;font-weight:600;display:flex;gap:8px;align-items:center}.scene-title i{height:6px;width:6px;border-radius:50%;background:#7cbb92}.clock{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}.clock strong{font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.03em}.clock svg{height:15px;width:15px;stroke:currentColor;fill:none;stroke-width:1.7}.viewport{position:relative;background:#edf4fc;height:470px;min-height:350px;overflow:hidden;isolation:isolate}.viewport canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}.viewport canvas:active{cursor:grabbing}.scene-tools{position:absolute;top:13px;left:14px;right:14px;display:flex;flex-wrap:wrap;gap:5px;z-index:3}.scene-tools .btn{padding:7px 9px;box-shadow:0 2px 8px #183a5910;backdrop-filter:blur(6px);background:#ffffffdf;font-size:10px;border-color:#dce7f2}.scene-tools .btn.active{color:var(--blue);border-color:#a7c7e8;background:#f3f8ff}.scene-hint{position:absolute;bottom:12px;left:16px;font-size:9px;color:#7890a9;background:#ffffffbc;padding:4px 8px;border-radius:6px;pointer-events:none}.stage-label{position:absolute;left:0;top:0;transform:translate(-50%,-100%);background:#ffffffed;border:1px solid #dbe6f2;padding:6px 10px;border-radius:9px;text-align:center;box-shadow:0 3px 12px #14365115;pointer-events:none;white-space:nowrap;z-index:2;line-height:1.5;font-size:10px;min-width:90px}.stage-label::after{content:'';position:absolute;left:calc(50% - 3px);bottom:-4px;width:6px;height:6px;background:#fff;transform:rotate(45deg);border-bottom:1px solid #dbe6f2;border-right:1px solid #dbe6f2}.stage-label b{display:block;font-size:11px;font-weight:600}.stage-label small{color:var(--muted);font-size:9px}.stage-label.congested{border-color:#f1bb79;background:#fff5e7}.stage-label.congested small{color:#ba6b22}.stage-label.current{border-color:#eeaf5d;background:#fff8e9}.stage-label.done{border-color:#b8dccb}.scene-foot{padding:13px 18px 14px;display:flex;flex-wrap:wrap;gap:10px 17px;align-items:center;border-top:1px solid var(--line)}.legend-item{font-size:10px;color:var(--muted);display:flex;gap:6px;align-items:center}.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}.capacity-note{font-size:10px;color:var(--muted);padding:0 18px 10px;display:none}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:21px 21px 17px}.panel-header{display:flex;justify-content:space-between;align-items:center;gap:8px}.panel h2{font-size:14px;margin:0;font-weight:700}.panel-tag{background:var(--soft);color:#7394b5;padding:2px 7px;border-radius:5px;font-size:8px;letter-spacing:.08em;font-weight:700}.panel-sub{font-size:10px;color:var(--muted);margin:7px 0 20px}.control{padding:15px 0 17px;border-top:1px solid var(--line)}.control-header{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;font-weight:600}.control-value{min-width:36px;text-align:center;background:var(--soft);padding:2px 8px;border-radius:6px;color:var(--blue);font-size:13px;font-weight:700}.control input{display:block;width:100%;margin:16px 0 10px;accent-color:var(--blue);height:4px;cursor:pointer}.range-ends{display:flex;justify-content:space-between;line-height:1;font-size:8px;color:#98a8b9}.control p{font-size:9px;color:var(--muted);margin:10px 0 0;line-height:1.7}.control.speed{padding-bottom:10px}.panel-callout{background:var(--soft);border-radius:10px;padding:12px;margin-top:10px;font-size:9px;color:var(--muted);line-height:1.75}.panel-callout b{display:block;color:#3a638b;margin-bottom:2px;font-size:10px}.footer{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 2px 0;font-size:9px;color:#8ca0b6}.footer span:last-child{letter-spacing:.08em;font-size:8px}.error{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#edf4fc;padding:35px}.error strong{font-size:19px;margin-bottom:8px}.error p{font-size:12px;color:var(--muted);max-width:360px}.error[hidden],.product-only[hidden],.office-only[hidden],[hidden]{display:none!important}.error button{margin-top:12px}.status-message{margin-bottom:18px;padding:10px 15px;background:#fff5e7;border:1px solid #f3ddbc;border-radius:10px;color:#92642d;font-size:11px}.status-message.live{background:#edf7f2;border-color:#cde6d8;color:#38745b}.product-select{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);padding:8px;font-size:11px;margin-bottom:15px}.journey{list-style:none;padding:0;margin:0}.journey li{position:relative;display:flex;align-items:center;gap:10px;font-size:11px;padding:12px 0;color:#95a4b4}.journey li::before{content:'';position:absolute;left:12px;top:-13px;height:25px;width:1px;background:var(--line)}.journey li:first-child::before{display:none}.journey .step-num{display:grid;place-items:center;width:25px;height:25px;flex:none;border:1px solid var(--line);border-radius:50%;font-size:9px;background:var(--panel);z-index:1}.journey li.done{color:var(--green)}.journey li.done .step-num{background:#edf7f1;border-color:#c9e2d4}.journey li.current{color:#c0772b;font-weight:700}.journey li.current .step-num{background:#fff1dd;border-color:#f0cf9f}.item-list{margin:13px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:10px}.item-list h3{font-size:11px;margin:0 0 8px}.item-row{display:flex;justify-content:space-between;gap:10px;color:var(--muted);padding:4px 0}.item-row span:first-child{overflow-wrap:anywhere}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.dark{--bg:#122338;--panel:#1a2f46;--ink:#e9f1fa;--muted:#a0b5c9;--line:#2b435c;--soft:#243d57;--shadow:0 10px 32px #00000015}.dark .tabs{background:#14283e}.dark .metric.orange{background:#392f26;border-color:#654b2f}.dark .metric.orange .value{color:#efb567}.dark .btn.primary{background:#e4edf7;color:#153453;border-color:#e4edf7}.dark .stage-label{background:#fcfdff;color:#173a5c}.dark .scene-tools .btn{color:#163653}.dark .scene-tools .btn.active{color:#2566b5}.dark .status-message.live{background:#1b4336;color:#c9eddd;border-color:#2b6953}.dark .status-message{background:#3c3229;color:#f2ce9f;border-color:#6d5233}.dark .journey li.current{color:#e7b774}.dark .journey li.done{color:#8dc5ab}.dark .journey li.current .step-num{background:#483723}.dark .journey li.done .step-num{background:#284b3f}
-    @media(min-width:1500px){.viewport{height:560px}}@media(max-width:1100px){.shell{padding:23px}.main{grid-template-columns:minmax(0,1fr) 260px}.panel{padding:18px}.viewport{height:455px}.stage-label{min-width:76px;padding:5px 7px}.stage-label b{font-size:10px}.metrics{gap:10px}.metric{padding:15px}.metric .mark{right:13px}.description{max-width:620px}}@media(max-width:850px){.top{display:block;margin-bottom:17px}.actions{padding-top:16px}.main{grid-template-columns:1fr}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}.controls .control:first-child{border-top:0}.controls .control:nth-child(2){border-top:0}.panel-sub{margin-bottom:8px}.viewport{height:500px}.panel-callout{margin-top:3px}.metrics .value{font-size:27px}.metrics .orange .value{font-size:16px}.metric .mark{display:none}.footer{font-size:8px}.product-panel{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}.product-panel .panel-header,.product-panel .panel-sub,.product-panel .product-select{grid-column:1/-1}.product-panel .journey{grid-row:4/6}.product-panel .item-list{margin-top:0}.mode-note{max-width:260px;text-align:right}}@media(max-width:540px){.shell{padding:19px 13px}.top{margin-bottom:14px}h1{font-size:23px}.description{font-size:11px;line-height:1.8}.metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:13px}.metric{border-radius:12px;padding:12px 14px}.metric .caption{font-size:10px}.metric .value{min-height:33px;font-size:26px;margin-top:4px}.metric .note{font-size:9px}.metric.orange .value{padding-top:5px;font-size:16px}.modebar{align-items:flex-start;margin-bottom:13px;gap:8px}.tabs button{padding:6px 10px;font-size:11px}.mode-note{max-width:135px;font-size:8px;padding-top:3px}.viewport{height:430px;min-height:320px}.scene-head{padding:12px 14px}.clock strong{font-size:16px}.clock>span{display:none}.scene-tools{left:9px;top:9px;gap:3px}.scene-tools .btn{padding:6px 7px;font-size:9px}.scene-tools .btn svg{height:13px;width:13px}.stage-label{min-width:57px;font-size:8px;padding:4px 5px;border-radius:7px}.stage-label b{font-size:9px;max-width:78px;overflow:hidden;text-overflow:ellipsis}.stage-label small{font-size:8px}.scene-foot{gap:9px 12px;padding:11px 14px}.legend-item{font-size:9px}.panel{padding:17px}.controls{gap:0 17px}.control-header{font-size:10px}.control-value{font-size:12px;min-width:31px;padding:1px 6px}.control p{font-size:8px}.footer{display:block;line-height:1.9}.footer span{display:block}.product-panel{display:block}.product-panel .item-list{margin-top:10px}.journey{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}.journey li{flex-direction:column;text-align:center;gap:4px;font-size:8px;align-items:center;padding:5px 0}.journey li::before{left:-50%;top:17px;width:100%;height:1px}.journey .step-num{height:25px;width:25px}.item-row{font-size:10px}.scene-hint{font-size:8px;bottom:8px;left:10px}}
-    .main{grid-template-columns:minmax(0,1fr)}.product-mode .main{grid-template-columns:minmax(0,1fr) 292px}.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 30px}.control{padding-bottom:10px}.office-only.panel .panel-sub{margin-bottom:10px}.office-only.panel .panel-callout{margin-top:0}.viewport{height:520px}.product-mode .viewport{height:470px}@media(max-width:1100px){.product-mode .main{grid-template-columns:minmax(0,1fr) 260px}.controls{gap:0 20px}}@media(max-width:850px){.product-mode .main{grid-template-columns:1fr}.controls{grid-template-columns:repeat(2,minmax(0,1fr))}.viewport,.product-mode .viewport{height:500px}}@media(max-width:540px){.viewport,.product-mode .viewport{height:430px}.controls{gap:0 17px}}
-    @media(max-width:540px){.stage-label{width:60px;min-width:60px;padding:4px 3px}.stage-label b{max-width:52px}.stage-label small{display:block;max-width:52px;overflow:hidden;text-overflow:ellipsis}}
-  </style>
-</head>
-<body>
-<main class="shell">
-  <header class="top"><div><div class="eyebrow"><i></i><span id="eyebrow">FACULTY OFFICE / QUEUE LAB</span></div><h1 id="title">สำนักงานคณะ: นักศึกษายื่นคำร้อง</h1><p class="description" id="description">ลากเพื่อหมุนอาคาร เลื่อนล้อเมาส์หรือถ่างสองนิ้วเพื่อซูม แต่ละตัวคือนักศึกษา 1 คนที่กำลังเดินผ่าน 5 จุดบริการ</p></div><div class="actions"><button class="btn primary office-only" id="pause"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg><span>หยุดชั่วคราว</span></button><button class="btn office-only" id="reset"><svg viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></svg><span>เริ่มวันใหม่</span></button><button class="btn product-only" hidden id="refresh"><svg viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></svg><span>รีเฟรชข้อมูล</span></button></div></header>
-  <div class="modebar"><div class="tabs" role="tablist" aria-label="โหมดแสดงผล"><button id="office-tab" class="active" role="tab" aria-selected="true">คิวสำนักงาน</button><button id="product-tab" role="tab" aria-selected="false">เส้นทางสินค้า</button></div><div class="mode-note" id="mode-note">แบบจำลองเพื่อสำรวจผลของจำนวนเจ้าหน้าที่</div></div>
-  <div id="product-message" class="status-message product-only" role="status" hidden></div>
-  <section class="metrics" aria-label="สรุปข้อมูล"><article class="metric"><span class="caption" id="kpi-title-0">อยู่ในสำนักงานตอนนี้</span><span class="mark">♙</span><div class="value" id="kpi-0">0<small>คน</small></div><div class="note" id="kpi-note-0">รวมกำลังเดิน รอคิว และรับบริการ</div></article><article class="metric"><span class="caption" id="kpi-title-1">แจ้งผลแล้วในวันนี้</span><span class="mark">✓</span><div class="value" id="kpi-1">0<small>คน</small></div><div class="note" id="kpi-note-1">ผ่านครบทั้ง 5 จุดและออกจากอาคาร</div></article><article class="metric"><span class="caption" id="kpi-title-2">เวลาเฉลี่ยต่อเรื่อง</span><span class="mark">◷</span><div class="value" id="kpi-2">—<small>นาที</small></div><div class="note" id="kpi-note-2">ตั้งแต่เข้าสำนักงานจนออกจากอาคาร</div></article><article class="metric orange"><span class="caption" id="kpi-title-3">คอขวดตอนนี้</span><span class="mark">↗</span><div class="value" id="kpi-3">ยังไม่มีคิว</div><div class="note" id="kpi-note-3">คิวรอ 0 คน</div></article></section>
-  <div class="main"><section class="scene-card"><div class="scene-head"><span class="scene-title"><i id="running-dot"></i><span id="scene-title">ภาพจำลองสำนักงาน · 5 จุดบริการ</span></span><div class="clock"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="clock-caption">เวลาจำลอง</span><strong id="clock">08:00</strong></div></div><div class="viewport" id="viewport" role="region" aria-label="สำนักงานสามมิติ หมุนและซูมด้วยเมาส์หรือสัมผัส"><div class="scene-tools"><button class="btn" id="camera-default" aria-label="มุมมองเริ่มต้น"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3Z M9 20v-7h6v7"/></svg><span id="default-label">มุมมองเริ่มต้น</span></button><button class="btn" id="camera-top" aria-label="มองจากด้านบน"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/></svg><span id="top-label">มองจากด้านบน</span></button><button class="btn" id="camera-auto" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 11a8 8 0 0 1 14-5l2 2M20 3v5h-5M20 13A8 8 0 0 1 6 19l-2-2M4 21v-4h5"/></svg><span id="auto-label">หมุนอัตโนมัติ</span></button><button class="btn product-only" id="product-motion" aria-pressed="true" hidden><span id="motion-label">การเคลื่อนไหว</span></button></div><div class="scene-hint" id="scene-hint">ลากเพื่อหมุน · เลื่อนเพื่อซูม</div><div class="error" id="scene-error" hidden><strong>เปิดภาพ 3D ไม่ได้</strong><p>ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและการรองรับ WebGL ของเบราว์เซอร์ แล้วลองโหลดหน้านี้อีกครั้ง</p><button class="btn" onclick="location.reload()">ลองอีกครั้ง</button></div></div><div class="scene-foot" id="legend"><span class="legend-item"><i class="dot" style="background:#3981cd"></i>นักศึกษากำลังเดิน</span><span class="legend-item"><i class="dot" style="background:#ebbe42"></i>นักศึกษารอคิว</span><span class="legend-item"><i class="dot" style="background:#236b50"></i>นักศึกษารับบริการ</span><span class="legend-item"><i class="dot" style="background:#193953"></i>เจ้าหน้าที่ไม่ว่าง</span><span class="legend-item"><i class="dot" style="background:#86b591"></i>เจ้าหน้าที่ว่าง</span><span class="legend-item"><i class="dot" style="background:#ed983f"></i>คิวหนาแน่น</span></div><div class="capacity-note" id="capacity-note"></div></section>
-  <aside class="panel office-only" id="office-panel"><div class="panel-header"><h2>ปรับสถานการณ์</h2><span class="panel-tag">SIMULATION</span></div><p class="panel-sub">ลองเปลี่ยนจำนวนคน แล้วดูว่าคิวไหลอย่างไร</p><div class="controls"><div class="control"><div class="control-header"><label for="arrivals">นักศึกษาเข้าต่อชั่วโมง</label><output class="control-value" id="arrivals-value" for="arrivals">7</output></div><input id="arrivals" type="range" min="1" max="30" value="7"><div class="range-ends"><span>1 คน</span><span>30 คน</span></div><p>ช่วงเปิดภาคเรียนเลื่อนเป็น 18–24</p></div><div class="control"><div class="control-header"><label for="documents">เจ้าหน้าที่ตรวจเอกสาร</label><output class="control-value" id="documents-value" for="documents">1</output></div><input id="documents" type="range" min="1" max="3" value="1"><div class="range-ends"><span>1 คน</span><span>3 คน</span></div><p>เพิ่มแล้วคิวหน้าโต๊ะที่ 2 หายไป</p></div><div class="control"><div class="control-header"><label for="advisors">อาจารย์ที่อยู่ในห้องพัก</label><output class="control-value" id="advisors-value" for="advisors">3</output></div><input id="advisors" type="range" min="0" max="5" value="3"><div class="range-ends"><span>0 คน</span><span>5 คน</span></div><p>ช่วงประชุมหรือสอน จำนวนจะลดลง</p></div><div class="control speed"><div class="control-header"><label for="speed">ความเร็วจำลอง</label><output class="control-value" id="speed-value" for="speed">1×</output></div><input id="speed" type="range" min="1" max="10" value="1"><div class="range-ends"><span>1×</span><span>10×</span></div><p>1× = 1 วินาทีจริง ≈ 4 นาทีจำลอง</p></div></div><div class="panel-callout"><b>เอกสารใช้เวลานานที่สุด</b>คนมาแบบสุ่มตามอัตรา Poisson เวลาบริการแต่ละคนต่างกัน เมื่อเจ้าหน้าที่ลดลง งานที่เริ่มแล้วจะทำต่อจนเสร็จ</div></aside>
-  <aside class="panel product-panel product-only" id="product-panel" hidden><div class="panel-header"><h2 id="product-panel-title">คำสั่งซื้อของคุณ</h2><span class="panel-tag" id="product-tag">DEMO</span></div><p class="panel-sub" id="product-sub"></p><label class="sr-only" for="order-select" id="order-select-label">เลือกคำสั่งซื้อ</label><select class="product-select" id="order-select" hidden></select><ol class="journey" id="journey"></ol><div class="item-list" id="item-list"></div><div class="panel-callout" id="product-callout"></div></aside></div>
-  <footer class="footer"><span id="footer-note">เปิดรับ 08:00–16:00 · หลังปิดสำนักงานให้บริการคนที่เข้ามาแล้วจนเสร็จ</span><span id="footer-brand">A SMALL MODEL. A CLEARER PICTURE.</span></footer>
-</main>
-<script>
-// ปรับค่าของแบบจำลองได้จากวัตถุนี้ โดยไม่ต้องแก้โค้ดส่วนอื่น
-const PARAMETERS = {
-  arrivalsPerHour: 7, documentStaff: 1, advisorStaff: 3, speed: 1,
-  serviceMeanMinutes: [3.5, 12, 6, 4.5, 2.5],
-  serviceVariation: 0.48, openingMinutes: 8 * 60, closingMinutes: 16 * 60,
-  walkingMinutesPerUnit: 0.18, maxVisiblePeople: 80, maxVisibleQueuePerStage: 12, fps: 30,
-  pixelRatio: 1.5, mobilePixelRatio: 1, shadowMapSize: 1024, productFps: 18,
-  congestionThreshold: 5, cdn: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js'
-};
-(() => {
-  'use strict';
-  const $ = id => document.getElementById(id);
-  const query = new URLSearchParams(location.search);
-  let storedLocale = 'th', storedTheme = 'light';
-  try { storedLocale = localStorage.getItem('alyzyus-locale') || 'th'; storedTheme = localStorage.getItem('alyzyus-theme') || 'light'; } catch (_) {}
-  const locale = ['th','en','zh'].includes(query.get('locale')) ? query.get('locale') : (['th','en','zh'].includes(storedLocale) ? storedLocale : 'th');
-  const texts = {
-    th:{productTitle:'เส้นทางสินค้า: จากร้านถึงมือคุณ',productDesc:'ลากเพื่อหมุน เลื่อนล้อเมาส์หรือถ่างสองนิ้วเพื่อซูม ดูขั้นตอนจากสถานะคำสั่งซื้อจริงของคุณ',office:'คิวสำนักงาน',product:'เส้นทางสินค้า',modeNote:'แผนภาพกระบวนการ · ไม่ใช่ตำแหน่งพัสดุแบบสด',scene:'เส้นทางสินค้า · 5 ขั้นตอน',clock:'อัปเดตเมื่อ',default:'มุมมองเริ่มต้น',top:'มองจากด้านบน',auto:'หมุนอัตโนมัติ',hint:'ลากเพื่อหมุน · เลื่อนเพื่อซูม',refresh:'รีเฟรชข้อมูล',steps:['รับคำสั่งซื้อ','ยืนยันคำสั่งซื้อ','เตรียมสินค้า','จัดส่งสินค้า','ส่งถึงลูกค้า'],state:'สถานะคำสั่งซื้อ',units:'สินค้าในออเดอร์',check:'ตรวจข้อมูลล่าสุด',queue:'ออเดอร์ขั้นตอนเดียวกัน',unit:'ชิ้น',orderUnit:'รายการ',items:'สินค้าในคำสั่งซื้อ',selected:'เลือกคำสั่งซื้อ',demo:'ตัวอย่างเพื่ออธิบายขั้นตอนเท่านั้น ไม่มีคำสั่งซื้อจริงและไม่มีการเปลี่ยนสถานะอัตโนมัติ',live:'ข้อมูลจริงจากคำสั่งซื้อที่บัญชีนี้มีสิทธิ์เข้าถึง กดรีเฟรชเพื่ออ่านสถานะล่าสุด',loading:'กำลังอ่านคำสั่งซื้อ…',denied:'เข้าสู่ระบบด้วยบัญชีเจ้าของคำสั่งซื้อหรือผู้ดูแลที่มีสิทธิ์ เพื่อดูข้อมูลจริง',notFound:'ไม่พบคำสั่งซื้อนี้ในข้อมูลที่บัญชีมีสิทธิ์เข้าถึง',failed:'อ่านข้อมูลไม่สำเร็จ กดรีเฟรชเพื่อลองอีกครั้ง',file:'ข้อมูลจริงต้องเปิดผ่านเว็บไซต์ร้านและเข้าสู่ระบบก่อน',cancelled:'คำสั่งซื้อถูกยกเลิก',unknown:'ยังไม่มีข้อมูลสถานะที่รองรับ',empty:'ไม่มีข้อมูลคำสั่งซื้อที่แสดงได้',panel:'รายละเอียดคำสั่งซื้อ',diagram:'แผนภาพนี้แสดงขั้นตอนจากสถานะในร้าน การเคลื่อนไหวเป็นเพียงภาพประกอบ ไม่ใช่ GPS หรือการติดตามพัสดุ',loaded:'ออเดอร์ที่โหลดและมีสิทธิ์ดู',footer:'แสดงเฉพาะคำสั่งซื้อที่ API อนุญาต · จำนวนออเดอร์นับจากรายการที่โหลดได้',current:'ขั้นตอนปัจจุบัน',done:'ผ่านขั้นตอนนี้แล้ว',future:'ขั้นตอนถัดไป',time:'เวลาอ่านข้อมูลจากเซิร์ฟเวอร์',demoItem:'สินค้าตัวอย่าง',noItems:'ไม่มีรายการสินค้า',source:'ข้อมูลสถานะจากร้าน',note:'สถานะเปลี่ยนเมื่อร้านอัปเดตข้อมูล',ready:'ตัวอย่าง',back:'รับคำสั่งซื้อ',notSelected:'ยังไม่มีคำสั่งซื้อ',actual:'ACTUAL ORDER',pause:'หยุดชั่วคราว',resume:'เล่นต่อ'},
-    en:{productTitle:'Product journey: from store to you',productDesc:'Drag to rotate. Scroll or pinch to zoom. Explore the process using your actual order status.',office:'Office queue',product:'Product journey',modeNote:'Process diagram · not a live parcel location',scene:'Product journey · 5 stages',clock:'Checked at',default:'Default view',top:'Top view',auto:'Auto rotate',hint:'Drag to rotate · scroll to zoom',refresh:'Refresh data',steps:['Order received','Order confirmed','Preparing items','In delivery','Delivered'],state:'Order status',units:'Items in this order',check:'Last data check',queue:'Orders at this stage',unit:'items',orderUnit:'orders',items:'Items in the order',selected:'Choose an order',demo:'Illustrative example only. No real order and no automatic status changes.',live:'Real data from orders this account is allowed to access. Refresh to check the latest status.',loading:'Loading your order…',denied:'Sign in as the order owner or an authorized administrator to see real data.',notFound:'This order was not found in the records this account can access.',failed:'Could not load the data. Refresh to try again.',file:'Open through the store website and sign in to load real data.',cancelled:'Order cancelled',unknown:'No supported status available',empty:'No order data to display',panel:'Order details',diagram:'This diagram reflects the store’s order status. Motion is illustrative, not GPS or live parcel tracking.',loaded:'Loaded authorized orders',footer:'Only API-authorized orders are shown · counts cover the loaded records',current:'Current stage',done:'Stage passed',future:'Next stage',time:'Time the server data was checked',demoItem:'Example product',noItems:'No items available',source:'Status from the store',note:'Status changes when the store updates the order',ready:'Example',back:'Order received',notSelected:'No selected order',actual:'ACTUAL ORDER',pause:'Pause',resume:'Resume'},
-    zh:{productTitle:'商品旅程：从商店到您手中',productDesc:'拖动旋转，滚轮或双指缩放。通过真实订单状态查看处理流程。',office:'办公室排队',product:'商品旅程',modeNote:'流程示意图 · 非包裹实时位置',scene:'商品旅程 · 五个阶段',clock:'检查时间',default:'默认视角',top:'俯视',auto:'自动旋转',hint:'拖动旋转 · 滚轮缩放',refresh:'刷新数据',steps:['收到订单','确认订单','准备商品','配送中','已送达'],state:'订单状态',units:'订单商品数量',check:'最近数据检查',queue:'相同阶段的订单',unit:'件',orderUnit:'个订单',items:'订单中的商品',selected:'选择订单',demo:'仅为流程演示。没有真实订单，状态不会自动推进。',live:'数据来自此账户有权查看的真实订单。刷新可读取最新状态。',loading:'正在读取订单…',denied:'请使用订单所有者或获授权的管理员账户登录，以查看真实数据。',notFound:'此账户可访问的数据中未找到该订单。',failed:'无法加载数据，请刷新重试。',file:'请通过商店网站打开并登录，以加载真实数据。',cancelled:'订单已取消',unknown:'暂无可显示的状态',empty:'暂无可显示的订单数据',panel:'订单详情',diagram:'本图根据商店的订单状态显示流程。动画仅作示意，不代表 GPS 或包裹实时位置。',loaded:'已加载的获授权订单',footer:'仅显示 API 授权的订单 · 数量基于已加载的数据',current:'当前阶段',done:'已通过此阶段',future:'下一阶段',time:'从服务器读取数据的时间',demoItem:'示例商品',noItems:'暂无商品',source:'商店提供的状态',note:'商店更新订单后，状态才会改变',ready:'示例',back:'收到订单',notSelected:'未选择订单',actual:'真实订单',pause:'暂停',resume:'继续'}
-  };
-  const t = texts[locale];
-  const officeNames = ['รับคำร้อง','ตรวจเอกสาร','อ.ที่ปรึกษา','คณบดีอนุมัติ','แจ้งผล'];
-  const stageX = [-7.6,-3.8,0,3.8,7.6];
-  const statusStage = Object.freeze({pending:0,confirmed:1,processing:2,shipped:3,delivered:4});
-  const isProductQuery = ['product','live','demo'].includes(query.get('mode'));
-  let mode = isProductQuery ? 'product' : 'office';
-  let selectedOrderKey = query.get('order') || '', productKey = query.get('product') || '', orders = [], selectedOrder = null, fetchedAt = null, realError = '', fetchSerial = 0, dataStarted = false, previewProduct = null;
-  const previewTexts={th:{state:'ขั้นตอนตัวอย่าง',title:'ตัวอย่างเส้นทางสินค้า',message:'ภาพอธิบายเส้นทางสินค้าก่อนสั่งซื้อ ไม่ใช่สถานะของคำสั่งซื้อจริง',missing:'ยังอ่านสินค้านี้ไม่ได้ จึงแสดงกล่องตัวอย่างเพื่ออธิบายกระบวนการ',footer:'ภาพอธิบายกระบวนการก่อนสั่งซื้อ · ไม่ใช่ข้อมูลสถานะคำสั่งซื้อ'},en:{state:'Illustrative stage',title:'Product journey preview',message:'A process illustration before checkout, not an actual order status.',missing:'This product could not be loaded. An example box illustrates the process.',footer:'Process illustration before checkout · no actual order status'},zh:{state:'示例阶段',title:'商品旅程预览',message:'下单前的流程示意，不代表真实订单状态。',missing:'暂时无法读取该商品，因此显示示例包裹说明流程。',footer:'下单前的流程示意 · 非真实订单状态'}};
-  const previewText=previewTexts[locale];
-  const previewUi={th:{description:'ลากเพื่อหมุน เลื่อนหรือถ่างสองนิ้วเพื่อซูม สำรวจ 5 ขั้นตอนของสินค้าก่อนสั่งซื้อ',units:'สินค้าในตัวอย่าง',items:'สินค้าที่นำมาอธิบาย',panel:'สำรวจขั้นตอนสินค้า',diagram:'การเคลื่อนไหวเป็นภาพประกอบเท่านั้น ไม่มีคำสั่งซื้อหรือสถานะการชำระเงินจริง'},en:{description:'Drag to rotate. Scroll or pinch to zoom. Explore five product stages before checkout.',units:'Example items',items:'Items in this illustration',panel:'Explore the process',diagram:'Motion is illustrative. There is no actual order or payment status in this preview.'},zh:{description:'拖动旋转，滚轮或双指缩放。在下单前查看商品的五个处理阶段。',units:'示例商品数量',items:'流程示意中的商品',panel:'查看商品流程',diagram:'动画仅作示意。此预览没有真实订单或付款状态。'}}[locale];
-  const requestedReal = () => !!selectedOrderKey || query.get('mode') === 'live';
-  let renderer, scene, camera, officeGroup, productGroup, peopleBody, peopleHead, currentBox, stagePlatforms = [], labels = [], servers = [], frameId = 0;
-  let reducedMotion=false,productMotion=true,productActors=[],productTruck=null,currentProductStage=-1;
-  let initialized = false, paused = false, automatic = false, inView = true, lastFrame = 0, lastUi = 0, productAnimationUntil = 0;
-  let cameraState = {theta:.38,phi:.79,radius:26}, cameraGoal = {...cameraState};
-  const cameraTarget = {x:0,y:.3,z:0};
-  let resources = new Set(), studentId = 0, students = [], queues = [[],[],[],[],[]], simMinute = PARAMETERS.openingMinutes, nextArrival = 0, completed = 0, totalDuration = 0;
-  const config = {arrivals:PARAMETERS.arrivalsPerHour,documents:PARAMETERS.documentStaff,advisors:PARAMETERS.advisorStaff,speed:PARAMETERS.speed};
-  const colors = {walk:0x3981cd,queue:0xebbe42,service:0x236b50,busy:0x193953,idle:0x86b591,orange:0xed983f};
-  const svgPause = '<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>';
-  const svgPlay = '<svg viewBox="0 0 24 24"><path d="m8 5 11 7-11 7Z"/></svg>';
-  const safeCount = value => Math.max(0, Number.isFinite(Number(value)) ? Number(value) : 0);
-  const localizedName = value => typeof value === 'string' ? value : (value && (value[locale] || value.th || value.en || value.zh)) || '';
-  // ตัวเลขสุ่มแบบเอ็กซ์โพเนนเชียลทำให้ช่วงห่างของผู้เข้าเป็นกระบวนการ Poisson
-  function arrivalInterval(rate) { return -Math.log(Math.max(1e-12, 1-Math.random())) * 60 / Math.max(1, rate); }
-  function serviceTime(stage) { const mean = PARAMETERS.serviceMeanMinutes[stage]; return Math.max(.25, mean * (1 + PARAMETERS.serviceVariation * (Math.random()+Math.random()-1))); }
-  function setText(id, value) { $(id).textContent = value; }
-  function setKpi(index, value, unit='') { const element = $('kpi-'+index); element.replaceChildren(document.createTextNode(String(value))); if (unit) { const small=document.createElement('small');small.textContent=unit;element.append(small); } }
-  function showError(detail) { $('scene-error').hidden=false; if (detail) $('scene-error').querySelector('p').textContent=detail; }
-  function resource(value) { resources.add(value); return value; }
-  function material(color, options={}) { return resource(new THREE.MeshStandardMaterial({color,roughness:.76,metalness:0,...options})); }
-  const geo = {}, mats = {};
-  function mesh(shape, mat, x,y,z,sx=1,sy=1,sz=1,parent=officeGroup) { const item = new THREE.Mesh(shape,mat);item.position.set(x,y,z);item.scale.set(sx,sy,sz);item.castShadow=true;item.receiveShadow=true;parent.add(item);return item; }
-  function box(mat,x,y,z,sx,sy,sz,parent) { return mesh(geo.box,mat,x,y,z,sx,sy,sz,parent); }
-  function plant(x,z,parent=officeGroup) { mesh(geo.cylinder,mats.pot,x,.22,z,.38,.42,.38,parent);mesh(geo.sphere,mats.plant,x,.69,z,.56,.56,.56,parent);mesh(geo.sphere,mats.plantLight,x-.17,.97,z-.05,.35,.34,.35,parent); }
-  function makeStaff(stage, slot) {
-    const group = new THREE.Group();officeGroup.add(group);
-    const body = mesh(geo.capsule,mats.idle,0,.52,-.63,1,1,1,group);mesh(geo.head,mats.skin,0,.98,-.63,1,1,1,group);
-    box(mats.desk,0,.56,0,stage===2?.5:stage===1?.9:1.6,.12,.62,group);
-    box(mats.deskLeg,0,.25,0,.65,.5,.42,group);
-    box(mats.monitor,0,.81,-.12,.28,.25,.04,group);box(mats.screen,0,.81,-.09,.23,.18,.012,group);
-    box(mats.paper,.18,.64,.11,.14,.014,.2,group);
-    const x = stageX[stage] + (stage===1 ? [-.9,0,.9][slot] : stage===2 ? [-1.2,-.6,0,.6,1.2][slot] : 0);
-    group.position.set(x,0,-3.72);
-    const server={stage,slot,x,group,body,student:null,retiring:false};servers.push(server);return server;
-  }
-  function buildOffice() {
-    officeGroup=new THREE.Group();scene.add(officeGroup);
-    box(mats.plinth,0,-.3,0,20.9,.44,13.3);box(mats.floor,0,-.045,0,20.5,.12,12.9);
-    box(mats.navy,0,.8,-6.3,20.5,1.7,.18);box(mats.navy,-10.15,.8,0,.18,1.7,12.6);box(mats.navy,10.15,.8,0,.18,1.7,12.6);
-    box(mats.navy,-5.8,.38,6.3,8.65,.86,.18);box(mats.navy,5.8,.38,6.3,8.65,.86,.18);
-    box(mats.entrance,0,.008,5.8,2.5,.028,1.0);box(mats.path,0,.015,3.1,1.8,.025,4.6);
-    // ห้องที่ปรึกษาและคณบดีมีผนังกั้นและช่องประตูด้านหน้า
-    for (const x of [0,3.8]) { box(mats.partition,x-1.76,.72,-3.83,.1,1.48,4.55);box(mats.partition,x+1.76,.72,-3.83,.1,1.48,4.55);box(mats.partition,x-1.17,.56,-1.56,1.2,1.18,.1);box(mats.partition,x+1.17,.56,-1.56,1.2,1.18,.1);box(mats.doorMark,x,.012,-1.58,1.13,.02,.22); }
-    stageX.forEach((x,index) => {
-      box(mats.queueZone,x,.018,.0,2.62,.023,2.8);
-      for(let c=0;c<3;c++)for(let r=0;r<4;r++)box(mats.queueLine,x+(c-1)*.72,.035,-.78+r*.6,.58,.009,.48);
-      if(index===1)for(let slot=0;slot<3;slot++)makeStaff(index,slot);
-      else if(index===2)for(let slot=0;slot<5;slot++)makeStaff(index,slot);
-      else makeStaff(index,0);
-    });
-    for(const side of [-1,1])for(let row=0;row<2;row++)for(let col=0;col<4;col++){
-      const x=side*(3.2+col*.91),z=3.15+row*1.05;
-      box(mats.chair,x,.32,z,.65,.09,.59);box(mats.chair,x,.65,z-.27,.65,.65,.08);
-      for(const dx of [-.25,.25])box(mats.chairLeg,x+dx,.14,z,.04,.28,.4);
-    }
-    for(const x of [-9,9])for(const z of [-5.2,5.25])plant(x,z);
-    peopleBody=new THREE.InstancedMesh(geo.capsule,mats.people,PARAMETERS.maxVisiblePeople);peopleBody.instanceMatrix.setUsage(THREE.DynamicDrawUsage);peopleBody.castShadow=true;officeGroup.add(peopleBody);
-    peopleHead=new THREE.InstancedMesh(geo.head,mats.skin,PARAMETERS.maxVisiblePeople);peopleHead.instanceMatrix.setUsage(THREE.DynamicDrawUsage);peopleHead.castShadow=true;officeGroup.add(peopleHead);
-    peopleBody.count=peopleHead.count=0;
-  }
-  function productParcel(parent,x,y,z,scale=1) {
-    const group=new THREE.Group();parent.add(group);group.position.set(x,y,z);group.scale.setScalar(scale);
-    box(mats.parcel,0,.35,0,.78,.7,.67,group);box(mats.ribbon,0,.35,0,.1,.712,.68,group);box(mats.ribbon,0,.71,0,.79,.014,.1,group);box(mats.sticker,.23,.36,.341,.18,.18,.01,group);return group;
-  }
-  function buildProduct() {
-    productGroup=new THREE.Group();scene.add(productGroup);
-    box(mats.plinth,0,-.29,0,20.9,.42,8.4,productGroup);box(mats.floor,0,-.045,0,20.5,.12,8,productGroup);
-    box(mats.path,0,.018,.5,17,.025,1.1,productGroup);
-    stageX.forEach((x,i)=>{
-      const pad=mesh(geo.cylinder,mats.blueSoft,x,.14,.25,1.23,.25,1.23,productGroup);stagePlatforms.push(pad);
-      const ring=mesh(geo.ring,mats.pathEdge,x,.025,.25,1.15,1.15,1.15,productGroup);ring.rotation.x=-Math.PI/2;
-      if(i<4)for(let k=0;k<3;k++)box(mats.pathEdge,x+1.45+k*.35,.045,.25,.16,.04,.07,productGroup);
-      if(i===0){box(mats.desk,x,.5,-1.7,1.7,.15,.75,productGroup);box(mats.deskLeg,x,.24,-1.7,1.3,.48,.5,productGroup);box(mats.monitor,x,.87,-1.85,.66,.57,.1,productGroup);box(mats.screen,x,.87,-1.79,.55,.4,.015,productGroup);}
-      if(i===1){box(mats.paper,x,.45,-1.65,.88,.08,1.0,productGroup);box(mats.blueSoft,x,.34,-1.65,1.0,.6,1.18,productGroup);box(mats.paper,x,.69,-1.65,.82,.05,.96,productGroup);for(let n=0;n<3;n++)box(mats.pathEdge,x,.725,-1.9+n*.22,.5,.01,.06,productGroup);}
-      if(i===2){for(const dx of [-.85,.85])box(mats.navy,x+dx,.84,-1.85,.08,1.7,.7,productGroup);for(const y of [.3,.86,1.4]){box(mats.desk,x,y,-1.85,1.76,.07,.75,productGroup);for(const dx of [-.48,.3])productParcel(productGroup,x+dx,y+.05,-1.85,.5);}}
-      if(i===3){const first=productGroup.children.length;box(mats.blue,x-.28,.67,-1.65,1.37,.95,.85,productGroup);box(mats.navy,x+.66,.46,-1.65,.57,.54,.85,productGroup);box(mats.screen,x+.73,.83,-1.65,.36,.28,.82,productGroup);for(const dx of [-.65,.67])for(const dz of [-.4,.4]){const wheel=mesh(geo.cylinder,mats.tire,x+dx,.22,-1.65+dz,.23,.1,.23,productGroup);wheel.rotation.x=Math.PI/2;}const parts=productGroup.children.slice(first);productTruck=new THREE.Group();productGroup.add(productTruck);parts.forEach(part=>productTruck.add(part));}
-      if(i===4){box(mats.house,x,.61,-1.77,1.5,1.2,1.24,productGroup);const roof=mesh(geo.roof,mats.navy,x,1.59,-1.77,1.31,.82,1.14,productGroup);roof.rotation.y=Math.PI/4;box(mats.door,x,.43,-1.13,.36,.87,.025,productGroup);for(const dx of [-.46,.46])box(mats.screen,x+dx,.8,-1.13,.28,.32,.03,productGroup);}
-    });
-    for(const x of [-9,9])plant(x,2.7,productGroup);
-    currentBox=productParcel(productGroup,0,.29,.25,1.15);
-    // จุดแสงใช้รูปทรงร่วมกัน เป็นภาพประกอบกระบวนการ ไม่ใช่สถานะพัสดุ
-    for(let stage=0;stage<4;stage++)for(let slot=0;slot<3;slot++){const dot=mesh(geo.sphere,mats.blue,stageX[stage],.14,.5,.055,.055,.055,productGroup);dot.castShadow=false;dot.receiveShadow=false;productActors.push({dot,stage,slot});}
-    productGroup.visible=false;
-  }
-  function createLabels(){stageX.forEach((_,i)=>{const label=document.createElement('div');label.className='stage-label';label.innerHTML='<b></b><small></small>';$('viewport').append(label);labels.push(label);});}
-  function capacity(stage){return stage===1?config.documents:stage===2?config.advisors:1;}
-  function syncStaff(){for(const server of servers){server.retiring=server.slot>=capacity(server.stage);server.group.visible=!server.retiring||!!server.student;server.body.material=server.student?mats.busy:mats.idle;} }
-  function queuePosition(stage,index){const visibleIndex=Math.min(index,PARAMETERS.maxVisibleQueuePerStage-1);return{x:stageX[stage]+((visibleIndex%3)-1)*.71,z:-.77+Math.floor(visibleIndex/3)*.58};}
-  function makeWalk(student,target,action){
-    const corridor=2.07;
-    let points=[];
-    if(student.z<1.4&&Math.abs(student.x-target.x)>.8)points.push({x:student.x,z:corridor},{x:target.x,z:corridor});
-    else if(student.z>2.5)points.push({x:0,z:corridor},{x:target.x,z:corridor});
-    points.push(target);student.path=points;student.action=action;student.state='walking';
-  }
-  function newStudent(){const student={id:++studentId,x:0,z:6.7,entered:simMinute,stage:0,state:'walking',path:[],action:'queue',server:null,remaining:0,queueAge:0};students.push(student);makeWalk(student,queuePosition(0,queues[0].length),'queue');}
-  function resetSimulation(){students=[];queues=[[],[],[],[],[]];studentId=0;completed=0;totalDuration=0;simMinute=PARAMETERS.openingMinutes;nextArrival=arrivalInterval(config.arrivals);for(const server of servers)server.student=null;paused=false;syncStaff();$('pause').innerHTML=svgPause+'<span>หยุดชั่วคราว</span>';updateOfficeUi();needFrame();}
-  function walkStudent(student,minutes){
-    let distance=minutes/PARAMETERS.walkingMinutesPerUnit;
-    while(distance>0&&student.path.length){const target=student.path[0],dx=target.x-student.x,dz=target.z-student.z,length=Math.hypot(dx,dz);if(length<=distance){student.x=target.x;student.z=target.z;student.path.shift();distance-=length;}else{student.x+=dx/length*distance;student.z+=dz/length*distance;distance=0;}}
-    if(!student.path.length){
-      if(student.action==='queue'){student.state='queued';student.queueAge=simMinute;queues[student.stage].push(student);}
-      else if(student.action==='service'){student.state='service';student.remaining=serviceTime(student.stage);}
-      else{student.state='finished';completed++;totalDuration+=simMinute-student.entered;}
-    }
-  }
-  // สถานะนักศึกษาทุกคนยังคงคำนวณครบ แม้วาดตัวละครได้สูงสุดตาม maxVisiblePeople
-  function simulationStep(minutes){
-    simMinute+=minutes;
-    if(simMinute< PARAMETERS.closingMinutes){nextArrival-=minutes;while(nextArrival<=0){newStudent();nextArrival+=arrivalInterval(config.arrivals);}}
-    for(const student of students){
-      if(student.state==='walking')walkStudent(student,minutes);
-      else if(student.state==='service'){
-        student.remaining-=minutes;
-        if(student.remaining<=0){const server=student.server;server.student=null;student.server=null;student.stage++;if(student.stage<5)makeWalk(student,queuePosition(student.stage,queues[student.stage].length),'queue');else makeWalk(student,{x:0,z:6.9},'exit');}
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#edf4fb" />
+    <title>สำนักงานคณะ: นักศึกษายื่นคำร้อง</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f0f5fb;
+        --panel: #fff;
+        --ink: #142e50;
+        --muted: #697b91;
+        --line: #e3ebf4;
+        --blue: #2566b5;
+        --orange: #ee9536;
+        --green: #287257;
+        --soft: #edf4fc;
+        --shadow: 0 10px 32px #193b6010;
       }
-    }
-    students=students.filter(student=>student.state!=='finished');
-    for(let stage=0;stage<5;stage++){
-      const free=servers.filter(server=>server.stage===stage&&!server.student&&server.slot<capacity(stage));
-      for(const server of free){const student=queues[stage].shift();if(!student)break;server.student=student;student.server=server;makeWalk(student,{x:server.x,z:-2.89},'service');}
-      queues[stage].forEach((student,index)=>{const target=queuePosition(stage,index);const step=Math.min(1,minutes*2.3);student.x+=(target.x-student.x)*step;student.z+=(target.z-student.z)*step;});
-    }
-    syncStaff();
-    if(simMinute>=PARAMETERS.closingMinutes&&students.length===0){paused=true;$('pause').innerHTML=svgPlay+'<span>จบวันแล้ว</span>';}
-  }
-  function simulate(minutes){let left=minutes;while(left>1e-8){const step=Math.min(.25,left);simulationStep(step);left-=step;}}
-  let drawDummy, bodyColor, labelVector;
-  function visibleStudents(){const stageCount=[0,0,0,0,0];return students.filter(student=>student.state!=='queued'||++stageCount[student.stage]<=PARAMETERS.maxVisibleQueuePerStage).slice(0,PARAMETERS.maxVisiblePeople);}
-  function drawStudents(time){
-    const visible=visibleStudents(),count=visible.length;peopleBody.count=peopleHead.count=count;
-    for(let i=0;i<count;i++){const s=visible[i],walking=s.state==='walking',bounce=walking?Math.sin(time*.012+s.id)*.022:0;drawDummy.position.set(s.x,.5+bounce,s.z);drawDummy.rotation.set(0,0,walking?Math.sin(time*.008+s.id)*.07:0);drawDummy.scale.set(1,1,1);drawDummy.updateMatrix();peopleBody.setMatrixAt(i,drawDummy.matrix);bodyColor.setHex(s.state==='queued'?colors.queue:s.state==='service'?colors.service:colors.walk);peopleBody.setColorAt(i,bodyColor);drawDummy.position.y=.97+bounce;drawDummy.rotation.z=0;drawDummy.updateMatrix();peopleHead.setMatrixAt(i,drawDummy.matrix);}
-    peopleBody.instanceMatrix.needsUpdate=true;peopleHead.instanceMatrix.needsUpdate=true;if(peopleBody.instanceColor)peopleBody.instanceColor.needsUpdate=true;
-    peopleBody.computeBoundingSphere();peopleHead.computeBoundingSphere();
-  }
-  function updateOfficeUi(){
-    setKpi(0,students.length,'คน');setKpi(1,completed,'คน');setKpi(2,completed?(totalDuration/completed).toFixed(1):'—','นาที');
-    const counts=queues.map(queue=>queue.length),max=Math.max(...counts),index=counts.indexOf(max);setKpi(3,max?officeNames[index]:'ยังไม่มีคิว');setText('kpi-note-3','คิวรอ '+max+' คน');
-    const minute=Math.floor(simMinute);setText('clock',String(Math.floor(minute/60)%24).padStart(2,'0')+':'+String(minute%60).padStart(2,'0'));
-    labels.forEach((label,i)=>{label.querySelector('b').textContent=(i+1)+'. '+officeNames[i];label.querySelector('small').textContent='รอ '+counts[i]+' คน'+(innerWidth<540?'':' · '+capacity(i)+' เจ้าหน้าที่');label.className='stage-label'+(counts[i]>=PARAMETERS.congestionThreshold?' congested':'');});
-    const shown=visibleStudents().length,hidden=students.length-shown;$('capacity-note').style.display=hidden?'block':'none';setText('capacity-note','แสดงตัวละคร '+shown+' คน อีก '+hidden+' คนยังนับอยู่ในคิวและสถิติ');
-    $('running-dot').style.background=paused?'#e2af54':'#7cbb92';
-  }
-  function formatTime(date){return date?date.toLocaleTimeString(locale==='th'?'th-TH':locale==='zh'?'zh-CN':'en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}):'—';}
-  function currentStage(){return selectedOrder&&Object.hasOwn(statusStage,selectedOrder.status)?statusStage[selectedOrder.status]:-1;}
-  function productCounts(){const result=[0,0,0,0,0];for(const order of orders)if(Object.hasOwn(statusStage,order.status))result[statusStage[order.status]]++;return result;}
-  function updateProductUi(){
-    const real=requestedReal(),index=currentStage(),counts=productCounts(),valid=!!selectedOrder,units=valid?selectedOrder.items.reduce((sum,item)=>sum+safeCount(item.quantity),0):0;
-    const state=valid?(selectedOrder.status==='cancelled'?t.cancelled:index>=0?t.steps[index]:t.unknown):t.notSelected;
-    ['state','units','check','queue'].forEach((key,i)=>setText('kpi-title-'+i,!real&&i===0?previewText.state:!real&&i===1?previewUi.units:t[key]));
-    setKpi(0,state);$('kpi-0').style.fontSize='18px';$('kpi-0').style.paddingTop='10px';setKpi(1,valid?units:'—',t.unit);setKpi(2,real?formatTime(fetchedAt):'DEMO');$('kpi-2').style.fontSize='25px';setKpi(3,index>=0?(real?counts[index]:t.ready):'—',index>=0&&real?t.orderUnit:'');
-    setText('kpi-note-0',valid?selectedOrder.order_number:t.empty);setText('kpi-note-1',real?t.items:previewUi.items);setText('kpi-note-2',real?t.time:t.ready);setText('kpi-note-3',real?t.loaded+' · '+orders.length:t.ready);
-    setText('clock',real?formatTime(fetchedAt):'DEMO');
-    $('product-message').className='status-message product-only'+(real&&valid&&!realError?' live':'');setText('product-message',realError||(real?t.live:productKey?previewText.message:t.demo));
-    setText('product-tag',real?t.actual:'DEMO');setText('product-sub',valid?selectedOrder.order_number:t.empty);
-    const journey=$('journey');journey.replaceChildren();t.steps.forEach((step,i)=>{const li=document.createElement('li');li.className=i<index?'done':i===index?'current':'';const num=document.createElement('span');num.className='step-num';num.textContent=i<index?'✓':String(i+1);const name=document.createElement('span');name.textContent=step;li.append(num,name);li.setAttribute('aria-label',step+' · '+(i<index?t.done:i===index?t.current:t.future));if(i===index)li.setAttribute('aria-current','step');journey.append(li);});
-    const items=$('item-list');items.replaceChildren();const h3=document.createElement('h3');h3.textContent=real?t.items:previewUi.items;items.append(h3);if(valid&&selectedOrder.items.length){selectedOrder.items.forEach(item=>{const row=document.createElement('div');row.className='item-row';const name=document.createElement('span');name.textContent=localizedName(item.name)||t.noItems;const amount=document.createElement('span');amount.textContent='× '+safeCount(item.quantity);row.append(name,amount);items.append(row);});}else{const p=document.createElement('p');p.textContent=t.noItems;items.append(p);}
-    const callout=$('product-callout');callout.replaceChildren();const strong=document.createElement('b');strong.textContent=real?t.source:t.ready;callout.append(strong,document.createTextNode(real?t.diagram:previewText.message+' '+previewUi.diagram));
-    labels.forEach((label,i)=>{label.querySelector('b').textContent=(i+1)+'. '+t.steps[i];label.querySelector('small').textContent=real?counts[i]+' '+t.orderUnit:i<index?t.done:i===index?t.current:t.future;label.className='stage-label'+(i<index?' done':i===index?' current':'');});
-    currentProductStage=index;
-    if(initialized){if(index<0)productActors.forEach(({dot})=>dot.visible=false);currentBox.visible=index>=0;currentBox.position.x=index>=0?stageX[index]:0;stagePlatforms.forEach((pad,i)=>{pad.material=i<index?mats.greenSoft:i===index?mats.orangeSoft:mats.blueSoft;});}
-    const select=$('order-select');select.replaceChildren();for(const order of orders){const option=document.createElement('option');option.value=order.id;option.textContent=order.order_number;option.selected=selectedOrder&&order.id===selectedOrder.id;select.append(option);}select.hidden=!real||orders.length<2;
-    setText('capacity-note',real&&orders.length? t.loaded+' · '+orders.length:'');$('capacity-note').style.display=real&&orders.length?'block':'none';
-    productAnimationUntil=reducedMotion?0:performance.now()+1800;needFrame();
-  }
-  // อ่านเฉพาะ API ในโดเมนเดียวกัน เซิร์ฟเวอร์เป็นผู้ตรวจสิทธิ์ ไม่อ่านข้อมูลจากหน้าต่างแม่
-  async function readOrders(){
-    dataStarted=true;const serial=++fetchSerial;selectedOrder=null;orders=[];fetchedAt=null;realError=t.loading;updateProductUi();$('refresh').disabled=true;
-    if(!/^https?:$/.test(location.protocol)){realError=t.file;$('refresh').disabled=false;updateProductUi();return;}
-    try{
-      const get=async path=>{const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);try{const response=await fetch(path,{credentials:'same-origin',cache:'no-store',signal:controller.signal,headers:{Accept:'application/json'}});let data=null;if(response.ok)data=await response.json();return{response,data};}finally{clearTimeout(timeout);}};
-      let result=await get('/api/orders');
-      if(serial!==fetchSerial)return;
-      if(result.response.status===401){realError=t.denied;return;}
-      let records=result.response.ok&&Array.isArray(result.data?.orders)?result.data.orders:[];
-      const find=()=>records.find(order=>String(order.id)===selectedOrderKey||String(order.order_number)===selectedOrderKey);
-      // ถ้าออเดอร์ไม่ได้เป็นของบัญชี ให้ API ผู้ดูแลตรวจสิทธิ์ก่อนส่งคืนข้อมูล
-      if((selectedOrderKey&&!find())||(!selectedOrderKey&&!records.length)){
-        const admin=await get('/api/admin');if(serial!==fetchSerial)return;
-        if(admin.response.ok&&Array.isArray(admin.data?.orders))records=admin.data.orders;
-        else if(!result.response.ok&&[401,403].includes(admin.response.status)){realError=t.denied;return;}
+      * {
+        box-sizing: border-box;
       }
-      if(!result.response.ok&&!records.length){realError=t.failed;return;}
-      orders=records.filter(order=>order&&typeof order.id==='string'&&typeof order.status==='string').map(order=>({id:order.id,order_number:String(order.order_number||order.id),status:order.status,items:Array.isArray(order.items)?order.items.map(item=>({name:item.name,quantity:safeCount(item.quantity)})):[]}));
-      selectedOrder=selectedOrderKey?orders.find(order=>order.id===selectedOrderKey||order.order_number===selectedOrderKey)||null:orders[0]||null;
-      fetchedAt=new Date();realError=selectedOrder?'':selectedOrderKey?t.notFound:t.empty;
-    }catch(_){if(serial===fetchSerial)realError=t.failed;}
-    finally{if(serial===fetchSerial){$('refresh').disabled=false;if(mode==='product')updateProductUi();}}
-  }
-  function demoOrder(){orders=[];selectedOrder={id:'demonstration',order_number:(productKey?'PREVIEW':'DEMO')+' · '+t.ready,status:'processing',items:[{name:previewProduct?.name||t.demoItem,quantity:previewProduct?1:2}]};fetchedAt=null;realError='';updateProductUi();}
-  async function readPreviewProduct(){
-    if(!productKey||requestedReal())return;dataStarted=true;const serial=++fetchSerial;demoOrder();
-    if(!/^https?:$/.test(location.protocol)){realError=previewText.missing;updateProductUi();return;}
-    const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
-    try{const response=await fetch('/api/products',{credentials:'same-origin',cache:'no-store',signal:controller.signal,headers:{Accept:'application/json'}});if(serial!==fetchSerial)return;if(!response.ok)throw new Error('products');const data=await response.json();previewProduct=Array.isArray(data.products)?data.products.find(product=>product.id===productKey)||null:null;demoOrder();if(!previewProduct)realError=previewText.missing;}
-    catch(_){if(serial===fetchSerial)realError=previewText.missing;}
-    finally{clearTimeout(timeout);if(serial===fetchSerial&&mode==='product')updateProductUi();}
-  }
-  function setMode(next,updateUrl=true){
-    mode=next;document.documentElement.lang=mode==='product'?locale:'th';document.body.classList.toggle('product-mode',mode==='product');document.body.classList.toggle('dark',mode==='product'&&storedTheme==='dark');
-    document.querySelectorAll('.office-only').forEach(element=>element.hidden=mode!=='office');document.querySelectorAll('.product-only').forEach(element=>element.hidden=mode!=='product');
-    $('office-tab').classList.toggle('active',mode==='office');$('product-tab').classList.toggle('active',mode==='product');$('office-tab').setAttribute('aria-selected',String(mode==='office'));$('product-tab').setAttribute('aria-selected',String(mode==='product'));
-    setText('office-tab',mode==='product'?t.office:'คิวสำนักงาน');setText('product-tab',mode==='product'?t.product:'เส้นทางสินค้า');
-    if(initialized){officeGroup.visible=mode==='office';productGroup.visible=mode==='product';}
-    if(mode==='product'){
-      document.title=t.productTitle;setText('title',t.productTitle);setText('eyebrow','ALYZYUS / PRODUCT JOURNEY');setText('description',t.productDesc);setText('mode-note',t.modeNote);setText('scene-title',t.scene);setText('clock-caption',t.clock);setText('default-label',t.default);setText('top-label',t.top);setText('auto-label',t.auto);setText('scene-hint',t.hint);setText('product-panel-title',t.panel);setText('order-select-label',t.selected);$('refresh').querySelector('span').textContent=t.refresh;setText('footer-note',t.footer);
-      $('legend').replaceChildren();for(const [color,label] of [['#93bfa7',t.done],['#ed983f',t.current],['#b6c8df',t.future]]){const span=document.createElement('span');span.className='legend-item';const dot=document.createElement('i');dot.className='dot';dot.style.background=color;span.append(dot,document.createTextNode(label));$('legend').append(span);}
-      if(requestedReal()){if(!dataStarted)void readOrders();else updateProductUi();}else if(productKey){document.title=previewText.title;setText('title',previewText.title);setText('footer-note',previewText.footer);if(!dataStarted)void readPreviewProduct();else updateProductUi();}else demoOrder();
-      if(!requestedReal()){setText('description',previewUi.description);setText('product-panel-title',previewUi.panel);setText('footer-note',previewText.footer);}
-      $('viewport').setAttribute('aria-label',t.scene);$('camera-default').setAttribute('aria-label',t.default);$('camera-top').setAttribute('aria-label',t.top);
-    }else{
-      fetchSerial++;dataStarted=false;document.title='สำนักงานคณะ: นักศึกษายื่นคำร้อง';setText('title',document.title);setText('eyebrow','FACULTY OFFICE / QUEUE LAB');setText('description','ลากเพื่อหมุนอาคาร เลื่อนล้อเมาส์หรือถ่างสองนิ้วเพื่อซูม แต่ละตัวคือนักศึกษา 1 คนที่กำลังเดินผ่าน 5 จุดบริการ');setText('mode-note','แบบจำลองเพื่อสำรวจผลของจำนวนเจ้าหน้าที่');setText('scene-title','ภาพจำลองสำนักงาน · 5 จุดบริการ');setText('clock-caption','เวลาจำลอง');setText('default-label','มุมมองเริ่มต้น');setText('top-label','มองจากด้านบน');setText('auto-label','หมุนอัตโนมัติ');setText('scene-hint','ลากเพื่อหมุน · เลื่อนเพื่อซูม');setText('footer-note','เปิดรับ 08:00–16:00 · หลังปิดสำนักงานให้บริการคนที่เข้ามาแล้วจนเสร็จ');
-      ['อยู่ในสำนักงานตอนนี้','แจ้งผลแล้วในวันนี้','เวลาเฉลี่ยต่อเรื่อง','คอขวดตอนนี้'].forEach((value,i)=>setText('kpi-title-'+i,value));['รวมกำลังเดิน รอคิว และรับบริการ','ผ่านครบทั้ง 5 จุดและออกจากอาคาร','ตั้งแต่เข้าสำนักงานจนออกจากอาคาร'].forEach((value,i)=>setText('kpi-note-'+i,value));$('kpi-0').style.fontSize='';$('kpi-0').style.paddingTop='';$('kpi-2').style.fontSize='';
-      $('legend').innerHTML=[['#3981cd','นักศึกษากำลังเดิน'],['#ebbe42','นักศึกษารอคิว'],['#236b50','นักศึกษารับบริการ'],['#193953','เจ้าหน้าที่ไม่ว่าง'],['#86b591','เจ้าหน้าที่ว่าง'],['#ed983f','คิวหนาแน่น']].map(([color,label])=>'<span class="legend-item"><i class="dot" style="background:'+color+'"></i>'+label+'</span>').join('');$('viewport').setAttribute('aria-label','สำนักงานสามมิติ หมุนและซูมด้วยเมาส์หรือสัมผัส');$('camera-default').setAttribute('aria-label','มุมมองเริ่มต้น');$('camera-top').setAttribute('aria-label','มองจากด้านบน');updateOfficeUi();
-    }
-    if(updateUrl&&/^https?:$/.test(location.protocol)){const url=new URL(location.href);url.searchParams.set('mode',mode);try{history.replaceState(null,'',url);}catch(_){}}
-    cameraGoal={theta:.38,phi:.79,radius:mode==='product'?25:26};lastFrame=0;needFrame();
-  }
-  function updateCamera(delta){const blend=Math.min(1,delta*9);for(const key of ['theta','phi','radius'])cameraState[key]+=(cameraGoal[key]-cameraState[key])*blend;const {theta,phi}=cameraState,radius=cameraState.radius*Math.max(1,1.35/camera.aspect);camera.position.set(cameraTarget.x+radius*Math.sin(phi)*Math.sin(theta),cameraTarget.y+radius*Math.cos(phi),cameraTarget.z+radius*Math.sin(phi)*Math.cos(theta));camera.lookAt(cameraTarget.x,cameraTarget.y,cameraTarget.z);}
-  function projectLabels(){const rect=$('viewport').getBoundingClientRect();labels.forEach((label,i)=>{labelVector.set(stageX[i],mode==='office'?2.24:2.5,mode==='office'?-3.9:-1.4).project(camera);const x=(labelVector.x*.5+.5)*rect.width,y=(-labelVector.y*.5+.5)*rect.height-(innerWidth<540&&i%2?44:0);label.style.left=x+'px';label.style.top=y+'px';label.style.visibility=labelVector.z<1&&x>-35&&x<rect.width+35&&y>20&&y<rect.height?'visible':'hidden';});}
-  function cameraMoving(){return ['theta','phi','radius'].some(key=>Math.abs(cameraState[key]-cameraGoal[key])>.0004);}
-  function canRender(){return initialized&&!document.hidden&&inView;}
-  function needFrame(){if(canRender()&&!frameId)frameId=requestAnimationFrame(frame);}
-  function frame(time){
-    frameId=0;if(!canRender()){lastFrame=0;return;}
-    if(lastFrame&&time-lastFrame<1000/(mode==='product'?PARAMETERS.productFps:PARAMETERS.fps)){needFrame();return;}
-    const delta=lastFrame?Math.min(.12,(time-lastFrame)/1000):1/PARAMETERS.fps;lastFrame=time;
-    if(mode==='office'&&!paused)simulate(delta*4*config.speed);
-    if(automatic){cameraGoal.theta+=delta*.085;cameraState.theta=cameraGoal.theta;}
-    updateCamera(delta);
-    if(mode==='office'){drawStudents(time);if(time-lastUi>220){updateOfficeUi();lastUi=time;}}
-    else if(currentBox.visible){
-      const animate=productMotion||time<productAnimationUntil;
-      currentBox.position.y=.29+(animate?Math.sin(time*.003)*.07:0);
-      currentBox.rotation.y=animate?Math.sin(time*.0015)*.12:0;
-      stagePlatforms.forEach((pad,index)=>{const pulse=animate&&index===currentProductStage?1+Math.sin(time*.0025)*.035:1;pad.scale.x=pad.scale.z=1.23*pulse;});
-      productActors.forEach(({dot,stage,slot})=>{dot.visible=animate&&stage<currentProductStage;if(dot.visible){const progress=(time*.00027+slot/3)%1;dot.position.x=stageX[stage]+(stageX[stage+1]-stageX[stage])*progress;}});
-      if(productTruck)productTruck.position.x=animate&&currentProductStage===3?Math.sin(time*.0015)*.17:0;
-    }
-    projectLabels();renderer.render(scene,camera);
-    if((mode==='office'&&!paused)||automatic||cameraMoving()||(mode==='product'&&currentBox.visible&&(productMotion||time<productAnimationUntil)))needFrame();
-  }
-  function resize(){if(!initialized)return;const width=$('viewport').clientWidth,height=$('viewport').clientHeight;camera.aspect=width/height;camera.updateProjectionMatrix();const fit=Math.max(1,1.35/camera.aspect);scene.fog.near=40*fit;scene.fog.far=65*fit;renderer.setPixelRatio(Math.min(devicePixelRatio||1,innerWidth<650?PARAMETERS.mobilePixelRatio:PARAMETERS.pixelRatio));renderer.setSize(width,height,false);needFrame();}
-  $('product-motion').addEventListener('click',()=>{
-    productMotion=!productMotion;$('product-motion').setAttribute('aria-pressed',String(productMotion));
-    $('product-motion').classList.toggle('active',productMotion);productAnimationUntil=0;needFrame();
-  });
-  const motionWords={th:'การเคลื่อนไหว',en:'Animate process',zh:'流程动画'};
-  $('motion-label').textContent=motionWords[locale];
-  // ใช้ตัวเลือกลดการเคลื่อนไหวเดียวกับหน้าร้าน โดยยังลากหมุนกล้องได้ตามต้องการ
-  try{const appearance=JSON.parse(localStorage.getItem('alyzyus-appearance-v1')||'null');reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches||appearance?.motion===false;if(reducedMotion){productMotion=false;$('product-motion').setAttribute('aria-pressed','false');}}catch(_){}
-  function cameraControls(){
-    const pointers=new Map();let lastPinch=null;
-    const canvas=renderer.domElement;
-    canvas.addEventListener('pointerdown',event=>{canvas.setPointerCapture(event.pointerId);pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});lastPinch=null;automatic=false;$('camera-auto').classList.remove('active');$('camera-auto').setAttribute('aria-pressed','false');});
-    canvas.addEventListener('pointermove',event=>{if(!pointers.has(event.pointerId))return;const old=pointers.get(event.pointerId);pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});if(pointers.size===1){cameraGoal.theta-=(event.clientX-old.x)*.007;cameraGoal.phi=Math.max(.12,Math.min(1.35,cameraGoal.phi+(event.clientY-old.y)*.005));}else{const values=[...pointers.values()],distance=Math.hypot(values[0].x-values[1].x,values[0].y-values[1].y);if(lastPinch&&distance>0)cameraGoal.radius=Math.max(14,Math.min(43,cameraGoal.radius*lastPinch/distance));lastPinch=distance;}needFrame();});
-    const end=event=>{pointers.delete(event.pointerId);lastPinch=null;};canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);canvas.addEventListener('lostpointercapture',end);
-    canvas.addEventListener('wheel',event=>{event.preventDefault();cameraGoal.radius=Math.max(14,Math.min(43,cameraGoal.radius*Math.exp(Math.max(-100,Math.min(100,event.deltaY))*.0013)));needFrame();},{passive:false});
-    canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();showError('WebGL หยุดทำงานชั่วคราว กรุณาโหลดหน้าใหม่เพื่อแสดงภาพ 3D');});
-  }
-  function init(){
-    try{
-      scene=new THREE.Scene();scene.background=new THREE.Color(0xedf4fc);scene.fog=new THREE.Fog(0xedf4fc,40,65);
-      renderer=new THREE.WebGLRenderer({antialias:innerWidth>650,alpha:false,powerPreference:'low-power'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-      camera=new THREE.PerspectiveCamera(43,1,.1,100);$('viewport').prepend(renderer.domElement);
-      geo.box=resource(new THREE.BoxGeometry(1,1,1));geo.sphere=resource(new THREE.SphereGeometry(1,12,8));geo.cylinder=resource(new THREE.CylinderGeometry(1,1,1,20));geo.capsule=resource(new THREE.CapsuleGeometry(.14,.4,3,7));geo.head=resource(new THREE.SphereGeometry(.13,8,6));geo.ring=resource(new THREE.RingGeometry(.92,1,30));geo.roof=resource(new THREE.ConeGeometry(1,1,4));
-      const palette={plinth:0xc4d4e7,floor:0xfafcff,navy:0x173650,partition:0x365671,entrance:0xc9dfed,path:0xe3edf7,queueZone:0xffeed8,queueLine:0xf5d3a5,doorMark:0x98bdd2,desk:0xb3d0de,deskLeg:0x678fa2,monitor:0x1b3b55,screen:0xadd2e1,paper:0xffffff,chair:0xf7fbff,chairLeg:0x96aec2,pot:0xe6edf4,plant:0x68a080,plantLight:0x83b496,skin:0xffe1bd,idle:colors.idle,busy:colors.busy,people:0xffffff,parcel:0xdba96e,ribbon:0xf6e8cb,sticker:0xffffff,blueSoft:0xcadcef,greenSoft:0xa7d3bb,orangeSoft:0xf3c788,pathEdge:0xaec5dd,blue:0x477ca8,tire:0x365168,house:0xd1dfec,door:0x587b9f};for(const [name,color] of Object.entries(palette))mats[name]=material(color);
-      const ambient=new THREE.HemisphereLight(0xffffff,0x8ba6c6,2.2);scene.add(ambient);const sun=new THREE.DirectionalLight(0xffffff,3.1);sun.position.set(-7,15,9);sun.castShadow=true;const shadowSize=innerWidth<650?512:PARAMETERS.shadowMapSize;sun.shadow.mapSize.set(shadowSize,shadowSize);sun.shadow.camera.left=-15;sun.shadow.camera.right=15;sun.shadow.camera.top=12;sun.shadow.camera.bottom=-12;sun.shadow.normalBias=.04;sun.shadow.bias=-.0003;scene.add(sun);
-      const ground=mesh(geo.box,material(0xe4eef9),0,-.61,0,90,.16,90,scene);ground.castShadow=false;
-      buildOffice();buildProduct();createLabels();drawDummy=new THREE.Object3D();bodyColor=new THREE.Color();labelVector=new THREE.Vector3();initialized=true;
-      resetSimulation();cameraControls();resize();setMode(mode,false);
-      new ResizeObserver(resize).observe($('viewport'));
-      if(typeof IntersectionObserver!=='undefined'){new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;lastFrame=0;if(inView)needFrame();else if(frameId){cancelAnimationFrame(frameId);frameId=0;}},{threshold:0}).observe($('viewport'));}
-      document.addEventListener('visibilitychange',()=>{lastFrame=0;if(document.hidden&&frameId){cancelAnimationFrame(frameId);frameId=0;}else needFrame();});
-      window.addEventListener('pagehide',event=>{if(frameId){cancelAnimationFrame(frameId);frameId=0;}lastFrame=0;if(!event.persisted){resources.forEach(value=>value.dispose());renderer.dispose();}});
-      window.addEventListener('pageshow',event=>{if(event.persisted)needFrame();});
-    }catch(_){showError();}
-  }
-  $('office-tab').addEventListener('click',()=>setMode('office'));$('product-tab').addEventListener('click',()=>setMode('product'));$('refresh').addEventListener('click',()=>requestedReal()?void readOrders():productKey?void readPreviewProduct():demoOrder());$('order-select').addEventListener('change',event=>{selectedOrderKey=event.target.value;selectedOrder=orders.find(order=>order.id===selectedOrderKey)||null;const url=new URL(location.href);url.searchParams.set('order',selectedOrderKey);try{history.replaceState(null,'',url);}catch(_){}updateProductUi();});
-  $('pause').addEventListener('click',()=>{paused=!paused;$('pause').innerHTML=(paused?svgPlay:svgPause)+'<span>'+(paused?'เล่นต่อ':'หยุดชั่วคราว')+'</span>';lastFrame=0;updateOfficeUi();needFrame();});$('reset').addEventListener('click',resetSimulation);
-  for(const [id,key] of [['arrivals','arrivals'],['documents','documents'],['advisors','advisors'],['speed','speed']]){const input=$(id);input.value=config[key];setText(id+'-value',config[key]+(key==='speed'?'×':''));input.addEventListener('input',()=>{config[key]=Number(input.value);setText(id+'-value',input.value+(key==='speed'?'×':''));if(key==='arrivals')nextArrival=arrivalInterval(config.arrivals);if(initialized){syncStaff();updateOfficeUi();needFrame();}});}
-  $('camera-default').addEventListener('click',()=>{cameraGoal={theta:.38,phi:.79,radius:mode==='office'?26:25};needFrame();});$('camera-top').addEventListener('click',()=>{cameraGoal={theta:0,phi:.13,radius:26};needFrame();});$('camera-auto').addEventListener('click',()=>{automatic=!automatic;$('camera-auto').classList.toggle('active',automatic);$('camera-auto').setAttribute('aria-pressed',String(automatic));needFrame();});
-  if(storedTheme==='dark')document.body.classList.add('dark');
-  // โหลดไลบรารีเพียงตัวเดียวจาก cdnjs และแสดงข้อความเมื่อ CDN หรือ WebGL ใช้งานไม่ได้
-  const library=document.createElement('script');library.src=PARAMETERS.cdn;library.onload=()=>typeof THREE!=='undefined'?init():showError();library.onerror=()=>showError('โหลด Three.js จาก cdnjs ไม่สำเร็จ ตรวจสอบอินเทอร์เน็ต แล้วลองโหลดหน้านี้อีกครั้ง');document.head.append(library);
-  setMode(mode,false);
-  // เปิดเฉพาะฟังก์ชันคณิตศาสตร์เพื่อใช้ตรวจสอบ โดยไม่มีข้อมูลส่วนบุคคล
-  window.Queue3DMath=Object.freeze({arrivalInterval,serviceTime,statusStage});
-})();
-</script>
-</body>
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          14px/1.65 'Noto Sans Thai',
+          system-ui,
+          sans-serif;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button,
+      select {
+        cursor: pointer;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: 3px solid #69a8e8;
+        outline-offset: 3px;
+      }
+      button {
+        color: inherit;
+      }
+      button:disabled {
+        cursor: default;
+        opacity: 0.55;
+      }
+      button svg {
+        width: 17px;
+        height: 17px;
+        flex: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .shell {
+        max-width: 1480px;
+        margin: auto;
+        padding: 30px 38px 22px;
+      }
+      .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #6685a5;
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .eyebrow i {
+        height: 7px;
+        width: 7px;
+        border-radius: 50%;
+        background: var(--blue);
+      }
+      h1 {
+        margin: 0;
+        font-weight: 700;
+        font-size: clamp(23px, 2.6vw, 32px);
+        letter-spacing: -0.04em;
+        line-height: 1.45;
+      }
+      .description {
+        margin: 8px 0 0;
+        max-width: 820px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+        padding-top: 8px;
+        flex: none;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 9px 14px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        transition:
+          background 0.2s,
+          transform 0.2s;
+        white-space: nowrap;
+      }
+      .btn:hover {
+        background: var(--soft);
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn.primary {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: white;
+      }
+      .btn.primary:hover {
+        background: #244768;
+      }
+      .modebar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .tabs {
+        display: flex;
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        background: #e8eff7;
+        border-radius: 12px;
+      }
+      .tabs button {
+        border: 0;
+        border-radius: 8px;
+        padding: 7px 17px;
+        background: transparent;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .tabs .active {
+        background: var(--panel);
+        box-shadow: 0 2px 5px #243d5910;
+        color: var(--ink);
+      }
+      .mode-note {
+        font-size: 10px;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .mode-note::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: #5e9edb;
+        border-radius: 50%;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+      .metric {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        padding: 17px 20px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .metric .caption {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+      .metric .value {
+        font-size: 31px;
+        font-weight: 700;
+        line-height: 1.35;
+        letter-spacing: -0.035em;
+        margin-top: 7px;
+        min-height: 42px;
+      }
+      .metric .value small {
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0;
+        margin-left: 5px;
+      }
+      .metric .note {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 4px;
+        min-height: 17px;
+      }
+      .metric .mark {
+        position: absolute;
+        right: 17px;
+        top: 17px;
+        background: var(--soft);
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        color: #4e7aa5;
+        font-size: 14px;
+      }
+      .metric.orange {
+        background: #fff9f1;
+        border-color: #f5dfc4;
+      }
+      .metric.orange .value {
+        color: #c26e22;
+        font-size: 20px;
+        padding-top: 10px;
+      }
+      .metric.orange .mark {
+        background: #f9ead6;
+        color: #c8792b;
+      }
+      .main {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 292px;
+        gap: 18px;
+      }
+      .scene-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        min-width: 0;
+      }
+      .scene-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--line);
+      }
+      .scene-title {
+        font-size: 12px;
+        font-weight: 600;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .scene-title i {
+        height: 6px;
+        width: 6px;
+        border-radius: 50%;
+        background: #7cbb92;
+      }
+      .clock {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .clock strong {
+        font-size: 18px;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.03em;
+      }
+      .clock svg {
+        height: 15px;
+        width: 15px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.7;
+      }
+      .viewport {
+        position: relative;
+        background: #edf4fc;
+        height: 470px;
+        min-height: 350px;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .viewport canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        cursor: grab;
+      }
+      .viewport canvas:active {
+        cursor: grabbing;
+      }
+      .scene-tools {
+        position: absolute;
+        top: 13px;
+        left: 14px;
+        right: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        z-index: 3;
+      }
+      .scene-tools .btn {
+        padding: 7px 9px;
+        box-shadow: 0 2px 8px #183a5910;
+        backdrop-filter: blur(6px);
+        background: #ffffffdf;
+        font-size: 10px;
+        border-color: #dce7f2;
+      }
+      .scene-tools .btn.active {
+        color: var(--blue);
+        border-color: #a7c7e8;
+        background: #f3f8ff;
+      }
+      .scene-hint {
+        position: absolute;
+        bottom: 12px;
+        left: 16px;
+        font-size: 9px;
+        color: #7890a9;
+        background: #ffffffbc;
+        padding: 4px 8px;
+        border-radius: 6px;
+        pointer-events: none;
+      }
+      .stage-label {
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translate(-50%, -100%);
+        background: #ffffffed;
+        border: 1px solid #dbe6f2;
+        padding: 6px 10px;
+        border-radius: 9px;
+        text-align: center;
+        box-shadow: 0 3px 12px #14365115;
+        pointer-events: none;
+        white-space: nowrap;
+        z-index: 2;
+        line-height: 1.5;
+        font-size: 10px;
+        min-width: 90px;
+      }
+      .stage-label::after {
+        content: '';
+        position: absolute;
+        left: calc(50% - 3px);
+        bottom: -4px;
+        width: 6px;
+        height: 6px;
+        background: #fff;
+        transform: rotate(45deg);
+        border-bottom: 1px solid #dbe6f2;
+        border-right: 1px solid #dbe6f2;
+      }
+      .stage-label b {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .stage-label small {
+        color: var(--muted);
+        font-size: 9px;
+      }
+      .stage-label.congested {
+        border-color: #f1bb79;
+        background: #fff5e7;
+      }
+      .stage-label.congested small {
+        color: #ba6b22;
+      }
+      .stage-label.current {
+        border-color: #eeaf5d;
+        background: #fff8e9;
+      }
+      .stage-label.done {
+        border-color: #b8dccb;
+      }
+      .scene-foot {
+        padding: 13px 18px 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 17px;
+        align-items: center;
+        border-top: 1px solid var(--line);
+      }
+      .legend-item {
+        font-size: 10px;
+        color: var(--muted);
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        flex: none;
+      }
+      .capacity-note {
+        font-size: 10px;
+        color: var(--muted);
+        padding: 0 18px 10px;
+        display: none;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 21px 21px 17px;
+      }
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+      .panel h2 {
+        font-size: 14px;
+        margin: 0;
+        font-weight: 700;
+      }
+      .panel-tag {
+        background: var(--soft);
+        color: #7394b5;
+        padding: 2px 7px;
+        border-radius: 5px;
+        font-size: 8px;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+      }
+      .panel-sub {
+        font-size: 10px;
+        color: var(--muted);
+        margin: 7px 0 20px;
+      }
+      .control {
+        padding: 15px 0 17px;
+        border-top: 1px solid var(--line);
+      }
+      .control-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .control-value {
+        min-width: 36px;
+        text-align: center;
+        background: var(--soft);
+        padding: 2px 8px;
+        border-radius: 6px;
+        color: var(--blue);
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .control input {
+        display: block;
+        width: 100%;
+        margin: 16px 0 10px;
+        accent-color: var(--blue);
+        height: 4px;
+        cursor: pointer;
+      }
+      .range-ends {
+        display: flex;
+        justify-content: space-between;
+        line-height: 1;
+        font-size: 8px;
+        color: #98a8b9;
+      }
+      .control p {
+        font-size: 9px;
+        color: var(--muted);
+        margin: 10px 0 0;
+        line-height: 1.7;
+      }
+      .control.speed {
+        padding-bottom: 10px;
+      }
+      .panel-callout {
+        background: var(--soft);
+        border-radius: 10px;
+        padding: 12px;
+        margin-top: 10px;
+        font-size: 9px;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+      .panel-callout b {
+        display: block;
+        color: #3a638b;
+        margin-bottom: 2px;
+        font-size: 10px;
+      }
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 2px 0;
+        font-size: 9px;
+        color: #8ca0b6;
+      }
+      .footer span:last-child {
+        letter-spacing: 0.08em;
+        font-size: 8px;
+      }
+      .error {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: #edf4fc;
+        padding: 35px;
+      }
+      .error strong {
+        font-size: 19px;
+        margin-bottom: 8px;
+      }
+      .error p {
+        font-size: 12px;
+        color: var(--muted);
+        max-width: 360px;
+      }
+      .error[hidden],
+      .product-only[hidden],
+      .office-only[hidden],
+      [hidden] {
+        display: none !important;
+      }
+      .error button {
+        margin-top: 12px;
+      }
+      .status-message {
+        margin-bottom: 18px;
+        padding: 10px 15px;
+        background: #fff5e7;
+        border: 1px solid #f3ddbc;
+        border-radius: 10px;
+        color: #92642d;
+        font-size: 11px;
+      }
+      .status-message.live {
+        background: #edf7f2;
+        border-color: #cde6d8;
+        color: #38745b;
+      }
+      .product-select {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        padding: 8px;
+        font-size: 11px;
+        margin-bottom: 15px;
+      }
+      .journey {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .journey li {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 11px;
+        padding: 12px 0;
+        color: #95a4b4;
+      }
+      .journey li::before {
+        content: '';
+        position: absolute;
+        left: 12px;
+        top: -13px;
+        height: 25px;
+        width: 1px;
+        background: var(--line);
+      }
+      .journey li:first-child::before {
+        display: none;
+      }
+      .journey .step-num {
+        display: grid;
+        place-items: center;
+        width: 25px;
+        height: 25px;
+        flex: none;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        font-size: 9px;
+        background: var(--panel);
+        z-index: 1;
+      }
+      .journey li.done {
+        color: var(--green);
+      }
+      .journey li.done .step-num {
+        background: #edf7f1;
+        border-color: #c9e2d4;
+      }
+      .journey li.current {
+        color: #c0772b;
+        font-weight: 700;
+      }
+      .journey li.current .step-num {
+        background: #fff1dd;
+        border-color: #f0cf9f;
+      }
+      .item-list {
+        margin: 13px 0 0;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+        font-size: 10px;
+      }
+      .item-list h3 {
+        font-size: 11px;
+        margin: 0 0 8px;
+      }
+      .item-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        color: var(--muted);
+        padding: 4px 0;
+      }
+      .item-row span:first-child {
+        overflow-wrap: anywhere;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .dark {
+        --bg: #122338;
+        --panel: #1a2f46;
+        --ink: #e9f1fa;
+        --muted: #a0b5c9;
+        --line: #2b435c;
+        --soft: #243d57;
+        --shadow: 0 10px 32px #00000015;
+      }
+      .dark .tabs {
+        background: #14283e;
+      }
+      .dark .metric.orange {
+        background: #392f26;
+        border-color: #654b2f;
+      }
+      .dark .metric.orange .value {
+        color: #efb567;
+      }
+      .dark .btn.primary {
+        background: #e4edf7;
+        color: #153453;
+        border-color: #e4edf7;
+      }
+      .dark .stage-label {
+        background: #fcfdff;
+        color: #173a5c;
+      }
+      .dark .scene-tools .btn {
+        color: #163653;
+      }
+      .dark .scene-tools .btn.active {
+        color: #2566b5;
+      }
+      .dark .status-message.live {
+        background: #1b4336;
+        color: #c9eddd;
+        border-color: #2b6953;
+      }
+      .dark .status-message {
+        background: #3c3229;
+        color: #f2ce9f;
+        border-color: #6d5233;
+      }
+      .dark .journey li.current {
+        color: #e7b774;
+      }
+      .dark .journey li.done {
+        color: #8dc5ab;
+      }
+      .dark .journey li.current .step-num {
+        background: #483723;
+      }
+      .dark .journey li.done .step-num {
+        background: #284b3f;
+      }
+      @media (min-width: 1500px) {
+        .viewport {
+          height: 560px;
+        }
+      }
+      @media (max-width: 1100px) {
+        .shell {
+          padding: 23px;
+        }
+        .main {
+          grid-template-columns: minmax(0, 1fr) 260px;
+        }
+        .panel {
+          padding: 18px;
+        }
+        .viewport {
+          height: 455px;
+        }
+        .stage-label {
+          min-width: 76px;
+          padding: 5px 7px;
+        }
+        .stage-label b {
+          font-size: 10px;
+        }
+        .metrics {
+          gap: 10px;
+        }
+        .metric {
+          padding: 15px;
+        }
+        .metric .mark {
+          right: 13px;
+        }
+        .description {
+          max-width: 620px;
+        }
+      }
+      @media (max-width: 850px) {
+        .top {
+          display: block;
+          margin-bottom: 17px;
+        }
+        .actions {
+          padding-top: 16px;
+        }
+        .main {
+          grid-template-columns: 1fr;
+        }
+        .controls {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0 24px;
+        }
+        .controls .control:first-child {
+          border-top: 0;
+        }
+        .controls .control:nth-child(2) {
+          border-top: 0;
+        }
+        .panel-sub {
+          margin-bottom: 8px;
+        }
+        .viewport {
+          height: 500px;
+        }
+        .panel-callout {
+          margin-top: 3px;
+        }
+        .metrics .value {
+          font-size: 27px;
+        }
+        .metrics .orange .value {
+          font-size: 16px;
+        }
+        .metric .mark {
+          display: none;
+        }
+        .footer {
+          font-size: 8px;
+        }
+        .product-panel {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0 24px;
+        }
+        .product-panel .panel-header,
+        .product-panel .panel-sub,
+        .product-panel .product-select {
+          grid-column: 1/-1;
+        }
+        .product-panel .journey {
+          grid-row: 4/6;
+        }
+        .product-panel .item-list {
+          margin-top: 0;
+        }
+        .mode-note {
+          max-width: 260px;
+          text-align: right;
+        }
+      }
+      @media (max-width: 540px) {
+        .shell {
+          padding: 19px 13px;
+        }
+        .top {
+          margin-bottom: 14px;
+        }
+        h1 {
+          font-size: 23px;
+        }
+        .description {
+          font-size: 11px;
+          line-height: 1.8;
+        }
+        .metrics {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 9px;
+          margin-bottom: 13px;
+        }
+        .metric {
+          border-radius: 12px;
+          padding: 12px 14px;
+        }
+        .metric .caption {
+          font-size: 10px;
+        }
+        .metric .value {
+          min-height: 33px;
+          font-size: 26px;
+          margin-top: 4px;
+        }
+        .metric .note {
+          font-size: 9px;
+        }
+        .metric.orange .value {
+          padding-top: 5px;
+          font-size: 16px;
+        }
+        .modebar {
+          align-items: flex-start;
+          margin-bottom: 13px;
+          gap: 8px;
+        }
+        .tabs button {
+          padding: 6px 10px;
+          font-size: 11px;
+        }
+        .mode-note {
+          max-width: 135px;
+          font-size: 8px;
+          padding-top: 3px;
+        }
+        .viewport {
+          height: 430px;
+          min-height: 320px;
+        }
+        .scene-head {
+          padding: 12px 14px;
+        }
+        .clock strong {
+          font-size: 16px;
+        }
+        .clock > span {
+          display: none;
+        }
+        .scene-tools {
+          left: 9px;
+          top: 9px;
+          gap: 3px;
+        }
+        .scene-tools .btn {
+          padding: 6px 7px;
+          font-size: 9px;
+        }
+        .scene-tools .btn svg {
+          height: 13px;
+          width: 13px;
+        }
+        .stage-label {
+          min-width: 57px;
+          font-size: 8px;
+          padding: 4px 5px;
+          border-radius: 7px;
+        }
+        .stage-label b {
+          font-size: 9px;
+          max-width: 78px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .stage-label small {
+          font-size: 8px;
+        }
+        .scene-foot {
+          gap: 9px 12px;
+          padding: 11px 14px;
+        }
+        .legend-item {
+          font-size: 9px;
+        }
+        .panel {
+          padding: 17px;
+        }
+        .controls {
+          gap: 0 17px;
+        }
+        .control-header {
+          font-size: 10px;
+        }
+        .control-value {
+          font-size: 12px;
+          min-width: 31px;
+          padding: 1px 6px;
+        }
+        .control p {
+          font-size: 8px;
+        }
+        .footer {
+          display: block;
+          line-height: 1.9;
+        }
+        .footer span {
+          display: block;
+        }
+        .product-panel {
+          display: block;
+        }
+        .product-panel .item-list {
+          margin-top: 10px;
+        }
+        .journey {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 3px;
+        }
+        .journey li {
+          flex-direction: column;
+          text-align: center;
+          gap: 4px;
+          font-size: 8px;
+          align-items: center;
+          padding: 5px 0;
+        }
+        .journey li::before {
+          left: -50%;
+          top: 17px;
+          width: 100%;
+          height: 1px;
+        }
+        .journey .step-num {
+          height: 25px;
+          width: 25px;
+        }
+        .item-row {
+          font-size: 10px;
+        }
+        .scene-hint {
+          font-size: 8px;
+          bottom: 8px;
+          left: 10px;
+        }
+      }
+      .main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .product-mode .main {
+        grid-template-columns: minmax(0, 1fr) 292px;
+      }
+      .controls {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0 30px;
+      }
+      .control {
+        padding-bottom: 10px;
+      }
+      .office-only.panel .panel-sub {
+        margin-bottom: 10px;
+      }
+      .office-only.panel .panel-callout {
+        margin-top: 0;
+      }
+      .viewport {
+        height: 520px;
+      }
+      .product-mode .viewport {
+        height: 470px;
+      }
+      @media (max-width: 1100px) {
+        .product-mode .main {
+          grid-template-columns: minmax(0, 1fr) 260px;
+        }
+        .controls {
+          gap: 0 20px;
+        }
+      }
+      @media (max-width: 850px) {
+        .product-mode .main {
+          grid-template-columns: 1fr;
+        }
+        .controls {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .viewport,
+        .product-mode .viewport {
+          height: 500px;
+        }
+      }
+      @media (max-width: 540px) {
+        .viewport,
+        .product-mode .viewport {
+          height: 430px;
+        }
+        .controls {
+          gap: 0 17px;
+        }
+      }
+      @media (max-width: 540px) {
+        .stage-label {
+          width: 60px;
+          min-width: 60px;
+          padding: 4px 3px;
+        }
+        .stage-label b {
+          max-width: 52px;
+        }
+        .stage-label small {
+          display: block;
+          max-width: 52px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="top">
+        <div>
+          <div class="eyebrow"><i></i><span id="eyebrow">FACULTY OFFICE / QUEUE LAB</span></div>
+          <h1 id="title">สำนักงานคณะ: นักศึกษายื่นคำร้อง</h1>
+          <p class="description" id="description">
+            ลากเพื่อหมุนอาคาร เลื่อนล้อเมาส์หรือถ่างสองนิ้วเพื่อซูม แต่ละตัวคือนักศึกษา 1
+            คนที่กำลังเดินผ่าน 5 จุดบริการ
+          </p>
+        </div>
+        <div class="actions">
+          <button class="btn primary office-only" id="pause">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" /></svg
+            ><span>หยุดชั่วคราว</span></button
+          ><button class="btn office-only" id="reset">
+            <svg viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6" /></svg
+            ><span>เริ่มวันใหม่</span></button
+          ><button class="btn product-only" hidden id="refresh">
+            <svg viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6" /></svg
+            ><span>รีเฟรชข้อมูล</span>
+          </button>
+        </div>
+      </header>
+      <div class="modebar">
+        <div class="tabs" role="tablist" aria-label="โหมดแสดงผล">
+          <button id="office-tab" class="active" role="tab" aria-selected="true">คิวสำนักงาน</button
+          ><button id="product-tab" role="tab" aria-selected="false">เส้นทางสินค้า</button>
+        </div>
+        <div class="mode-note" id="mode-note">แบบจำลองเพื่อสำรวจผลของจำนวนเจ้าหน้าที่</div>
+      </div>
+      <div id="product-message" class="status-message product-only" role="status" hidden></div>
+      <section class="metrics" aria-label="สรุปข้อมูล">
+        <article class="metric">
+          <span class="caption" id="kpi-title-0">อยู่ในสำนักงานตอนนี้</span
+          ><span class="mark">♙</span>
+          <div class="value" id="kpi-0">0<small>คน</small></div>
+          <div class="note" id="kpi-note-0">รวมกำลังเดิน รอคิว และรับบริการ</div>
+        </article>
+        <article class="metric">
+          <span class="caption" id="kpi-title-1">แจ้งผลแล้วในวันนี้</span
+          ><span class="mark">✓</span>
+          <div class="value" id="kpi-1">0<small>คน</small></div>
+          <div class="note" id="kpi-note-1">ผ่านครบทั้ง 5 จุดและออกจากอาคาร</div>
+        </article>
+        <article class="metric">
+          <span class="caption" id="kpi-title-2">เวลาเฉลี่ยต่อเรื่อง</span
+          ><span class="mark">◷</span>
+          <div class="value" id="kpi-2">—<small>นาที</small></div>
+          <div class="note" id="kpi-note-2">ตั้งแต่เข้าสำนักงานจนออกจากอาคาร</div>
+        </article>
+        <article class="metric orange">
+          <span class="caption" id="kpi-title-3">คอขวดตอนนี้</span><span class="mark">↗</span>
+          <div class="value" id="kpi-3">ยังไม่มีคิว</div>
+          <div class="note" id="kpi-note-3">คิวรอ 0 คน</div>
+        </article>
+      </section>
+      <div class="main">
+        <section class="scene-card">
+          <div class="scene-head">
+            <span class="scene-title"
+              ><i id="running-dot"></i
+              ><span id="scene-title">ภาพจำลองสำนักงาน · 5 จุดบริการ</span></span
+            >
+            <div class="clock">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" /></svg
+              ><span id="clock-caption">เวลาจำลอง</span><strong id="clock">08:00</strong>
+            </div>
+          </div>
+          <div
+            class="viewport"
+            id="viewport"
+            role="region"
+            aria-label="สำนักงานสามมิติ หมุนและซูมด้วยเมาส์หรือสัมผัส"
+          >
+            <div class="scene-tools">
+              <button class="btn" id="camera-default" aria-label="มุมมองเริ่มต้น">
+                <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3Z M9 20v-7h6v7" /></svg
+                ><span id="default-label">มุมมองเริ่มต้น</span></button
+              ><button class="btn" id="camera-top" aria-label="มองจากด้านบน">
+                <svg viewBox="0 0 24 24">
+                  <rect x="4" y="4" width="16" height="16" rx="2" />
+                  <path d="M4 10h16M10 4v16" /></svg
+                ><span id="top-label">มองจากด้านบน</span></button
+              ><button class="btn" id="camera-auto" aria-pressed="false">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M4 11a8 8 0 0 1 14-5l2 2M20 3v5h-5M20 13A8 8 0 0 1 6 19l-2-2M4 21v-4h5"
+                  /></svg
+                ><span id="auto-label">หมุนอัตโนมัติ</span></button
+              ><button class="btn product-only" id="product-motion" aria-pressed="true" hidden>
+                <span id="motion-label">การเคลื่อนไหว</span>
+              </button>
+            </div>
+            <div class="scene-hint" id="scene-hint">ลากเพื่อหมุน · เลื่อนเพื่อซูม</div>
+            <div class="error" id="scene-error" hidden>
+              <strong>เปิดภาพ 3D ไม่ได้</strong>
+              <p>
+                ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและการรองรับ WebGL ของเบราว์เซอร์
+                แล้วลองโหลดหน้านี้อีกครั้ง
+              </p>
+              <button class="btn" onclick="location.reload()">ลองอีกครั้ง</button>
+            </div>
+          </div>
+          <div class="scene-foot" id="legend">
+            <span class="legend-item"
+              ><i class="dot" style="background: #3981cd"></i>นักศึกษากำลังเดิน</span
+            ><span class="legend-item"
+              ><i class="dot" style="background: #ebbe42"></i>นักศึกษารอคิว</span
+            ><span class="legend-item"
+              ><i class="dot" style="background: #236b50"></i>นักศึกษารับบริการ</span
+            ><span class="legend-item"
+              ><i class="dot" style="background: #193953"></i>เจ้าหน้าที่ไม่ว่าง</span
+            ><span class="legend-item"
+              ><i class="dot" style="background: #86b591"></i>เจ้าหน้าที่ว่าง</span
+            ><span class="legend-item"
+              ><i class="dot" style="background: #ed983f"></i>คิวหนาแน่น</span
+            >
+          </div>
+          <div class="capacity-note" id="capacity-note"></div>
+        </section>
+        <aside class="panel office-only" id="office-panel">
+          <div class="panel-header">
+            <h2>ปรับสถานการณ์</h2>
+            <span class="panel-tag">SIMULATION</span>
+          </div>
+          <p class="panel-sub">ลองเปลี่ยนจำนวนคน แล้วดูว่าคิวไหลอย่างไร</p>
+          <div class="controls">
+            <div class="control">
+              <div class="control-header">
+                <label for="arrivals">นักศึกษาเข้าต่อชั่วโมง</label
+                ><output class="control-value" id="arrivals-value" for="arrivals">7</output>
+              </div>
+              <input id="arrivals" type="range" min="1" max="30" value="7" />
+              <div class="range-ends"><span>1 คน</span><span>30 คน</span></div>
+              <p>ช่วงเปิดภาคเรียนเลื่อนเป็น 18–24</p>
+            </div>
+            <div class="control">
+              <div class="control-header">
+                <label for="documents">เจ้าหน้าที่ตรวจเอกสาร</label
+                ><output class="control-value" id="documents-value" for="documents">1</output>
+              </div>
+              <input id="documents" type="range" min="1" max="3" value="1" />
+              <div class="range-ends"><span>1 คน</span><span>3 คน</span></div>
+              <p>เพิ่มแล้วคิวหน้าโต๊ะที่ 2 หายไป</p>
+            </div>
+            <div class="control">
+              <div class="control-header">
+                <label for="advisors">อาจารย์ที่อยู่ในห้องพัก</label
+                ><output class="control-value" id="advisors-value" for="advisors">3</output>
+              </div>
+              <input id="advisors" type="range" min="0" max="5" value="3" />
+              <div class="range-ends"><span>0 คน</span><span>5 คน</span></div>
+              <p>ช่วงประชุมหรือสอน จำนวนจะลดลง</p>
+            </div>
+            <div class="control speed">
+              <div class="control-header">
+                <label for="speed">ความเร็วจำลอง</label
+                ><output class="control-value" id="speed-value" for="speed">1×</output>
+              </div>
+              <input id="speed" type="range" min="1" max="10" value="1" />
+              <div class="range-ends"><span>1×</span><span>10×</span></div>
+              <p>1× = 1 วินาทีจริง ≈ 4 นาทีจำลอง</p>
+            </div>
+          </div>
+          <div class="panel-callout">
+            <b>เอกสารใช้เวลานานที่สุด</b>คนมาแบบสุ่มตามอัตรา Poisson เวลาบริการแต่ละคนต่างกัน
+            เมื่อเจ้าหน้าที่ลดลง งานที่เริ่มแล้วจะทำต่อจนเสร็จ
+          </div>
+        </aside>
+        <aside class="panel product-panel product-only" id="product-panel" hidden>
+          <div class="panel-header">
+            <h2 id="product-panel-title">คำสั่งซื้อของคุณ</h2>
+            <span class="panel-tag" id="product-tag">DEMO</span>
+          </div>
+          <p class="panel-sub" id="product-sub"></p>
+          <label class="sr-only" for="order-select" id="order-select-label">เลือกคำสั่งซื้อ</label
+          ><select class="product-select" id="order-select" hidden></select>
+          <ol class="journey" id="journey"></ol>
+          <div class="item-list" id="item-list"></div>
+          <div class="panel-callout" id="product-callout"></div>
+        </aside>
+      </div>
+      <footer class="footer">
+        <span id="footer-note"
+          >เปิดรับ 08:00–16:00 · หลังปิดสำนักงานให้บริการคนที่เข้ามาแล้วจนเสร็จ</span
+        ><span id="footer-brand">A SMALL MODEL. A CLEARER PICTURE.</span>
+      </footer>
+    </main>
+    <script>
+      // ปรับค่าของแบบจำลองได้จากวัตถุนี้ โดยไม่ต้องแก้โค้ดส่วนอื่น
+      const PARAMETERS = {
+        arrivalsPerHour: 7,
+        documentStaff: 1,
+        advisorStaff: 3,
+        speed: 1,
+        serviceMeanMinutes: [3.5, 12, 6, 4.5, 2.5],
+        serviceVariation: 0.48,
+        openingMinutes: 8 * 60,
+        closingMinutes: 16 * 60,
+        walkingMinutesPerUnit: 0.18,
+        maxVisiblePeople: 80,
+        maxVisibleQueuePerStage: 12,
+        fps: 30,
+        pixelRatio: 1.5,
+        mobilePixelRatio: 1,
+        shadowMapSize: 1024,
+        productFps: 18,
+        congestionThreshold: 5,
+        cdn: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js',
+      };
+      (() => {
+        'use strict';
+        const $ = (id) => document.getElementById(id);
+        const query = new URLSearchParams(location.search);
+        let storedLocale = 'th',
+          storedTheme = 'light';
+        try {
+          storedLocale = localStorage.getItem('alyzyus-locale') || 'th';
+          storedTheme = localStorage.getItem('alyzyus-theme') || 'light';
+        } catch (_) {}
+        const locale = ['th', 'en', 'zh'].includes(query.get('locale'))
+          ? query.get('locale')
+          : ['th', 'en', 'zh'].includes(storedLocale)
+            ? storedLocale
+            : 'th';
+        const texts = {
+          th: {
+            productTitle: 'เส้นทางสินค้า: จากร้านถึงมือคุณ',
+            productDesc:
+              'ลากเพื่อหมุน เลื่อนล้อเมาส์หรือถ่างสองนิ้วเพื่อซูม ดูขั้นตอนจากสถานะคำสั่งซื้อจริงของคุณ',
+            office: 'คิวสำนักงาน',
+            product: 'เส้นทางสินค้า',
+            modeNote: 'แผนภาพกระบวนการ · ไม่ใช่ตำแหน่งพัสดุแบบสด',
+            scene: 'เส้นทางสินค้า · 5 ขั้นตอน',
+            clock: 'อัปเดตเมื่อ',
+            default: 'มุมมองเริ่มต้น',
+            top: 'มองจากด้านบน',
+            auto: 'หมุนอัตโนมัติ',
+            hint: 'ลากเพื่อหมุน · เลื่อนเพื่อซูม',
+            refresh: 'รีเฟรชข้อมูล',
+            steps: [
+              'รับคำสั่งซื้อ',
+              'ยืนยันคำสั่งซื้อ',
+              'เตรียมสินค้า',
+              'จัดส่งสินค้า',
+              'ส่งถึงลูกค้า',
+            ],
+            state: 'สถานะคำสั่งซื้อ',
+            units: 'สินค้าในออเดอร์',
+            check: 'ตรวจข้อมูลล่าสุด',
+            queue: 'ออเดอร์ขั้นตอนเดียวกัน',
+            unit: 'ชิ้น',
+            orderUnit: 'รายการ',
+            items: 'สินค้าในคำสั่งซื้อ',
+            selected: 'เลือกคำสั่งซื้อ',
+            demo: 'ตัวอย่างเพื่ออธิบายขั้นตอนเท่านั้น ไม่มีคำสั่งซื้อจริงและไม่มีการเปลี่ยนสถานะอัตโนมัติ',
+            live: 'ข้อมูลจริงจากคำสั่งซื้อที่บัญชีนี้มีสิทธิ์เข้าถึง กดรีเฟรชเพื่ออ่านสถานะล่าสุด',
+            loading: 'กำลังอ่านคำสั่งซื้อ…',
+            denied: 'เข้าสู่ระบบด้วยบัญชีเจ้าของคำสั่งซื้อหรือผู้ดูแลที่มีสิทธิ์ เพื่อดูข้อมูลจริง',
+            notFound: 'ไม่พบคำสั่งซื้อนี้ในข้อมูลที่บัญชีมีสิทธิ์เข้าถึง',
+            failed: 'อ่านข้อมูลไม่สำเร็จ กดรีเฟรชเพื่อลองอีกครั้ง',
+            file: 'ข้อมูลจริงต้องเปิดผ่านเว็บไซต์ร้านและเข้าสู่ระบบก่อน',
+            cancelled: 'คำสั่งซื้อถูกยกเลิก',
+            unknown: 'ยังไม่มีข้อมูลสถานะที่รองรับ',
+            empty: 'ไม่มีข้อมูลคำสั่งซื้อที่แสดงได้',
+            panel: 'รายละเอียดคำสั่งซื้อ',
+            diagram:
+              'แผนภาพนี้แสดงขั้นตอนจากสถานะในร้าน การเคลื่อนไหวเป็นเพียงภาพประกอบ ไม่ใช่ GPS หรือการติดตามพัสดุ',
+            loaded: 'ออเดอร์ที่โหลดและมีสิทธิ์ดู',
+            footer: 'แสดงเฉพาะคำสั่งซื้อที่ API อนุญาต · จำนวนออเดอร์นับจากรายการที่โหลดได้',
+            current: 'ขั้นตอนปัจจุบัน',
+            done: 'ผ่านขั้นตอนนี้แล้ว',
+            future: 'ขั้นตอนถัดไป',
+            time: 'เวลาอ่านข้อมูลจากเซิร์ฟเวอร์',
+            demoItem: 'สินค้าตัวอย่าง',
+            noItems: 'ไม่มีรายการสินค้า',
+            source: 'ข้อมูลสถานะจากร้าน',
+            note: 'สถานะเปลี่ยนเมื่อร้านอัปเดตข้อมูล',
+            ready: 'ตัวอย่าง',
+            back: 'รับคำสั่งซื้อ',
+            notSelected: 'ยังไม่มีคำสั่งซื้อ',
+            actual: 'ACTUAL ORDER',
+            pause: 'หยุดชั่วคราว',
+            resume: 'เล่นต่อ',
+          },
+          en: {
+            productTitle: 'Product journey: from store to you',
+            productDesc:
+              'Drag to rotate. Scroll or pinch to zoom. Explore the process using your actual order status.',
+            office: 'Office queue',
+            product: 'Product journey',
+            modeNote: 'Process diagram · not a live parcel location',
+            scene: 'Product journey · 5 stages',
+            clock: 'Checked at',
+            default: 'Default view',
+            top: 'Top view',
+            auto: 'Auto rotate',
+            hint: 'Drag to rotate · scroll to zoom',
+            refresh: 'Refresh data',
+            steps: [
+              'Order received',
+              'Order confirmed',
+              'Preparing items',
+              'In delivery',
+              'Delivered',
+            ],
+            state: 'Order status',
+            units: 'Items in this order',
+            check: 'Last data check',
+            queue: 'Orders at this stage',
+            unit: 'items',
+            orderUnit: 'orders',
+            items: 'Items in the order',
+            selected: 'Choose an order',
+            demo: 'Illustrative example only. No real order and no automatic status changes.',
+            live: 'Real data from orders this account is allowed to access. Refresh to check the latest status.',
+            loading: 'Loading your order…',
+            denied: 'Sign in as the order owner or an authorized administrator to see real data.',
+            notFound: 'This order was not found in the records this account can access.',
+            failed: 'Could not load the data. Refresh to try again.',
+            file: 'Open through the store website and sign in to load real data.',
+            cancelled: 'Order cancelled',
+            unknown: 'No supported status available',
+            empty: 'No order data to display',
+            panel: 'Order details',
+            diagram:
+              'This diagram reflects the store’s order status. Motion is illustrative, not GPS or live parcel tracking.',
+            loaded: 'Loaded authorized orders',
+            footer: 'Only API-authorized orders are shown · counts cover the loaded records',
+            current: 'Current stage',
+            done: 'Stage passed',
+            future: 'Next stage',
+            time: 'Time the server data was checked',
+            demoItem: 'Example product',
+            noItems: 'No items available',
+            source: 'Status from the store',
+            note: 'Status changes when the store updates the order',
+            ready: 'Example',
+            back: 'Order received',
+            notSelected: 'No selected order',
+            actual: 'ACTUAL ORDER',
+            pause: 'Pause',
+            resume: 'Resume',
+          },
+          zh: {
+            productTitle: '商品旅程：从商店到您手中',
+            productDesc: '拖动旋转，滚轮或双指缩放。通过真实订单状态查看处理流程。',
+            office: '办公室排队',
+            product: '商品旅程',
+            modeNote: '流程示意图 · 非包裹实时位置',
+            scene: '商品旅程 · 五个阶段',
+            clock: '检查时间',
+            default: '默认视角',
+            top: '俯视',
+            auto: '自动旋转',
+            hint: '拖动旋转 · 滚轮缩放',
+            refresh: '刷新数据',
+            steps: ['收到订单', '确认订单', '准备商品', '配送中', '已送达'],
+            state: '订单状态',
+            units: '订单商品数量',
+            check: '最近数据检查',
+            queue: '相同阶段的订单',
+            unit: '件',
+            orderUnit: '个订单',
+            items: '订单中的商品',
+            selected: '选择订单',
+            demo: '仅为流程演示。没有真实订单，状态不会自动推进。',
+            live: '数据来自此账户有权查看的真实订单。刷新可读取最新状态。',
+            loading: '正在读取订单…',
+            denied: '请使用订单所有者或获授权的管理员账户登录，以查看真实数据。',
+            notFound: '此账户可访问的数据中未找到该订单。',
+            failed: '无法加载数据，请刷新重试。',
+            file: '请通过商店网站打开并登录，以加载真实数据。',
+            cancelled: '订单已取消',
+            unknown: '暂无可显示的状态',
+            empty: '暂无可显示的订单数据',
+            panel: '订单详情',
+            diagram: '本图根据商店的订单状态显示流程。动画仅作示意，不代表 GPS 或包裹实时位置。',
+            loaded: '已加载的获授权订单',
+            footer: '仅显示 API 授权的订单 · 数量基于已加载的数据',
+            current: '当前阶段',
+            done: '已通过此阶段',
+            future: '下一阶段',
+            time: '从服务器读取数据的时间',
+            demoItem: '示例商品',
+            noItems: '暂无商品',
+            source: '商店提供的状态',
+            note: '商店更新订单后，状态才会改变',
+            ready: '示例',
+            back: '收到订单',
+            notSelected: '未选择订单',
+            actual: '真实订单',
+            pause: '暂停',
+            resume: '继续',
+          },
+        };
+        const t = texts[locale];
+        const officeNames = ['รับคำร้อง', 'ตรวจเอกสาร', 'อ.ที่ปรึกษา', 'คณบดีอนุมัติ', 'แจ้งผล'];
+        const stageX = [-7.6, -3.8, 0, 3.8, 7.6];
+        const statusStage = Object.freeze({
+          pending: 0,
+          confirmed: 1,
+          processing: 2,
+          shipped: 3,
+          delivered: 4,
+        });
+        const isProductQuery = ['product', 'live', 'demo'].includes(query.get('mode'));
+        let mode = isProductQuery ? 'product' : 'office';
+        let selectedOrderKey = query.get('order') || '',
+          productKey = query.get('product') || '',
+          orders = [],
+          selectedOrder = null,
+          fetchedAt = null,
+          realError = '',
+          fetchSerial = 0,
+          dataStarted = false,
+          previewProduct = null;
+        const previewTexts = {
+          th: {
+            state: 'ขั้นตอนตัวอย่าง',
+            title: 'ตัวอย่างเส้นทางสินค้า',
+            message: 'ภาพอธิบายเส้นทางสินค้าก่อนสั่งซื้อ ไม่ใช่สถานะของคำสั่งซื้อจริง',
+            missing: 'ยังอ่านสินค้านี้ไม่ได้ จึงแสดงกล่องตัวอย่างเพื่ออธิบายกระบวนการ',
+            footer: 'ภาพอธิบายกระบวนการก่อนสั่งซื้อ · ไม่ใช่ข้อมูลสถานะคำสั่งซื้อ',
+          },
+          en: {
+            state: 'Illustrative stage',
+            title: 'Product journey preview',
+            message: 'A process illustration before checkout, not an actual order status.',
+            missing: 'This product could not be loaded. An example box illustrates the process.',
+            footer: 'Process illustration before checkout · no actual order status',
+          },
+          zh: {
+            state: '示例阶段',
+            title: '商品旅程预览',
+            message: '下单前的流程示意，不代表真实订单状态。',
+            missing: '暂时无法读取该商品，因此显示示例包裹说明流程。',
+            footer: '下单前的流程示意 · 非真实订单状态',
+          },
+        };
+        const previewText = previewTexts[locale];
+        const previewUi = {
+          th: {
+            description:
+              'ลากเพื่อหมุน เลื่อนหรือถ่างสองนิ้วเพื่อซูม สำรวจ 5 ขั้นตอนของสินค้าก่อนสั่งซื้อ',
+            units: 'สินค้าในตัวอย่าง',
+            items: 'สินค้าที่นำมาอธิบาย',
+            panel: 'สำรวจขั้นตอนสินค้า',
+            diagram: 'การเคลื่อนไหวเป็นภาพประกอบเท่านั้น ไม่มีคำสั่งซื้อหรือสถานะการชำระเงินจริง',
+          },
+          en: {
+            description:
+              'Drag to rotate. Scroll or pinch to zoom. Explore five product stages before checkout.',
+            units: 'Example items',
+            items: 'Items in this illustration',
+            panel: 'Explore the process',
+            diagram:
+              'Motion is illustrative. There is no actual order or payment status in this preview.',
+          },
+          zh: {
+            description: '拖动旋转，滚轮或双指缩放。在下单前查看商品的五个处理阶段。',
+            units: '示例商品数量',
+            items: '流程示意中的商品',
+            panel: '查看商品流程',
+            diagram: '动画仅作示意。此预览没有真实订单或付款状态。',
+          },
+        }[locale];
+        const requestedReal = () => !!selectedOrderKey || query.get('mode') === 'live';
+        let renderer,
+          scene,
+          camera,
+          officeGroup,
+          productGroup,
+          peopleBody,
+          peopleHead,
+          currentBox,
+          stagePlatforms = [],
+          labels = [],
+          servers = [],
+          frameId = 0;
+        let reducedMotion = false,
+          productMotion = true,
+          productActors = [],
+          productTruck = null,
+          currentProductStage = -1;
+        let initialized = false,
+          paused = false,
+          automatic = false,
+          inView = true,
+          lastFrame = 0,
+          lastUi = 0,
+          productAnimationUntil = 0;
+        let cameraState = { theta: 0.38, phi: 0.79, radius: 26 },
+          cameraGoal = { ...cameraState };
+        const cameraTarget = { x: 0, y: 0.3, z: 0 };
+        let resources = new Set(),
+          studentId = 0,
+          students = [],
+          queues = [[], [], [], [], []],
+          simMinute = PARAMETERS.openingMinutes,
+          nextArrival = 0,
+          completed = 0,
+          totalDuration = 0;
+        const config = {
+          arrivals: PARAMETERS.arrivalsPerHour,
+          documents: PARAMETERS.documentStaff,
+          advisors: PARAMETERS.advisorStaff,
+          speed: PARAMETERS.speed,
+        };
+        const colors = {
+          walk: 0x3981cd,
+          queue: 0xebbe42,
+          service: 0x236b50,
+          busy: 0x193953,
+          idle: 0x86b591,
+          orange: 0xed983f,
+        };
+        const svgPause = '<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>';
+        const svgPlay = '<svg viewBox="0 0 24 24"><path d="m8 5 11 7-11 7Z"/></svg>';
+        const safeCount = (value) =>
+          Math.max(0, Number.isFinite(Number(value)) ? Number(value) : 0);
+        const localizedName = (value) =>
+          typeof value === 'string'
+            ? value
+            : (value && (value[locale] || value.th || value.en || value.zh)) || '';
+        // ตัวเลขสุ่มแบบเอ็กซ์โพเนนเชียลทำให้ช่วงห่างของผู้เข้าเป็นกระบวนการ Poisson
+        function arrivalInterval(rate) {
+          return (-Math.log(Math.max(1e-12, 1 - Math.random())) * 60) / Math.max(1, rate);
+        }
+        function serviceTime(stage) {
+          const mean = PARAMETERS.serviceMeanMinutes[stage];
+          return Math.max(
+            0.25,
+            mean * (1 + PARAMETERS.serviceVariation * (Math.random() + Math.random() - 1))
+          );
+        }
+        function setText(id, value) {
+          $(id).textContent = value;
+        }
+        function setKpi(index, value, unit = '') {
+          const element = $('kpi-' + index);
+          element.replaceChildren(document.createTextNode(String(value)));
+          if (unit) {
+            const small = document.createElement('small');
+            small.textContent = unit;
+            element.append(small);
+          }
+        }
+        function showError(detail) {
+          $('scene-error').hidden = false;
+          if (detail) $('scene-error').querySelector('p').textContent = detail;
+        }
+        function resource(value) {
+          resources.add(value);
+          return value;
+        }
+        function material(color, options = {}) {
+          return resource(
+            new THREE.MeshStandardMaterial({ color, roughness: 0.76, metalness: 0, ...options })
+          );
+        }
+        const geo = {},
+          mats = {};
+        function mesh(shape, mat, x, y, z, sx = 1, sy = 1, sz = 1, parent = officeGroup) {
+          const item = new THREE.Mesh(shape, mat);
+          item.position.set(x, y, z);
+          item.scale.set(sx, sy, sz);
+          item.castShadow = true;
+          item.receiveShadow = true;
+          parent.add(item);
+          return item;
+        }
+        function box(mat, x, y, z, sx, sy, sz, parent) {
+          return mesh(geo.box, mat, x, y, z, sx, sy, sz, parent);
+        }
+        function plant(x, z, parent = officeGroup) {
+          mesh(geo.cylinder, mats.pot, x, 0.22, z, 0.38, 0.42, 0.38, parent);
+          mesh(geo.sphere, mats.plant, x, 0.69, z, 0.56, 0.56, 0.56, parent);
+          mesh(geo.sphere, mats.plantLight, x - 0.17, 0.97, z - 0.05, 0.35, 0.34, 0.35, parent);
+        }
+        function makeStaff(stage, slot) {
+          const group = new THREE.Group();
+          officeGroup.add(group);
+          const body = mesh(geo.capsule, mats.idle, 0, 0.52, -0.63, 1, 1, 1, group);
+          mesh(geo.head, mats.skin, 0, 0.98, -0.63, 1, 1, 1, group);
+          box(
+            mats.desk,
+            0,
+            0.56,
+            0,
+            stage === 2 ? 0.5 : stage === 1 ? 0.9 : 1.6,
+            0.12,
+            0.62,
+            group
+          );
+          box(mats.deskLeg, 0, 0.25, 0, 0.65, 0.5, 0.42, group);
+          box(mats.monitor, 0, 0.81, -0.12, 0.28, 0.25, 0.04, group);
+          box(mats.screen, 0, 0.81, -0.09, 0.23, 0.18, 0.012, group);
+          box(mats.paper, 0.18, 0.64, 0.11, 0.14, 0.014, 0.2, group);
+          const x =
+            stageX[stage] +
+            (stage === 1
+              ? [-0.9, 0, 0.9][slot]
+              : stage === 2
+                ? [-1.2, -0.6, 0, 0.6, 1.2][slot]
+                : 0);
+          group.position.set(x, 0, -3.72);
+          const server = { stage, slot, x, group, body, student: null, retiring: false };
+          servers.push(server);
+          return server;
+        }
+        function buildOffice() {
+          officeGroup = new THREE.Group();
+          scene.add(officeGroup);
+          box(mats.plinth, 0, -0.3, 0, 20.9, 0.44, 13.3);
+          box(mats.floor, 0, -0.045, 0, 20.5, 0.12, 12.9);
+          box(mats.navy, 0, 0.8, -6.3, 20.5, 1.7, 0.18);
+          box(mats.navy, -10.15, 0.8, 0, 0.18, 1.7, 12.6);
+          box(mats.navy, 10.15, 0.8, 0, 0.18, 1.7, 12.6);
+          box(mats.navy, -5.8, 0.38, 6.3, 8.65, 0.86, 0.18);
+          box(mats.navy, 5.8, 0.38, 6.3, 8.65, 0.86, 0.18);
+          box(mats.entrance, 0, 0.008, 5.8, 2.5, 0.028, 1.0);
+          box(mats.path, 0, 0.015, 3.1, 1.8, 0.025, 4.6);
+          // ห้องที่ปรึกษาและคณบดีมีผนังกั้นและช่องประตูด้านหน้า
+          for (const x of [0, 3.8]) {
+            box(mats.partition, x - 1.76, 0.72, -3.83, 0.1, 1.48, 4.55);
+            box(mats.partition, x + 1.76, 0.72, -3.83, 0.1, 1.48, 4.55);
+            box(mats.partition, x - 1.17, 0.56, -1.56, 1.2, 1.18, 0.1);
+            box(mats.partition, x + 1.17, 0.56, -1.56, 1.2, 1.18, 0.1);
+            box(mats.doorMark, x, 0.012, -1.58, 1.13, 0.02, 0.22);
+          }
+          stageX.forEach((x, index) => {
+            box(mats.queueZone, x, 0.018, 0.0, 2.62, 0.023, 2.8);
+            for (let c = 0; c < 3; c++)
+              for (let r = 0; r < 4; r++)
+                box(mats.queueLine, x + (c - 1) * 0.72, 0.035, -0.78 + r * 0.6, 0.58, 0.009, 0.48);
+            if (index === 1) for (let slot = 0; slot < 3; slot++) makeStaff(index, slot);
+            else if (index === 2) for (let slot = 0; slot < 5; slot++) makeStaff(index, slot);
+            else makeStaff(index, 0);
+          });
+          for (const side of [-1, 1])
+            for (let row = 0; row < 2; row++)
+              for (let col = 0; col < 4; col++) {
+                const x = side * (3.2 + col * 0.91),
+                  z = 3.15 + row * 1.05;
+                box(mats.chair, x, 0.32, z, 0.65, 0.09, 0.59);
+                box(mats.chair, x, 0.65, z - 0.27, 0.65, 0.65, 0.08);
+                for (const dx of [-0.25, 0.25])
+                  box(mats.chairLeg, x + dx, 0.14, z, 0.04, 0.28, 0.4);
+              }
+          for (const x of [-9, 9]) for (const z of [-5.2, 5.25]) plant(x, z);
+          peopleBody = new THREE.InstancedMesh(
+            geo.capsule,
+            mats.people,
+            PARAMETERS.maxVisiblePeople
+          );
+          peopleBody.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+          peopleBody.castShadow = true;
+          officeGroup.add(peopleBody);
+          peopleHead = new THREE.InstancedMesh(geo.head, mats.skin, PARAMETERS.maxVisiblePeople);
+          peopleHead.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+          peopleHead.castShadow = true;
+          officeGroup.add(peopleHead);
+          peopleBody.count = peopleHead.count = 0;
+        }
+        function productParcel(parent, x, y, z, scale = 1) {
+          const group = new THREE.Group();
+          parent.add(group);
+          group.position.set(x, y, z);
+          group.scale.setScalar(scale);
+          box(mats.parcel, 0, 0.35, 0, 0.78, 0.7, 0.67, group);
+          box(mats.ribbon, 0, 0.35, 0, 0.1, 0.712, 0.68, group);
+          box(mats.ribbon, 0, 0.71, 0, 0.79, 0.014, 0.1, group);
+          box(mats.sticker, 0.23, 0.36, 0.341, 0.18, 0.18, 0.01, group);
+          return group;
+        }
+        function buildProduct() {
+          productGroup = new THREE.Group();
+          scene.add(productGroup);
+          box(mats.plinth, 0, -0.29, 0, 20.9, 0.42, 8.4, productGroup);
+          box(mats.floor, 0, -0.045, 0, 20.5, 0.12, 8, productGroup);
+          box(mats.path, 0, 0.018, 0.5, 17, 0.025, 1.1, productGroup);
+          stageX.forEach((x, i) => {
+            const pad = mesh(
+              geo.cylinder,
+              mats.blueSoft,
+              x,
+              0.14,
+              0.25,
+              1.23,
+              0.25,
+              1.23,
+              productGroup
+            );
+            stagePlatforms.push(pad);
+            const ring = mesh(
+              geo.ring,
+              mats.pathEdge,
+              x,
+              0.025,
+              0.25,
+              1.15,
+              1.15,
+              1.15,
+              productGroup
+            );
+            ring.rotation.x = -Math.PI / 2;
+            if (i < 4)
+              for (let k = 0; k < 3; k++)
+                box(
+                  mats.pathEdge,
+                  x + 1.45 + k * 0.35,
+                  0.045,
+                  0.25,
+                  0.16,
+                  0.04,
+                  0.07,
+                  productGroup
+                );
+            if (i === 0) {
+              box(mats.desk, x, 0.5, -1.7, 1.7, 0.15, 0.75, productGroup);
+              box(mats.deskLeg, x, 0.24, -1.7, 1.3, 0.48, 0.5, productGroup);
+              box(mats.monitor, x, 0.87, -1.85, 0.66, 0.57, 0.1, productGroup);
+              box(mats.screen, x, 0.87, -1.79, 0.55, 0.4, 0.015, productGroup);
+            }
+            if (i === 1) {
+              box(mats.paper, x, 0.45, -1.65, 0.88, 0.08, 1.0, productGroup);
+              box(mats.blueSoft, x, 0.34, -1.65, 1.0, 0.6, 1.18, productGroup);
+              box(mats.paper, x, 0.69, -1.65, 0.82, 0.05, 0.96, productGroup);
+              for (let n = 0; n < 3; n++)
+                box(mats.pathEdge, x, 0.725, -1.9 + n * 0.22, 0.5, 0.01, 0.06, productGroup);
+            }
+            if (i === 2) {
+              for (const dx of [-0.85, 0.85])
+                box(mats.navy, x + dx, 0.84, -1.85, 0.08, 1.7, 0.7, productGroup);
+              for (const y of [0.3, 0.86, 1.4]) {
+                box(mats.desk, x, y, -1.85, 1.76, 0.07, 0.75, productGroup);
+                for (const dx of [-0.48, 0.3])
+                  productParcel(productGroup, x + dx, y + 0.05, -1.85, 0.5);
+              }
+            }
+            if (i === 3) {
+              const first = productGroup.children.length;
+              box(mats.blue, x - 0.28, 0.67, -1.65, 1.37, 0.95, 0.85, productGroup);
+              box(mats.navy, x + 0.66, 0.46, -1.65, 0.57, 0.54, 0.85, productGroup);
+              box(mats.screen, x + 0.73, 0.83, -1.65, 0.36, 0.28, 0.82, productGroup);
+              for (const dx of [-0.65, 0.67])
+                for (const dz of [-0.4, 0.4]) {
+                  const wheel = mesh(
+                    geo.cylinder,
+                    mats.tire,
+                    x + dx,
+                    0.22,
+                    -1.65 + dz,
+                    0.23,
+                    0.1,
+                    0.23,
+                    productGroup
+                  );
+                  wheel.rotation.x = Math.PI / 2;
+                }
+              const parts = productGroup.children.slice(first);
+              productTruck = new THREE.Group();
+              productGroup.add(productTruck);
+              parts.forEach((part) => productTruck.add(part));
+            }
+            if (i === 4) {
+              box(mats.house, x, 0.61, -1.77, 1.5, 1.2, 1.24, productGroup);
+              const roof = mesh(
+                geo.roof,
+                mats.navy,
+                x,
+                1.59,
+                -1.77,
+                1.31,
+                0.82,
+                1.14,
+                productGroup
+              );
+              roof.rotation.y = Math.PI / 4;
+              box(mats.door, x, 0.43, -1.13, 0.36, 0.87, 0.025, productGroup);
+              for (const dx of [-0.46, 0.46])
+                box(mats.screen, x + dx, 0.8, -1.13, 0.28, 0.32, 0.03, productGroup);
+            }
+          });
+          for (const x of [-9, 9]) plant(x, 2.7, productGroup);
+          currentBox = productParcel(productGroup, 0, 0.29, 0.25, 1.15);
+          // จุดแสงใช้รูปทรงร่วมกัน เป็นภาพประกอบกระบวนการ ไม่ใช่สถานะพัสดุ
+          for (let stage = 0; stage < 4; stage++)
+            for (let slot = 0; slot < 3; slot++) {
+              const dot = mesh(
+                geo.sphere,
+                mats.blue,
+                stageX[stage],
+                0.14,
+                0.5,
+                0.055,
+                0.055,
+                0.055,
+                productGroup
+              );
+              dot.castShadow = false;
+              dot.receiveShadow = false;
+              productActors.push({ dot, stage, slot });
+            }
+          productGroup.visible = false;
+        }
+        function createLabels() {
+          stageX.forEach((_, i) => {
+            const label = document.createElement('div');
+            label.className = 'stage-label';
+            label.innerHTML = '<b></b><small></small>';
+            $('viewport').append(label);
+            labels.push(label);
+          });
+        }
+        function capacity(stage) {
+          return stage === 1 ? config.documents : stage === 2 ? config.advisors : 1;
+        }
+        function syncStaff() {
+          for (const server of servers) {
+            server.retiring = server.slot >= capacity(server.stage);
+            server.group.visible = !server.retiring || !!server.student;
+            server.body.material = server.student ? mats.busy : mats.idle;
+          }
+        }
+        function queuePosition(stage, index) {
+          const visibleIndex = Math.min(index, PARAMETERS.maxVisibleQueuePerStage - 1);
+          return {
+            x: stageX[stage] + ((visibleIndex % 3) - 1) * 0.71,
+            z: -0.77 + Math.floor(visibleIndex / 3) * 0.58,
+          };
+        }
+        function makeWalk(student, target, action) {
+          const corridor = 2.07;
+          let points = [];
+          if (student.z < 1.4 && Math.abs(student.x - target.x) > 0.8)
+            points.push({ x: student.x, z: corridor }, { x: target.x, z: corridor });
+          else if (student.z > 2.5)
+            points.push({ x: 0, z: corridor }, { x: target.x, z: corridor });
+          points.push(target);
+          student.path = points;
+          student.action = action;
+          student.state = 'walking';
+        }
+        function newStudent() {
+          const student = {
+            id: ++studentId,
+            x: 0,
+            z: 6.7,
+            entered: simMinute,
+            stage: 0,
+            state: 'walking',
+            path: [],
+            action: 'queue',
+            server: null,
+            remaining: 0,
+            queueAge: 0,
+          };
+          students.push(student);
+          makeWalk(student, queuePosition(0, queues[0].length), 'queue');
+        }
+        function resetSimulation() {
+          students = [];
+          queues = [[], [], [], [], []];
+          studentId = 0;
+          completed = 0;
+          totalDuration = 0;
+          simMinute = PARAMETERS.openingMinutes;
+          nextArrival = arrivalInterval(config.arrivals);
+          for (const server of servers) server.student = null;
+          paused = false;
+          syncStaff();
+          $('pause').innerHTML = svgPause + '<span>หยุดชั่วคราว</span>';
+          updateOfficeUi();
+          needFrame();
+        }
+        function walkStudent(student, minutes) {
+          let distance = minutes / PARAMETERS.walkingMinutesPerUnit;
+          while (distance > 0 && student.path.length) {
+            const target = student.path[0],
+              dx = target.x - student.x,
+              dz = target.z - student.z,
+              length = Math.hypot(dx, dz);
+            if (length <= distance) {
+              student.x = target.x;
+              student.z = target.z;
+              student.path.shift();
+              distance -= length;
+            } else {
+              student.x += (dx / length) * distance;
+              student.z += (dz / length) * distance;
+              distance = 0;
+            }
+          }
+          if (!student.path.length) {
+            if (student.action === 'queue') {
+              student.state = 'queued';
+              student.queueAge = simMinute;
+              queues[student.stage].push(student);
+            } else if (student.action === 'service') {
+              student.state = 'service';
+              student.remaining = serviceTime(student.stage);
+            } else {
+              student.state = 'finished';
+              completed++;
+              totalDuration += simMinute - student.entered;
+            }
+          }
+        }
+        // สถานะนักศึกษาทุกคนยังคงคำนวณครบ แม้วาดตัวละครได้สูงสุดตาม maxVisiblePeople
+        function simulationStep(minutes) {
+          simMinute += minutes;
+          if (simMinute < PARAMETERS.closingMinutes) {
+            nextArrival -= minutes;
+            while (nextArrival <= 0) {
+              newStudent();
+              nextArrival += arrivalInterval(config.arrivals);
+            }
+          }
+          for (const student of students) {
+            if (student.state === 'walking') walkStudent(student, minutes);
+            else if (student.state === 'service') {
+              student.remaining -= minutes;
+              if (student.remaining <= 0) {
+                const server = student.server;
+                server.student = null;
+                student.server = null;
+                student.stage++;
+                if (student.stage < 5)
+                  makeWalk(
+                    student,
+                    queuePosition(student.stage, queues[student.stage].length),
+                    'queue'
+                  );
+                else makeWalk(student, { x: 0, z: 6.9 }, 'exit');
+              }
+            }
+          }
+          students = students.filter((student) => student.state !== 'finished');
+          for (let stage = 0; stage < 5; stage++) {
+            const free = servers.filter(
+              (server) => server.stage === stage && !server.student && server.slot < capacity(stage)
+            );
+            for (const server of free) {
+              const student = queues[stage].shift();
+              if (!student) break;
+              server.student = student;
+              student.server = server;
+              makeWalk(student, { x: server.x, z: -2.89 }, 'service');
+            }
+            queues[stage].forEach((student, index) => {
+              const target = queuePosition(stage, index);
+              const step = Math.min(1, minutes * 2.3);
+              student.x += (target.x - student.x) * step;
+              student.z += (target.z - student.z) * step;
+            });
+          }
+          syncStaff();
+          if (simMinute >= PARAMETERS.closingMinutes && students.length === 0) {
+            paused = true;
+            $('pause').innerHTML = svgPlay + '<span>จบวันแล้ว</span>';
+          }
+        }
+        function simulate(minutes) {
+          let left = minutes;
+          while (left > 1e-8) {
+            const step = Math.min(0.25, left);
+            simulationStep(step);
+            left -= step;
+          }
+        }
+        let drawDummy, bodyColor, labelVector;
+        function visibleStudents() {
+          const stageCount = [0, 0, 0, 0, 0];
+          return students
+            .filter(
+              (student) =>
+                student.state !== 'queued' ||
+                ++stageCount[student.stage] <= PARAMETERS.maxVisibleQueuePerStage
+            )
+            .slice(0, PARAMETERS.maxVisiblePeople);
+        }
+        function drawStudents(time) {
+          const visible = visibleStudents(),
+            count = visible.length;
+          peopleBody.count = peopleHead.count = count;
+          for (let i = 0; i < count; i++) {
+            const s = visible[i],
+              walking = s.state === 'walking',
+              bounce = walking ? Math.sin(time * 0.012 + s.id) * 0.022 : 0;
+            drawDummy.position.set(s.x, 0.5 + bounce, s.z);
+            drawDummy.rotation.set(0, 0, walking ? Math.sin(time * 0.008 + s.id) * 0.07 : 0);
+            drawDummy.scale.set(1, 1, 1);
+            drawDummy.updateMatrix();
+            peopleBody.setMatrixAt(i, drawDummy.matrix);
+            bodyColor.setHex(
+              s.state === 'queued'
+                ? colors.queue
+                : s.state === 'service'
+                  ? colors.service
+                  : colors.walk
+            );
+            peopleBody.setColorAt(i, bodyColor);
+            drawDummy.position.y = 0.97 + bounce;
+            drawDummy.rotation.z = 0;
+            drawDummy.updateMatrix();
+            peopleHead.setMatrixAt(i, drawDummy.matrix);
+          }
+          peopleBody.instanceMatrix.needsUpdate = true;
+          peopleHead.instanceMatrix.needsUpdate = true;
+          if (peopleBody.instanceColor) peopleBody.instanceColor.needsUpdate = true;
+          peopleBody.computeBoundingSphere();
+          peopleHead.computeBoundingSphere();
+        }
+        function updateOfficeUi() {
+          setKpi(0, students.length, 'คน');
+          setKpi(1, completed, 'คน');
+          setKpi(2, completed ? (totalDuration / completed).toFixed(1) : '—', 'นาที');
+          const counts = queues.map((queue) => queue.length),
+            max = Math.max(...counts),
+            index = counts.indexOf(max);
+          setKpi(3, max ? officeNames[index] : 'ยังไม่มีคิว');
+          setText('kpi-note-3', 'คิวรอ ' + max + ' คน');
+          const minute = Math.floor(simMinute);
+          setText(
+            'clock',
+            String(Math.floor(minute / 60) % 24).padStart(2, '0') +
+              ':' +
+              String(minute % 60).padStart(2, '0')
+          );
+          labels.forEach((label, i) => {
+            label.querySelector('b').textContent = i + 1 + '. ' + officeNames[i];
+            label.querySelector('small').textContent =
+              'รอ ' +
+              counts[i] +
+              ' คน' +
+              (innerWidth < 540 ? '' : ' · ' + capacity(i) + ' เจ้าหน้าที่');
+            label.className =
+              'stage-label' + (counts[i] >= PARAMETERS.congestionThreshold ? ' congested' : '');
+          });
+          const shown = visibleStudents().length,
+            hidden = students.length - shown;
+          $('capacity-note').style.display = hidden ? 'block' : 'none';
+          setText(
+            'capacity-note',
+            'แสดงตัวละคร ' + shown + ' คน อีก ' + hidden + ' คนยังนับอยู่ในคิวและสถิติ'
+          );
+          $('running-dot').style.background = paused ? '#e2af54' : '#7cbb92';
+        }
+        function formatTime(date) {
+          return date
+            ? date.toLocaleTimeString(
+                locale === 'th' ? 'th-TH' : locale === 'zh' ? 'zh-CN' : 'en-GB',
+                { hour: '2-digit', minute: '2-digit', hour12: false }
+              )
+            : '—';
+        }
+        function currentStage() {
+          return selectedOrder && Object.hasOwn(statusStage, selectedOrder.status)
+            ? statusStage[selectedOrder.status]
+            : -1;
+        }
+        function productCounts() {
+          const result = [0, 0, 0, 0, 0];
+          for (const order of orders)
+            if (Object.hasOwn(statusStage, order.status)) result[statusStage[order.status]]++;
+          return result;
+        }
+        function updateProductUi() {
+          const real = requestedReal(),
+            index = currentStage(),
+            counts = productCounts(),
+            valid = !!selectedOrder,
+            units = valid
+              ? selectedOrder.items.reduce((sum, item) => sum + safeCount(item.quantity), 0)
+              : 0;
+          const state = valid
+            ? selectedOrder.status === 'cancelled'
+              ? t.cancelled
+              : index >= 0
+                ? t.steps[index]
+                : t.unknown
+            : t.notSelected;
+          ['state', 'units', 'check', 'queue'].forEach((key, i) =>
+            setText(
+              'kpi-title-' + i,
+              !real && i === 0 ? previewText.state : !real && i === 1 ? previewUi.units : t[key]
+            )
+          );
+          setKpi(0, state);
+          $('kpi-0').style.fontSize = '18px';
+          $('kpi-0').style.paddingTop = '10px';
+          setKpi(1, valid ? units : '—', t.unit);
+          setKpi(2, real ? formatTime(fetchedAt) : 'DEMO');
+          $('kpi-2').style.fontSize = '25px';
+          setKpi(
+            3,
+            index >= 0 ? (real ? counts[index] : t.ready) : '—',
+            index >= 0 && real ? t.orderUnit : ''
+          );
+          setText('kpi-note-0', valid ? selectedOrder.order_number : t.empty);
+          setText('kpi-note-1', real ? t.items : previewUi.items);
+          setText('kpi-note-2', real ? t.time : t.ready);
+          setText('kpi-note-3', real ? t.loaded + ' · ' + orders.length : t.ready);
+          setText('clock', real ? formatTime(fetchedAt) : 'DEMO');
+          $('product-message').className =
+            'status-message product-only' + (real && valid && !realError ? ' live' : '');
+          setText(
+            'product-message',
+            realError || (real ? t.live : productKey ? previewText.message : t.demo)
+          );
+          setText('product-tag', real ? t.actual : 'DEMO');
+          setText('product-sub', valid ? selectedOrder.order_number : t.empty);
+          const journey = $('journey');
+          journey.replaceChildren();
+          t.steps.forEach((step, i) => {
+            const li = document.createElement('li');
+            li.className = i < index ? 'done' : i === index ? 'current' : '';
+            const num = document.createElement('span');
+            num.className = 'step-num';
+            num.textContent = i < index ? '✓' : String(i + 1);
+            const name = document.createElement('span');
+            name.textContent = step;
+            li.append(num, name);
+            li.setAttribute(
+              'aria-label',
+              step + ' · ' + (i < index ? t.done : i === index ? t.current : t.future)
+            );
+            if (i === index) li.setAttribute('aria-current', 'step');
+            journey.append(li);
+          });
+          const items = $('item-list');
+          items.replaceChildren();
+          const h3 = document.createElement('h3');
+          h3.textContent = real ? t.items : previewUi.items;
+          items.append(h3);
+          if (valid && selectedOrder.items.length) {
+            selectedOrder.items.forEach((item) => {
+              const row = document.createElement('div');
+              row.className = 'item-row';
+              const name = document.createElement('span');
+              name.textContent = localizedName(item.name) || t.noItems;
+              const amount = document.createElement('span');
+              amount.textContent = '× ' + safeCount(item.quantity);
+              row.append(name, amount);
+              items.append(row);
+            });
+          } else {
+            const p = document.createElement('p');
+            p.textContent = t.noItems;
+            items.append(p);
+          }
+          const callout = $('product-callout');
+          callout.replaceChildren();
+          const strong = document.createElement('b');
+          strong.textContent = real ? t.source : t.ready;
+          callout.append(
+            strong,
+            document.createTextNode(
+              real ? t.diagram : previewText.message + ' ' + previewUi.diagram
+            )
+          );
+          labels.forEach((label, i) => {
+            label.querySelector('b').textContent = i + 1 + '. ' + t.steps[i];
+            label.querySelector('small').textContent = real
+              ? counts[i] + ' ' + t.orderUnit
+              : i < index
+                ? t.done
+                : i === index
+                  ? t.current
+                  : t.future;
+            label.className = 'stage-label' + (i < index ? ' done' : i === index ? ' current' : '');
+          });
+          currentProductStage = index;
+          if (initialized) {
+            if (index < 0) productActors.forEach(({ dot }) => (dot.visible = false));
+            currentBox.visible = index >= 0;
+            currentBox.position.x = index >= 0 ? stageX[index] : 0;
+            stagePlatforms.forEach((pad, i) => {
+              pad.material =
+                i < index ? mats.greenSoft : i === index ? mats.orangeSoft : mats.blueSoft;
+            });
+          }
+          const select = $('order-select');
+          select.replaceChildren();
+          for (const order of orders) {
+            const option = document.createElement('option');
+            option.value = order.id;
+            option.textContent = order.order_number;
+            option.selected = selectedOrder && order.id === selectedOrder.id;
+            select.append(option);
+          }
+          select.hidden = !real || orders.length < 2;
+          setText('capacity-note', real && orders.length ? t.loaded + ' · ' + orders.length : '');
+          $('capacity-note').style.display = real && orders.length ? 'block' : 'none';
+          productAnimationUntil = reducedMotion ? 0 : performance.now() + 1800;
+          needFrame();
+        }
+        // อ่านเฉพาะ API ในโดเมนเดียวกัน เซิร์ฟเวอร์เป็นผู้ตรวจสิทธิ์ ไม่อ่านข้อมูลจากหน้าต่างแม่
+        async function readOrders() {
+          dataStarted = true;
+          const serial = ++fetchSerial;
+          selectedOrder = null;
+          orders = [];
+          fetchedAt = null;
+          realError = t.loading;
+          updateProductUi();
+          $('refresh').disabled = true;
+          if (!/^https?:$/.test(location.protocol)) {
+            realError = t.file;
+            $('refresh').disabled = false;
+            updateProductUi();
+            return;
+          }
+          try {
+            const get = async (path) => {
+              const controller = new AbortController(),
+                timeout = setTimeout(() => controller.abort(), 10000);
+              try {
+                const response = await fetch(path, {
+                  credentials: 'same-origin',
+                  cache: 'no-store',
+                  signal: controller.signal,
+                  headers: { Accept: 'application/json' },
+                });
+                let data = null;
+                if (response.ok) data = await response.json();
+                return { response, data };
+              } finally {
+                clearTimeout(timeout);
+              }
+            };
+            let result = await get('/api/orders');
+            if (serial !== fetchSerial) return;
+            if (result.response.status === 401) {
+              realError = t.denied;
+              return;
+            }
+            let records =
+              result.response.ok && Array.isArray(result.data?.orders) ? result.data.orders : [];
+            const find = () =>
+              records.find(
+                (order) =>
+                  String(order.id) === selectedOrderKey ||
+                  String(order.order_number) === selectedOrderKey
+              );
+            // ถ้าออเดอร์ไม่ได้เป็นของบัญชี ให้ API ผู้ดูแลตรวจสิทธิ์ก่อนส่งคืนข้อมูล
+            if ((selectedOrderKey && !find()) || (!selectedOrderKey && !records.length)) {
+              const admin = await get('/api/admin');
+              if (serial !== fetchSerial) return;
+              if (admin.response.ok && Array.isArray(admin.data?.orders))
+                records = admin.data.orders;
+              else if (!result.response.ok && [401, 403].includes(admin.response.status)) {
+                realError = t.denied;
+                return;
+              }
+            }
+            if (!result.response.ok && !records.length) {
+              realError = t.failed;
+              return;
+            }
+            orders = records
+              .filter(
+                (order) => order && typeof order.id === 'string' && typeof order.status === 'string'
+              )
+              .map((order) => ({
+                id: order.id,
+                order_number: String(order.order_number || order.id),
+                status: order.status,
+                items: Array.isArray(order.items)
+                  ? order.items.map((item) => ({
+                      name: item.name,
+                      quantity: safeCount(item.quantity),
+                    }))
+                  : [],
+              }));
+            selectedOrder = selectedOrderKey
+              ? orders.find(
+                  (order) =>
+                    order.id === selectedOrderKey || order.order_number === selectedOrderKey
+                ) || null
+              : orders[0] || null;
+            fetchedAt = new Date();
+            realError = selectedOrder ? '' : selectedOrderKey ? t.notFound : t.empty;
+          } catch (_) {
+            if (serial === fetchSerial) realError = t.failed;
+          } finally {
+            if (serial === fetchSerial) {
+              $('refresh').disabled = false;
+              if (mode === 'product') updateProductUi();
+            }
+          }
+        }
+        // ไฟล์จำลองเปิดแยกจากหน้าร้านได้ จึงล้างข้อมูลออเดอร์เองเมื่ออีกแท็บออกจากระบบ
+        function clearOrderSession() {
+          if (!requestedReal()) return;
+          fetchSerial++;
+          orders = [];
+          selectedOrder = null;
+          fetchedAt = null;
+          dataStarted = false;
+          realError = t.denied;
+          $('refresh').disabled = false;
+          updateProductUi();
+        }
+        window.addEventListener('storage', (event) => {
+          if (event.key !== 'alyzyus-auth-sync' || !requestedReal()) return;
+          clearOrderSession();
+          if (!String(event.newValue || '').startsWith('logout:')) void readOrders();
+        });
+        window.addEventListener('pagehide', clearOrderSession);
+        window.addEventListener('pageshow', (event) => {
+          if (event.persisted && requestedReal()) void readOrders();
+        });
+        function demoOrder() {
+          orders = [];
+          selectedOrder = {
+            id: 'demonstration',
+            order_number: (productKey ? 'PREVIEW' : 'DEMO') + ' · ' + t.ready,
+            status: 'processing',
+            items: [{ name: previewProduct?.name || t.demoItem, quantity: previewProduct ? 1 : 2 }],
+          };
+          fetchedAt = null;
+          realError = '';
+          updateProductUi();
+        }
+        async function readPreviewProduct() {
+          if (!productKey || requestedReal()) return;
+          dataStarted = true;
+          const serial = ++fetchSerial;
+          demoOrder();
+          if (!/^https?:$/.test(location.protocol)) {
+            realError = previewText.missing;
+            updateProductUi();
+            return;
+          }
+          const controller = new AbortController(),
+            timeout = setTimeout(() => controller.abort(), 10000);
+          try {
+            const response = await fetch('/api/products', {
+              credentials: 'same-origin',
+              cache: 'no-store',
+              signal: controller.signal,
+              headers: { Accept: 'application/json' },
+            });
+            if (serial !== fetchSerial) return;
+            if (!response.ok) throw new Error('products');
+            const data = await response.json();
+            previewProduct = Array.isArray(data.products)
+              ? data.products.find((product) => product.id === productKey) || null
+              : null;
+            demoOrder();
+            if (!previewProduct) realError = previewText.missing;
+          } catch (_) {
+            if (serial === fetchSerial) realError = previewText.missing;
+          } finally {
+            clearTimeout(timeout);
+            if (serial === fetchSerial && mode === 'product') updateProductUi();
+          }
+        }
+        function setMode(next, updateUrl = true) {
+          mode = next;
+          document.documentElement.lang = mode === 'product' ? locale : 'th';
+          document.body.classList.toggle('product-mode', mode === 'product');
+          document.body.classList.toggle('dark', mode === 'product' && storedTheme === 'dark');
+          document
+            .querySelectorAll('.office-only')
+            .forEach((element) => (element.hidden = mode !== 'office'));
+          document
+            .querySelectorAll('.product-only')
+            .forEach((element) => (element.hidden = mode !== 'product'));
+          $('office-tab').classList.toggle('active', mode === 'office');
+          $('product-tab').classList.toggle('active', mode === 'product');
+          $('office-tab').setAttribute('aria-selected', String(mode === 'office'));
+          $('product-tab').setAttribute('aria-selected', String(mode === 'product'));
+          setText('office-tab', mode === 'product' ? t.office : 'คิวสำนักงาน');
+          setText('product-tab', mode === 'product' ? t.product : 'เส้นทางสินค้า');
+          if (initialized) {
+            officeGroup.visible = mode === 'office';
+            productGroup.visible = mode === 'product';
+          }
+          if (mode === 'product') {
+            document.title = t.productTitle;
+            setText('title', t.productTitle);
+            setText('eyebrow', 'ALYZYUS / PRODUCT JOURNEY');
+            setText('description', t.productDesc);
+            setText('mode-note', t.modeNote);
+            setText('scene-title', t.scene);
+            setText('clock-caption', t.clock);
+            setText('default-label', t.default);
+            setText('top-label', t.top);
+            setText('auto-label', t.auto);
+            setText('scene-hint', t.hint);
+            setText('product-panel-title', t.panel);
+            setText('order-select-label', t.selected);
+            $('refresh').querySelector('span').textContent = t.refresh;
+            setText('footer-note', t.footer);
+            $('legend').replaceChildren();
+            for (const [color, label] of [
+              ['#93bfa7', t.done],
+              ['#ed983f', t.current],
+              ['#b6c8df', t.future],
+            ]) {
+              const span = document.createElement('span');
+              span.className = 'legend-item';
+              const dot = document.createElement('i');
+              dot.className = 'dot';
+              dot.style.background = color;
+              span.append(dot, document.createTextNode(label));
+              $('legend').append(span);
+            }
+            if (requestedReal()) {
+              if (!dataStarted) void readOrders();
+              else updateProductUi();
+            } else if (productKey) {
+              document.title = previewText.title;
+              setText('title', previewText.title);
+              setText('footer-note', previewText.footer);
+              if (!dataStarted) void readPreviewProduct();
+              else updateProductUi();
+            } else demoOrder();
+            if (!requestedReal()) {
+              setText('description', previewUi.description);
+              setText('product-panel-title', previewUi.panel);
+              setText('footer-note', previewText.footer);
+            }
+            $('viewport').setAttribute('aria-label', t.scene);
+            $('camera-default').setAttribute('aria-label', t.default);
+            $('camera-top').setAttribute('aria-label', t.top);
+          } else {
+            fetchSerial++;
+            dataStarted = false;
+            document.title = 'สำนักงานคณะ: นักศึกษายื่นคำร้อง';
+            setText('title', document.title);
+            setText('eyebrow', 'FACULTY OFFICE / QUEUE LAB');
+            setText(
+              'description',
+              'ลากเพื่อหมุนอาคาร เลื่อนล้อเมาส์หรือถ่างสองนิ้วเพื่อซูม แต่ละตัวคือนักศึกษา 1 คนที่กำลังเดินผ่าน 5 จุดบริการ'
+            );
+            setText('mode-note', 'แบบจำลองเพื่อสำรวจผลของจำนวนเจ้าหน้าที่');
+            setText('scene-title', 'ภาพจำลองสำนักงาน · 5 จุดบริการ');
+            setText('clock-caption', 'เวลาจำลอง');
+            setText('default-label', 'มุมมองเริ่มต้น');
+            setText('top-label', 'มองจากด้านบน');
+            setText('auto-label', 'หมุนอัตโนมัติ');
+            setText('scene-hint', 'ลากเพื่อหมุน · เลื่อนเพื่อซูม');
+            setText(
+              'footer-note',
+              'เปิดรับ 08:00–16:00 · หลังปิดสำนักงานให้บริการคนที่เข้ามาแล้วจนเสร็จ'
+            );
+            [
+              'อยู่ในสำนักงานตอนนี้',
+              'แจ้งผลแล้วในวันนี้',
+              'เวลาเฉลี่ยต่อเรื่อง',
+              'คอขวดตอนนี้',
+            ].forEach((value, i) => setText('kpi-title-' + i, value));
+            [
+              'รวมกำลังเดิน รอคิว และรับบริการ',
+              'ผ่านครบทั้ง 5 จุดและออกจากอาคาร',
+              'ตั้งแต่เข้าสำนักงานจนออกจากอาคาร',
+            ].forEach((value, i) => setText('kpi-note-' + i, value));
+            $('kpi-0').style.fontSize = '';
+            $('kpi-0').style.paddingTop = '';
+            $('kpi-2').style.fontSize = '';
+            $('legend').innerHTML = [
+              ['#3981cd', 'นักศึกษากำลังเดิน'],
+              ['#ebbe42', 'นักศึกษารอคิว'],
+              ['#236b50', 'นักศึกษารับบริการ'],
+              ['#193953', 'เจ้าหน้าที่ไม่ว่าง'],
+              ['#86b591', 'เจ้าหน้าที่ว่าง'],
+              ['#ed983f', 'คิวหนาแน่น'],
+            ]
+              .map(
+                ([color, label]) =>
+                  '<span class="legend-item"><i class="dot" style="background:' +
+                  color +
+                  '"></i>' +
+                  label +
+                  '</span>'
+              )
+              .join('');
+            $('viewport').setAttribute(
+              'aria-label',
+              'สำนักงานสามมิติ หมุนและซูมด้วยเมาส์หรือสัมผัส'
+            );
+            $('camera-default').setAttribute('aria-label', 'มุมมองเริ่มต้น');
+            $('camera-top').setAttribute('aria-label', 'มองจากด้านบน');
+            updateOfficeUi();
+          }
+          if (updateUrl && /^https?:$/.test(location.protocol)) {
+            const url = new URL(location.href);
+            url.searchParams.set('mode', mode);
+            try {
+              history.replaceState(null, '', url);
+            } catch (_) {}
+          }
+          cameraGoal = { theta: 0.38, phi: 0.79, radius: mode === 'product' ? 25 : 26 };
+          lastFrame = 0;
+          needFrame();
+        }
+        function updateCamera(delta) {
+          const blend = Math.min(1, delta * 9);
+          for (const key of ['theta', 'phi', 'radius'])
+            cameraState[key] += (cameraGoal[key] - cameraState[key]) * blend;
+          const { theta, phi } = cameraState,
+            radius = cameraState.radius * Math.max(1, 1.35 / camera.aspect);
+          camera.position.set(
+            cameraTarget.x + radius * Math.sin(phi) * Math.sin(theta),
+            cameraTarget.y + radius * Math.cos(phi),
+            cameraTarget.z + radius * Math.sin(phi) * Math.cos(theta)
+          );
+          camera.lookAt(cameraTarget.x, cameraTarget.y, cameraTarget.z);
+        }
+        function projectLabels() {
+          const rect = $('viewport').getBoundingClientRect();
+          labels.forEach((label, i) => {
+            labelVector
+              .set(stageX[i], mode === 'office' ? 2.24 : 2.5, mode === 'office' ? -3.9 : -1.4)
+              .project(camera);
+            const x = (labelVector.x * 0.5 + 0.5) * rect.width,
+              y = (-labelVector.y * 0.5 + 0.5) * rect.height - (innerWidth < 540 && i % 2 ? 44 : 0);
+            label.style.left = x + 'px';
+            label.style.top = y + 'px';
+            label.style.visibility =
+              labelVector.z < 1 && x > -35 && x < rect.width + 35 && y > 20 && y < rect.height
+                ? 'visible'
+                : 'hidden';
+          });
+        }
+        function cameraMoving() {
+          return ['theta', 'phi', 'radius'].some(
+            (key) => Math.abs(cameraState[key] - cameraGoal[key]) > 0.0004
+          );
+        }
+        function canRender() {
+          return initialized && !document.hidden && inView;
+        }
+        function needFrame() {
+          if (canRender() && !frameId) frameId = requestAnimationFrame(frame);
+        }
+        function frame(time) {
+          frameId = 0;
+          if (!canRender()) {
+            lastFrame = 0;
+            return;
+          }
+          if (
+            lastFrame &&
+            time - lastFrame < 1000 / (mode === 'product' ? PARAMETERS.productFps : PARAMETERS.fps)
+          ) {
+            needFrame();
+            return;
+          }
+          const delta = lastFrame ? Math.min(0.12, (time - lastFrame) / 1000) : 1 / PARAMETERS.fps;
+          lastFrame = time;
+          if (mode === 'office' && !paused) simulate(delta * 4 * config.speed);
+          if (automatic) {
+            cameraGoal.theta += delta * 0.085;
+            cameraState.theta = cameraGoal.theta;
+          }
+          updateCamera(delta);
+          if (mode === 'office') {
+            drawStudents(time);
+            if (time - lastUi > 220) {
+              updateOfficeUi();
+              lastUi = time;
+            }
+          } else if (currentBox.visible) {
+            const animate = productMotion || time < productAnimationUntil;
+            currentBox.position.y = 0.29 + (animate ? Math.sin(time * 0.003) * 0.07 : 0);
+            currentBox.rotation.y = animate ? Math.sin(time * 0.0015) * 0.12 : 0;
+            stagePlatforms.forEach((pad, index) => {
+              const pulse =
+                animate && index === currentProductStage ? 1 + Math.sin(time * 0.0025) * 0.035 : 1;
+              pad.scale.x = pad.scale.z = 1.23 * pulse;
+            });
+            productActors.forEach(({ dot, stage, slot }) => {
+              dot.visible = animate && stage < currentProductStage;
+              if (dot.visible) {
+                const progress = (time * 0.00027 + slot / 3) % 1;
+                dot.position.x = stageX[stage] + (stageX[stage + 1] - stageX[stage]) * progress;
+              }
+            });
+            if (productTruck)
+              productTruck.position.x =
+                animate && currentProductStage === 3 ? Math.sin(time * 0.0015) * 0.17 : 0;
+          }
+          projectLabels();
+          renderer.render(scene, camera);
+          if (
+            (mode === 'office' && !paused) ||
+            automatic ||
+            cameraMoving() ||
+            (mode === 'product' &&
+              currentBox.visible &&
+              (productMotion || time < productAnimationUntil))
+          )
+            needFrame();
+        }
+        function resize() {
+          if (!initialized) return;
+          const width = $('viewport').clientWidth,
+            height = $('viewport').clientHeight;
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          const fit = Math.max(1, 1.35 / camera.aspect);
+          scene.fog.near = 40 * fit;
+          scene.fog.far = 65 * fit;
+          renderer.setPixelRatio(
+            Math.min(
+              devicePixelRatio || 1,
+              innerWidth < 650 ? PARAMETERS.mobilePixelRatio : PARAMETERS.pixelRatio
+            )
+          );
+          renderer.setSize(width, height, false);
+          needFrame();
+        }
+        $('product-motion').addEventListener('click', () => {
+          productMotion = !productMotion;
+          $('product-motion').setAttribute('aria-pressed', String(productMotion));
+          $('product-motion').classList.toggle('active', productMotion);
+          productAnimationUntil = 0;
+          needFrame();
+        });
+        const motionWords = { th: 'การเคลื่อนไหว', en: 'Animate process', zh: '流程动画' };
+        $('motion-label').textContent = motionWords[locale];
+        // ใช้ตัวเลือกลดการเคลื่อนไหวเดียวกับหน้าร้าน โดยยังลากหมุนกล้องได้ตามต้องการ
+        try {
+          const appearance = JSON.parse(localStorage.getItem('alyzyus-appearance-v1') || 'null');
+          reducedMotion =
+            matchMedia('(prefers-reduced-motion: reduce)').matches || appearance?.motion === false;
+          if (reducedMotion) {
+            productMotion = false;
+            $('product-motion').setAttribute('aria-pressed', 'false');
+          }
+        } catch (_) {}
+        function cameraControls() {
+          const pointers = new Map();
+          let lastPinch = null;
+          const canvas = renderer.domElement;
+          canvas.addEventListener('pointerdown', (event) => {
+            canvas.setPointerCapture(event.pointerId);
+            pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+            lastPinch = null;
+            automatic = false;
+            $('camera-auto').classList.remove('active');
+            $('camera-auto').setAttribute('aria-pressed', 'false');
+          });
+          canvas.addEventListener('pointermove', (event) => {
+            if (!pointers.has(event.pointerId)) return;
+            const old = pointers.get(event.pointerId);
+            pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+            if (pointers.size === 1) {
+              cameraGoal.theta -= (event.clientX - old.x) * 0.007;
+              cameraGoal.phi = Math.max(
+                0.12,
+                Math.min(1.35, cameraGoal.phi + (event.clientY - old.y) * 0.005)
+              );
+            } else {
+              const values = [...pointers.values()],
+                distance = Math.hypot(values[0].x - values[1].x, values[0].y - values[1].y);
+              if (lastPinch && distance > 0)
+                cameraGoal.radius = Math.max(
+                  14,
+                  Math.min(43, (cameraGoal.radius * lastPinch) / distance)
+                );
+              lastPinch = distance;
+            }
+            needFrame();
+          });
+          const end = (event) => {
+            pointers.delete(event.pointerId);
+            lastPinch = null;
+          };
+          canvas.addEventListener('pointerup', end);
+          canvas.addEventListener('pointercancel', end);
+          canvas.addEventListener('lostpointercapture', end);
+          canvas.addEventListener(
+            'wheel',
+            (event) => {
+              event.preventDefault();
+              cameraGoal.radius = Math.max(
+                14,
+                Math.min(
+                  43,
+                  cameraGoal.radius * Math.exp(Math.max(-100, Math.min(100, event.deltaY)) * 0.0013)
+                )
+              );
+              needFrame();
+            },
+            { passive: false }
+          );
+          canvas.addEventListener('webglcontextlost', (event) => {
+            event.preventDefault();
+            showError('WebGL หยุดทำงานชั่วคราว กรุณาโหลดหน้าใหม่เพื่อแสดงภาพ 3D');
+          });
+        }
+        function init() {
+          try {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xedf4fc);
+            scene.fog = new THREE.Fog(0xedf4fc, 40, 65);
+            renderer = new THREE.WebGLRenderer({
+              antialias: innerWidth > 650,
+              alpha: false,
+              powerPreference: 'low-power',
+            });
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.1;
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            camera = new THREE.PerspectiveCamera(43, 1, 0.1, 100);
+            $('viewport').prepend(renderer.domElement);
+            geo.box = resource(new THREE.BoxGeometry(1, 1, 1));
+            geo.sphere = resource(new THREE.SphereGeometry(1, 12, 8));
+            geo.cylinder = resource(new THREE.CylinderGeometry(1, 1, 1, 20));
+            geo.capsule = resource(new THREE.CapsuleGeometry(0.14, 0.4, 3, 7));
+            geo.head = resource(new THREE.SphereGeometry(0.13, 8, 6));
+            geo.ring = resource(new THREE.RingGeometry(0.92, 1, 30));
+            geo.roof = resource(new THREE.ConeGeometry(1, 1, 4));
+            const palette = {
+              plinth: 0xc4d4e7,
+              floor: 0xfafcff,
+              navy: 0x173650,
+              partition: 0x365671,
+              entrance: 0xc9dfed,
+              path: 0xe3edf7,
+              queueZone: 0xffeed8,
+              queueLine: 0xf5d3a5,
+              doorMark: 0x98bdd2,
+              desk: 0xb3d0de,
+              deskLeg: 0x678fa2,
+              monitor: 0x1b3b55,
+              screen: 0xadd2e1,
+              paper: 0xffffff,
+              chair: 0xf7fbff,
+              chairLeg: 0x96aec2,
+              pot: 0xe6edf4,
+              plant: 0x68a080,
+              plantLight: 0x83b496,
+              skin: 0xffe1bd,
+              idle: colors.idle,
+              busy: colors.busy,
+              people: 0xffffff,
+              parcel: 0xdba96e,
+              ribbon: 0xf6e8cb,
+              sticker: 0xffffff,
+              blueSoft: 0xcadcef,
+              greenSoft: 0xa7d3bb,
+              orangeSoft: 0xf3c788,
+              pathEdge: 0xaec5dd,
+              blue: 0x477ca8,
+              tire: 0x365168,
+              house: 0xd1dfec,
+              door: 0x587b9f,
+            };
+            for (const [name, color] of Object.entries(palette)) mats[name] = material(color);
+            const ambient = new THREE.HemisphereLight(0xffffff, 0x8ba6c6, 2.2);
+            scene.add(ambient);
+            const sun = new THREE.DirectionalLight(0xffffff, 3.1);
+            sun.position.set(-7, 15, 9);
+            sun.castShadow = true;
+            const shadowSize = innerWidth < 650 ? 512 : PARAMETERS.shadowMapSize;
+            sun.shadow.mapSize.set(shadowSize, shadowSize);
+            sun.shadow.camera.left = -15;
+            sun.shadow.camera.right = 15;
+            sun.shadow.camera.top = 12;
+            sun.shadow.camera.bottom = -12;
+            sun.shadow.normalBias = 0.04;
+            sun.shadow.bias = -0.0003;
+            scene.add(sun);
+            const ground = mesh(geo.box, material(0xe4eef9), 0, -0.61, 0, 90, 0.16, 90, scene);
+            ground.castShadow = false;
+            buildOffice();
+            buildProduct();
+            createLabels();
+            drawDummy = new THREE.Object3D();
+            bodyColor = new THREE.Color();
+            labelVector = new THREE.Vector3();
+            initialized = true;
+            resetSimulation();
+            cameraControls();
+            resize();
+            setMode(mode, false);
+            new ResizeObserver(resize).observe($('viewport'));
+            if (typeof IntersectionObserver !== 'undefined') {
+              new IntersectionObserver(
+                (entries) => {
+                  inView = entries[0].isIntersecting;
+                  lastFrame = 0;
+                  if (inView) needFrame();
+                  else if (frameId) {
+                    cancelAnimationFrame(frameId);
+                    frameId = 0;
+                  }
+                },
+                { threshold: 0 }
+              ).observe($('viewport'));
+            }
+            document.addEventListener('visibilitychange', () => {
+              lastFrame = 0;
+              if (document.hidden && frameId) {
+                cancelAnimationFrame(frameId);
+                frameId = 0;
+              } else needFrame();
+            });
+            window.addEventListener('pagehide', (event) => {
+              if (frameId) {
+                cancelAnimationFrame(frameId);
+                frameId = 0;
+              }
+              lastFrame = 0;
+              if (!event.persisted) {
+                resources.forEach((value) => value.dispose());
+                renderer.dispose();
+              }
+            });
+            window.addEventListener('pageshow', (event) => {
+              if (event.persisted) needFrame();
+            });
+          } catch (_) {
+            showError();
+          }
+        }
+        $('office-tab').addEventListener('click', () => setMode('office'));
+        $('product-tab').addEventListener('click', () => setMode('product'));
+        $('refresh').addEventListener('click', () =>
+          requestedReal() ? void readOrders() : productKey ? void readPreviewProduct() : demoOrder()
+        );
+        $('order-select').addEventListener('change', (event) => {
+          selectedOrderKey = event.target.value;
+          selectedOrder = orders.find((order) => order.id === selectedOrderKey) || null;
+          const url = new URL(location.href);
+          url.searchParams.set('order', selectedOrderKey);
+          try {
+            history.replaceState(null, '', url);
+          } catch (_) {}
+          updateProductUi();
+        });
+        $('pause').addEventListener('click', () => {
+          paused = !paused;
+          $('pause').innerHTML =
+            (paused ? svgPlay : svgPause) +
+            '<span>' +
+            (paused ? 'เล่นต่อ' : 'หยุดชั่วคราว') +
+            '</span>';
+          lastFrame = 0;
+          updateOfficeUi();
+          needFrame();
+        });
+        $('reset').addEventListener('click', resetSimulation);
+        for (const [id, key] of [
+          ['arrivals', 'arrivals'],
+          ['documents', 'documents'],
+          ['advisors', 'advisors'],
+          ['speed', 'speed'],
+        ]) {
+          const input = $(id);
+          input.value = config[key];
+          setText(id + '-value', config[key] + (key === 'speed' ? '×' : ''));
+          input.addEventListener('input', () => {
+            config[key] = Number(input.value);
+            setText(id + '-value', input.value + (key === 'speed' ? '×' : ''));
+            if (key === 'arrivals') nextArrival = arrivalInterval(config.arrivals);
+            if (initialized) {
+              syncStaff();
+              updateOfficeUi();
+              needFrame();
+            }
+          });
+        }
+        $('camera-default').addEventListener('click', () => {
+          cameraGoal = { theta: 0.38, phi: 0.79, radius: mode === 'office' ? 26 : 25 };
+          needFrame();
+        });
+        $('camera-top').addEventListener('click', () => {
+          cameraGoal = { theta: 0, phi: 0.13, radius: 26 };
+          needFrame();
+        });
+        $('camera-auto').addEventListener('click', () => {
+          automatic = !automatic;
+          $('camera-auto').classList.toggle('active', automatic);
+          $('camera-auto').setAttribute('aria-pressed', String(automatic));
+          needFrame();
+        });
+        if (storedTheme === 'dark') document.body.classList.add('dark');
+        // โหลดไลบรารีเพียงตัวเดียวจาก cdnjs และแสดงข้อความเมื่อ CDN หรือ WebGL ใช้งานไม่ได้
+        const library = document.createElement('script');
+        library.src = PARAMETERS.cdn;
+        library.onload = () => (typeof THREE !== 'undefined' ? init() : showError());
+        library.onerror = () =>
+          showError(
+            'โหลด Three.js จาก cdnjs ไม่สำเร็จ ตรวจสอบอินเทอร์เน็ต แล้วลองโหลดหน้านี้อีกครั้ง'
+          );
+        document.head.append(library);
+        setMode(mode, false);
+        // เปิดเฉพาะฟังก์ชันคณิตศาสตร์เพื่อใช้ตรวจสอบ โดยไม่มีข้อมูลส่วนบุคคล
+        window.Queue3DMath = Object.freeze({ arrivalInterval, serviceTime, statusStage });
+      })();
+    </script>
+  </body>
 </html>

@@ -1,4 +1,5 @@
 """Strict mutation validators; browser totals are never trusted."""
+
 import math
 import re
 from decimal import Decimal, InvalidOperation
@@ -10,14 +11,20 @@ from werkzeug.exceptions import BadRequest
 
 from .errors import ApiError
 
+MAX_JSON_BYTES = 64 * 1024
+MAX_PAGE_SIZE = 100
+MAX_BIGINT = 9_223_372_036_854_775_807
+MAX_PRICE = Decimal("10000000")
+PRICE_QUANTUM = Decimal("0.01")
+
 
 def read_json() -> dict:
-    if request.content_length and request.content_length > 64 * 1024:
+    if request.content_length and request.content_length > MAX_JSON_BYTES:
         raise ApiError("PAYLOAD_TOO_LARGE", 413)
     if request.mimetype != "application/json":
         raise ApiError("INVALID_CONTENT_TYPE", 415)
     raw = request.get_data(cache=True)
-    if len(raw) > 64 * 1024:
+    if len(raw) > MAX_JSON_BYTES:
         raise ApiError("PAYLOAD_TOO_LARGE", 413)
     try:
         return object_fields(request.get_json(), None)
@@ -26,7 +33,11 @@ def read_json() -> dict:
 
 
 def object_fields(value, allowed: set | None, required: set = frozenset()) -> dict:
-    if not isinstance(value, dict) or (allowed is not None and set(value) - allowed) or required - set(value):
+    if (
+        not isinstance(value, dict)
+        or (allowed is not None and set(value) - allowed)
+        or required - set(value)
+    ):
         raise ApiError("INVALID_INPUT")
     return value
 
@@ -54,12 +65,51 @@ def integer(value, minimum, maximum):
     return value
 
 
+def bigint_id(value) -> str:
+    """ใช้ข้อความสำหรับ PostgreSQL bigint เพื่อไม่เสียความแม่นยำบน JavaScript"""
+    if (
+        not isinstance(value, str)
+        or not value.isascii()
+        or not value.isdecimal()
+        or not 1 <= len(value) <= len(str(MAX_BIGINT))
+    ):
+        raise ApiError("INVALID_INPUT")
+    number = int(value)
+    if not 1 <= number <= MAX_BIGINT:
+        raise ApiError("INVALID_INPUT")
+    return str(number)
+
+
+def pagination(default_limit=20, *, filters=()) -> tuple[int, str | None]:
+    """ตรวจ query ก่อนประกอบ keyset filter และไม่รับค่าซ้ำหรือ offset อิสระ"""
+    allowed = {"limit", "cursor", *filters}
+    if set(request.args) - allowed or any(
+        len(request.args.getlist(key)) != 1 for key in request.args
+    ):
+        raise ApiError("INVALID_INPUT")
+    raw_limit = request.args.get("limit", str(default_limit))
+    if (
+        not raw_limit.isascii()
+        or not raw_limit.isdecimal()
+        or len(raw_limit) > len(str(MAX_PAGE_SIZE))
+        or not 1 <= int(raw_limit) <= MAX_PAGE_SIZE
+    ):
+        raise ApiError("INVALID_INPUT")
+    cursor = bigint_id(request.args["cursor"]) if "cursor" in request.args else None
+    return int(raw_limit), cursor
+
+
 def money(value, positive=False):
-    if type(value) not in (int, float) or not math.isfinite(value):
+    # math.isfinite แปลง int เป็น float จึงล้มด้วย OverflowError กับ JSON integer ขนาดใหญ่
+    if type(value) not in (int, float) or (type(value) is float and not math.isfinite(value)):
         raise ApiError("INVALID_INPUT")
     try:
         amount = Decimal(str(value))
-        if not 0 <= amount <= 10000000 or (positive and amount <= 0) or amount != amount.quantize(Decimal("0.01")):
+        if (
+            not 0 <= amount <= MAX_PRICE
+            or (positive and amount <= 0)
+            or amount != amount.quantize(PRICE_QUANTUM)
+        ):
             raise ApiError("INVALID_INPUT")
     except InvalidOperation as exc:
         raise ApiError("INVALID_INPUT") from exc
@@ -85,16 +135,26 @@ def localized(value):
 
 
 def checkout(value):
-    value = object_fields(value, {"items", "customer", "paymentMethod", "coupon", "idempotencyKey"}, {"items", "customer", "paymentMethod", "idempotencyKey"})
+    value = object_fields(
+        value,
+        {"items", "customer", "paymentMethod", "coupon", "idempotencyKey"},
+        {"items", "customer", "paymentMethod", "idempotencyKey"},
+    )
     if not isinstance(value["items"], list) or not 1 <= len(value["items"]) <= 50:
         raise ApiError("INVALID_CART")
     items = []
     for item in value["items"]:
         item = object_fields(item, {"productId", "quantity"}, {"productId", "quantity"})
-        items.append({"productId": uuid(item["productId"]), "quantity": integer(item["quantity"], 1, 99)})
+        items.append(
+            {"productId": uuid(item["productId"]), "quantity": integer(item["quantity"], 1, 99)}
+        )
     if len({item["productId"] for item in items}) != len(items):
         raise ApiError("INVALID_CART")
-    customer = object_fields(value["customer"], {"name", "email", "phone", "address"}, {"name", "email", "phone", "address"})
+    customer = object_fields(
+        value["customer"],
+        {"name", "email", "phone", "address"},
+        {"name", "email", "phone", "address"},
+    )
     phone = string(customer["phone"], 8, 30)
     if not re.fullmatch(r"[+()\d\s-]+", phone):
         raise ApiError("INVALID_INPUT")
@@ -103,58 +163,111 @@ def checkout(value):
         raise ApiError("INVALID_PAYMENT")
     return {
         "items": items,
-        "customer": {"name": string(customer["name"], 2, 120), "email": email(customer["email"]), "phone": phone, "address": string(customer["address"], 10, 1000)},
-        "paymentMethod": method, "coupon": string(value.get("coupon", ""), 0, 30).upper(),
+        "customer": {
+            "name": string(customer["name"], 2, 120),
+            "email": email(customer["email"]),
+            "phone": phone,
+            "address": string(customer["address"], 10, 1000),
+        },
+        "paymentMethod": method,
+        "coupon": string(value.get("coupon", ""), 0, 30).upper(),
         "idempotencyKey": uuid(value["idempotencyKey"]),
     }
 
 
 def product(value, partial=False):
-    allowed = {"id", "slug", "name", "description", "category", "price", "compareAt", "stock", "images", "colors", "featured", "badge", "active"}
-    required = {"id"} if partial else {"slug", "name", "description", "category", "price", "stock", "images", "colors"}
+    allowed = {
+        "id",
+        "slug",
+        "name",
+        "description",
+        "category",
+        "price",
+        "compareAt",
+        "stock",
+        "images",
+        "colors",
+        "featured",
+        "badge",
+        "active",
+    }
+    required = (
+        {"id"}
+        if partial
+        else {"slug", "name", "description", "category", "price", "stock", "images", "colors"}
+    )
     value = object_fields(value, allowed, required)
     if partial and len(value) < 2:
         raise ApiError("INVALID_INPUT")
     result = {}
     for key, item in value.items():
-        if key == "id": result[key] = uuid(item)
+        if key == "id":
+            result[key] = uuid(item)
         elif key == "slug":
             result[key] = string(item, 2, 100)
-            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", result[key]): raise ApiError("INVALID_INPUT")
-        elif key in ("name", "description"): result[key] = localized(item)
-        elif key == "category": result[key] = string(item, 2, 40)
-        elif key == "price": result[key] = money(item, positive=True)
-        elif key == "compareAt": result[key] = None if item is None else money(item)
-        elif key == "stock": result[key] = integer(item, 0, 1000000)
+            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", result[key]):
+                raise ApiError("INVALID_INPUT")
+        elif key in ("name", "description"):
+            result[key] = localized(item)
+        elif key == "category":
+            result[key] = string(item, 2, 40)
+        elif key == "price":
+            result[key] = money(item, positive=True)
+        elif key == "compareAt":
+            result[key] = None if item is None else money(item)
+        elif key == "stock":
+            result[key] = integer(item, 0, 1000000)
         elif key in ("featured", "active"):
-            if type(item) is not bool: raise ApiError("INVALID_INPUT")
+            if type(item) is not bool:
+                raise ApiError("INVALID_INPUT")
             result[key] = item
         elif key == "badge":
-            if item not in (None, "new", "bestseller"): raise ApiError("INVALID_INPUT")
+            if item not in (None, "new", "bestseller"):
+                raise ApiError("INVALID_INPUT")
             result[key] = item
         elif key == "images":
-            if not isinstance(item, list) or not 1 <= len(item) <= 10: raise ApiError("INVALID_INPUT")
+            if not isinstance(item, list) or not 1 <= len(item) <= 10:
+                raise ApiError("INVALID_INPUT")
             result[key] = [string(image, 1, 2048) for image in item]
             for image in result[key]:
                 parsed = urlsplit(image)
-                if not (image.startswith("/") and not image.startswith("//")) and not (parsed.scheme == "https" and parsed.netloc and not parsed.username and not parsed.password):
+                if not (image.startswith("/") and not image.startswith("//")) and not (
+                    parsed.scheme == "https"
+                    and parsed.netloc
+                    and not parsed.username
+                    and not parsed.password
+                ):
                     raise ApiError("INVALID_INPUT")
         elif key == "colors":
-            if not isinstance(item, list) or len(item) > 20: raise ApiError("INVALID_INPUT")
+            if not isinstance(item, list) or len(item) > 20:
+                raise ApiError("INVALID_INPUT")
             result[key] = [string(color, 1, 30) for color in item]
     return result
 
 
 def order_patch(value):
-    value = object_fields(value, {"id", "status", "tracking_number", "carrier", "payment_status"}, {"id"})
-    if len(value) < 2: raise ApiError("INVALID_INPUT")
+    value = object_fields(
+        value, {"id", "status", "tracking_number", "carrier", "payment_status"}, {"id"}
+    )
+    if len(value) < 2:
+        raise ApiError("INVALID_INPUT")
     result = {"id": uuid(value["id"])}
     if "status" in value:
-        if value["status"] not in ("pending", "confirmed", "processing", "shipped", "delivered", "cancelled"): raise ApiError("INVALID_INPUT")
+        if value["status"] not in (
+            "pending",
+            "confirmed",
+            "processing",
+            "shipped",
+            "delivered",
+            "cancelled",
+        ):
+            raise ApiError("INVALID_INPUT")
         result["status"] = value["status"]
     if "payment_status" in value:
-        if value["payment_status"] != "paid": raise ApiError("INVALID_INPUT")
+        if value["payment_status"] != "paid":
+            raise ApiError("INVALID_INPUT")
         result["payment_status"] = "paid"
     for key, maximum in (("tracking_number", 100), ("carrier", 80)):
-        if key in value: result[key] = string(value[key], 0, maximum)
+        if key in value:
+            result[key] = string(value[key], 0, maximum)
     return result

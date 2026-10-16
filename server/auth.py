@@ -1,4 +1,5 @@
 """Supabase credentials live only in HttpOnly cookies and request-local state."""
+
 import base64
 import hashlib
 import secrets
@@ -32,7 +33,11 @@ def serializer():
 
 
 def set_session(session):
-    if not isinstance(session, dict) or not session.get("access_token") or not session.get("refresh_token"):
+    if (
+        not isinstance(session, dict)
+        or not session.get("access_token")
+        or not session.get("refresh_token")
+    ):
         raise ApiError("AUTH_UNAVAILABLE", 503)
     g.new_session = session
     g.access_token = session["access_token"]
@@ -71,7 +76,12 @@ def current_user(required=False, verified=False):
                     raise
         if not g.auth_user and request.cookies.get(REFRESH):
             try:
-                session = db().auth("POST", "token", params={"grant_type": "refresh_token"}, body={"refresh_token": request.cookies[REFRESH]})
+                session = db().auth(
+                    "POST",
+                    "token",
+                    params={"grant_type": "refresh_token"},
+                    body={"refresh_token": request.cookies[REFRESH]},
+                )
                 set_session(session)
                 # Ask the Auth service for the current identity rather than trusting JWT claims.
                 g.auth_user = db().auth("GET", "user", token=g.access_token)
@@ -92,14 +102,25 @@ def current_user(required=False, verified=False):
 
 
 def profile_role(user):
-    rows, _ = db().select("profiles", token=g.access_token, params={"select": "role", "id": "eq." + user["id"], "limit": "1"})
+    rows, _ = db().select(
+        "profiles",
+        token=g.access_token,
+        params={"select": "role", "id": "eq." + user["id"], "limit": "1"},
+    )
     return rows[0]["role"] if rows else "customer"
 
 
 def public_user(user):
     if not user:
         return None
-    return {"id": user["id"], "email": user.get("email", ""), "name": str(user.get("user_metadata", {}).get("name", ""))[:120], "role": profile_role(user), "emailVerified": bool(user.get("email_confirmed_at")) and not user.get("is_anonymous", False)}
+    return {
+        "id": user["id"],
+        "email": user.get("email", ""),
+        "name": str(user.get("user_metadata", {}).get("name", ""))[:120],
+        "role": profile_role(user),
+        "emailVerified": bool(user.get("email_confirmed_at"))
+        and not user.get("is_anonymous", False),
+    }
 
 
 def require_user():
@@ -115,7 +136,9 @@ def require_admin():
 
 def pkce(kind):
     verifier = secrets.token_urlsafe(48)
-    challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b"=").decode()
+    challenge = (
+        base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b"=").decode()
+    )
     g.new_verifier = serializer().dumps({"verifier": verifier, "kind": kind})
     return {"code_challenge": challenge, "code_challenge_method": "s256"}
 
@@ -131,7 +154,12 @@ def me():
 def login():
     configured()
     value = v.object_fields(v.read_json(), {"email", "password"}, {"email", "password"})
-    session = db().auth("POST", "token", params={"grant_type": "password"}, body={"email": v.email(value["email"]), "password": v.password(value["password"])})
+    session = db().auth(
+        "POST",
+        "token",
+        params={"grant_type": "password"},
+        body={"email": v.email(value["email"]), "password": v.password(value["password"])},
+    )
     set_session(session)
     g.auth_checked = True
     return jsonify(user=public_user(current_user(required=True)), configured=True)
@@ -140,13 +168,29 @@ def login():
 @bp.post("/api/auth/signup")
 def signup():
     configured()
-    value = v.object_fields(v.read_json(), {"email", "password", "name"}, {"email", "password", "name"})
-    body = {"email": v.email(value["email"]), "password": v.password(value["password"], new=True), "data": {"name": v.string(value["name"], 2, 120)}, **pkce("signup")}
-    result = db().auth("POST", "signup", body=body, params={"redirect_to": valid_origin(current_app.config["SITE_URL"]) + "/auth/callback"})
+    value = v.object_fields(
+        v.read_json(), {"email", "password", "name"}, {"email", "password", "name"}
+    )
+    body = {
+        "email": v.email(value["email"]),
+        "password": v.password(value["password"], new=True),
+        "data": {"name": v.string(value["name"], 2, 120)},
+        **pkce("signup"),
+    }
+    result = db().auth(
+        "POST",
+        "signup",
+        body=body,
+        params={"redirect_to": valid_origin(current_app.config["SITE_URL"]) + "/auth/callback"},
+    )
     if result and result.get("access_token"):
         set_session(result)
         g.auth_checked = True
-        return jsonify(user=public_user(current_user(required=True)), configured=True, message="Account created.")
+        return jsonify(
+            user=public_user(current_user(required=True)),
+            configured=True,
+            message="Account created.",
+        )
     return jsonify(user=None, configured=True, message="Check your email to confirm your account.")
 
 
@@ -169,7 +213,12 @@ def logout():
 def reset():
     configured()
     value = v.object_fields(v.read_json(), {"email"}, {"email"})
-    db().auth("POST", "recover", body={"email": v.email(value["email"]), **pkce("recovery")}, params={"redirect_to": valid_origin(current_app.config["SITE_URL"]) + "/auth/callback"})
+    db().auth(
+        "POST",
+        "recover",
+        body={"email": v.email(value["email"]), **pkce("recovery")},
+        params={"redirect_to": valid_origin(current_app.config["SITE_URL"]) + "/auth/callback"},
+    )
     return jsonify(message="If the account exists, a recovery link has been sent.")
 
 
@@ -178,7 +227,12 @@ def update_password():
     configured()
     value = v.object_fields(v.read_json(), {"password"}, {"password"})
     require_user()
-    db().auth("PUT", "user", token=g.access_token, body={"password": v.password(value["password"], new=True)})
+    db().auth(
+        "PUT",
+        "user",
+        token=g.access_token,
+        body={"password": v.password(value["password"], new=True)},
+    )
     return jsonify(message="Password updated.")
 
 
@@ -189,7 +243,22 @@ def safe_next(value):
         if parsed.scheme or parsed.netloc:
             if f"{parsed.scheme}://{parsed.netloc}" != origin:
                 return "/account"
-        if parsed.path in ("/account", "/checkout", "/tracking", "/admin", "/support", "/admin/support", "/install", "/shop") and not parsed.fragment and "\r" not in value and "\n" not in value:
+        if (
+            parsed.path
+            in (
+                "/account",
+                "/checkout",
+                "/tracking",
+                "/admin",
+                "/support",
+                "/admin/support",
+                "/install",
+                "/shop",
+            )
+            and not parsed.fragment
+            and "\r" not in value
+            and "\n" not in value
+        ):
             return parsed.path + ("?" + parsed.query if parsed.query else "")
     except ValueError:
         pass
@@ -207,10 +276,17 @@ def callback():
         next_path = safe_next(request.args.get("next", "/account"))
         if code:
             verifier = serializer().loads(request.cookies.get(VERIFIER, ""), max_age=3600)
-            session = db().auth("POST", "token", params={"grant_type": "pkce"}, body={"auth_code": v.string(code, 1, 2048), "code_verifier": verifier["verifier"]})
+            session = db().auth(
+                "POST",
+                "token",
+                params={"grant_type": "pkce"},
+                body={"auth_code": v.string(code, 1, 2048), "code_verifier": verifier["verifier"]},
+            )
             kind = verifier.get("kind")
         elif token_hash and kind in ("signup", "email", "recovery", "invite", "email_change"):
-            session = db().auth("POST", "verify", body={"token_hash": v.string(token_hash, 1, 2048), "type": kind})
+            session = db().auth(
+                "POST", "verify", body={"token_hash": v.string(token_hash, 1, 2048), "type": kind}
+            )
         else:
             raise ApiError("INVALID_INPUT")
         set_session(session)

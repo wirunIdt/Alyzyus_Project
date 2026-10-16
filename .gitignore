@@ -5,6 +5,7 @@ node_modules/
 !.env.example
 *.tsbuildinfo
 __pycache__/
+.ruff_cache/
 .venv/
 legacy/private/
 legacy/empty-build-folders/

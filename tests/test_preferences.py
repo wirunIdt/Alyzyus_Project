@@ -1,4 +1,5 @@
 """Appearance permission must come from a confirmed, current server identity."""
+
 import unittest
 
 import httpx
@@ -12,7 +13,11 @@ USER_ID = "11111111-1111-4111-8111-111111111111"
 
 class AppearancePermissionTests(unittest.TestCase):
     def setUp(self):
-        self.user = {"id": USER_ID, "email_confirmed_at": "2026-10-15T00:00:00Z", "is_anonymous": False}
+        self.user = {
+            "id": USER_ID,
+            "email_confirmed_at": "2026-10-15T00:00:00Z",
+            "is_anonymous": False,
+        }
         self.available = True
         self.auth_calls = 0
 
@@ -24,11 +29,18 @@ class AppearancePermissionTests(unittest.TestCase):
             return httpx.Response(200, json=self.user)
 
         self.transport = httpx.Client(transport=httpx.MockTransport(provider))
-        self.app = create_app({"TESTING": True, "HTTP_CLIENT": self.transport, "AUDIT_PERSIST": False,
-                               "SITE_URL": ORIGIN, "APP_SECRET_KEY": "a" * 48,
-                               "SUPABASE_URL": "https://project.supabase.co",
-                               "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_test",
-                               "SUPABASE_SERVICE_ROLE_KEY": "sb_secret_test"})
+        self.app = create_app(
+            {
+                "TESTING": True,
+                "HTTP_CLIENT": self.transport,
+                "AUDIT_PERSIST": False,
+                "SITE_URL": ORIGIN,
+                "APP_SECRET_KEY": "a" * 48,
+                "SUPABASE_URL": "https://project.supabase.co",
+                "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_test",
+                "SUPABASE_SERVICE_ROLE_KEY": "sb_secret_test",
+            }
+        )
         self.client = self.app.test_client()
 
     def tearDown(self):
@@ -41,8 +53,11 @@ class AppearancePermissionTests(unittest.TestCase):
         self.client.set_cookie(ACCESS, "server-session", domain="shop.example", secure=True)
 
     def test_guest_cannot_claim_permission_with_browser_identity(self):
-        response = self.client.get("/api/account/appearance?userId=" + USER_ID, base_url=ORIGIN,
-                                   headers={"X-User-Id": USER_ID, "X-Member": "true"})
+        response = self.client.get(
+            "/api/account/appearance?userId=" + USER_ID,
+            base_url=ORIGIN,
+            headers={"X-User-Id": USER_ID, "X-Member": "true"},
+        )
         self.assertEqual(response.status_code, 401)
         self.assertNotIn("userId", response.json)
         self.assertEqual(self.auth_calls, 0)
@@ -58,8 +73,10 @@ class AppearancePermissionTests(unittest.TestCase):
 
     def test_unconfirmed_and_anonymous_accounts_are_denied(self):
         self.sign_in()
-        for fields in ({"email_confirmed_at": None, "is_anonymous": False},
-                       {"email_confirmed_at": "2026-10-15T00:00:00Z", "is_anonymous": True}):
+        for fields in (
+            {"email_confirmed_at": None, "is_anonymous": False},
+            {"email_confirmed_at": "2026-10-15T00:00:00Z", "is_anonymous": True},
+        ):
             self.user.update(fields)
             response = self.get()
             self.assertEqual(response.status_code, 403)

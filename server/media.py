@@ -1,4 +1,5 @@
 """Admin-only product media and translation, separate from order processing."""
+
 import html
 import io
 import time
@@ -22,8 +23,15 @@ bp = Blueprint("media", __name__)
 BUCKET = "product-images"
 MAX_IMAGE_BYTES = 850_000
 MAX_PIXELS = 12_000_000
+IMAGE_MAX_EDGE = 1600
+IMAGE_WEBP_QUALITY = 82
 LOCALES = ("th", "en", "zh")
 TRANSLATION_URL = "https://api.mymemory.translated.net/get"
+TRANSLATION_TIMEOUT_SECONDS = 8
+TRANSLATION_DEADLINE_SECONDS = 25
+TRANSLATION_WORKERS = 2
+TRANSLATION_CACHE_SECONDS = 3600
+TRANSLATION_CACHE_SIZE = 128
 _cache = OrderedDict()
 _cache_lock = Lock()
 
@@ -36,16 +44,26 @@ def optimized_image(raw: bytes) -> bytes:
         with warnings.catch_warnings():
             warnings.simplefilter("error", Image.DecompressionBombWarning)
             with Image.open(io.BytesIO(raw)) as source:
-                if source.format not in ("JPEG", "PNG", "WEBP") or source.width * source.height > MAX_PIXELS:
+                if (
+                    source.format not in ("JPEG", "PNG", "WEBP")
+                    or source.width * source.height > MAX_PIXELS
+                ):
                     raise ApiError("INVALID_IMAGE", 400)
                 source.load()
                 image = ImageOps.exif_transpose(source)
-                image.thumbnail((1600, 1600))
-                image = image.convert("RGBA" if "A" in image.getbands() else "RGB")
+                image.thumbnail((IMAGE_MAX_EDGE, IMAGE_MAX_EDGE))
+                has_alpha = "A" in image.getbands() or "transparency" in image.info
+                image = image.convert("RGBA" if has_alpha else "RGB")
                 target = io.BytesIO()
-                image.save(target, format="WEBP", quality=82, method=3)
+                image.save(target, format="WEBP", quality=IMAGE_WEBP_QUALITY, method=3)
                 return target.getvalue()
-    except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError, Image.DecompressionBombWarning) as exc:
+    except (
+        UnidentifiedImageError,
+        OSError,
+        ValueError,
+        Image.DecompressionBombError,
+        Image.DecompressionBombWarning,
+    ) as exc:
         raise ApiError("INVALID_IMAGE", 400) from exc
 
 
@@ -56,9 +74,18 @@ def storage_request(method, endpoint, *, body=None, content=None):
     if not key.startswith("sb_secret_"):
         headers["Authorization"] = "Bearer " + key
     if content is not None:
-        headers.update({"Content-Type": "image/webp", "Cache-Control": "31536000", "x-upsert": "false"})
+        headers.update(
+            {"Content-Type": "image/webp", "Cache-Control": "31536000", "x-upsert": "false"}
+        )
     try:
-        return db().client.request(method, config["SUPABASE_URL"] + "/storage/v1/" + endpoint, headers=headers, json=body, content=content, timeout=15)
+        return db().client.request(
+            method,
+            config["SUPABASE_URL"] + "/storage/v1/" + endpoint,
+            headers=headers,
+            json=body,
+            content=content,
+            timeout=15,
+        )
     except httpx.HTTPError as exc:
         raise ApiError("UPLOAD_UNAVAILABLE", 503) from exc
 
@@ -73,8 +100,20 @@ def upload_image():
     data = optimized_image(request.files["file"].stream.read(MAX_IMAGE_BYTES + 1))
     # สร้าง bucket ผ่าน Storage API ไม่แก้ตาราง storage.objects โดยตรง
     bucket = storage_request("GET", "bucket/" + BUCKET)
-    if bucket.status_code == 404 or (bucket.status_code == 400 and "not found" in bucket.text.lower()):
-        created = storage_request("POST", "bucket", body={"id": BUCKET, "name": BUCKET, "public": True, "file_size_limit": MAX_IMAGE_BYTES, "allowed_mime_types": ["image/webp"]})
+    if bucket.status_code == 404 or (
+        bucket.status_code == 400 and "not found" in bucket.text.lower()
+    ):
+        created = storage_request(
+            "POST",
+            "bucket",
+            body={
+                "id": BUCKET,
+                "name": BUCKET,
+                "public": True,
+                "file_size_limit": MAX_IMAGE_BYTES,
+                "allowed_mime_types": ["image/webp"],
+            },
+        )
         if created.is_error and created.status_code not in (409,):
             # Concurrent first uploads may both attempt to create the bucket.
             if storage_request("GET", "bucket/" + BUCKET).is_error:
@@ -85,7 +124,10 @@ def upload_image():
     response = storage_request("POST", "object/" + BUCKET + "/" + name, content=data)
     if response.is_error:
         raise ApiError("UPLOAD_UNAVAILABLE", 503)
-    return jsonify(url=current_app.config["SUPABASE_URL"] + "/storage/v1/object/public/" + BUCKET + "/" + name, size=len(data)), 201
+    return jsonify(
+        url=current_app.config["SUPABASE_URL"] + "/storage/v1/object/public/" + BUCKET + "/" + name,
+        size=len(data),
+    ), 201
 
 
 def translation_chunks(text, byte_limit=480):
@@ -105,7 +147,11 @@ def translation_chunks(text, byte_limit=480):
             # Avoid splitting before a Thai combining vowel/tone.
             while end > 1 and remaining[end] in "ัิีึืุู็่้๊๋์ํ":
                 end -= 1
-            boundary = max(remaining.rfind(" ", 0, end), remaining.rfind("\n", 0, end), remaining.rfind(". ", 0, end))
+            boundary = max(
+                remaining.rfind(" ", 0, end),
+                remaining.rfind("\n", 0, end),
+                remaining.rfind(". ", 0, end),
+            )
             if boundary > end // 2:
                 end = boundary + 1
         chunks.append(remaining[:end])
@@ -125,22 +171,39 @@ def translate_text(client, value, source, target, deadline=None):
         if deadline is not None and time.monotonic() > deadline:
             raise ApiError("TRANSLATION_UNAVAILABLE", 503)
         try:
-            pair = ("zh-CN" if source == "zh" else source) + "|" + ("zh-CN" if target == "zh" else target)
-            response = client.get(TRANSLATION_URL, params={"q": chunk.strip(), "langpair": pair}, headers={"Cookie": "", "Accept": "application/json"}, timeout=8)
+            pair = (
+                ("zh-CN" if source == "zh" else source)
+                + "|"
+                + ("zh-CN" if target == "zh" else target)
+            )
+            response = client.get(
+                TRANSLATION_URL,
+                params={"q": chunk.strip(), "langpair": pair},
+                headers={"Cookie": "", "Accept": "application/json"},
+                timeout=TRANSLATION_TIMEOUT_SECONDS,
+            )
             data = response.json()
         except (httpx.HTTPError, ValueError) as exc:
             raise ApiError("TRANSLATION_UNAVAILABLE", 503) from exc
-        if response.is_error or data.get("quotaFinished") or data.get("responseStatus") != 200:
+        if (
+            response.is_error
+            or not isinstance(data, dict)
+            or data.get("quotaFinished")
+            or data.get("responseStatus") != 200
+        ):
             raise ApiError("TRANSLATION_UNAVAILABLE", 503)
-        translated = data.get("responseData", {}).get("translatedText")
+        response_data = data.get("responseData")
+        if not isinstance(response_data, dict):
+            raise ApiError("TRANSLATION_UNAVAILABLE", 503)
+        translated = response_data.get("translatedText")
         if not isinstance(translated, str) or not translated.strip():
             raise ApiError("TRANSLATION_UNAVAILABLE", 503)
         parts.append(html.unescape(translated.strip()))
     result = " ".join(parts)
     with _cache_lock:
-        _cache[key] = (time.monotonic() + 3600, result)
+        _cache[key] = (time.monotonic() + TRANSLATION_CACHE_SECONDS, result)
         _cache.move_to_end(key)
-        while len(_cache) > 128:
+        while len(_cache) > TRANSLATION_CACHE_SIZE:
             _cache.popitem(last=False)
     return result
 
@@ -148,19 +211,29 @@ def translate_text(client, value, source, target, deadline=None):
 @bp.post("/api/admin/translate")
 def translate_product():
     require_admin()
-    value = object_fields(read_json(), {"source", "name", "description"}, {"source", "name", "description"})
+    value = object_fields(
+        read_json(), {"source", "name", "description"}, {"source", "name", "description"}
+    )
     source = value["source"]
     if source not in LOCALES:
         raise ApiError("INVALID_INPUT")
     name = string(value["name"], 1, 180)
     description = string(value["description"], 1, 4000)
     localized = {"name": {source: name}, "description": {source: description}}
-    jobs = [(field, text, target) for field, text in (("name", name), ("description", description)) for target in LOCALES if target != source]
+    jobs = [
+        (field, text, target)
+        for field, text in (("name", name), ("description", description))
+        for target in LOCALES
+        if target != source
+    ]
     # เพียงสองงานพร้อมกัน ไม่สร้าง thread ตามความยาวของข้อความ
     client = db().client
-    deadline = time.monotonic() + 25
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        futures = [(field, target, executor.submit(translate_text, client, text, source, target, deadline)) for field, text, target in jobs]
+    deadline = time.monotonic() + TRANSLATION_DEADLINE_SECONDS
+    with ThreadPoolExecutor(max_workers=TRANSLATION_WORKERS) as executor:
+        futures = [
+            (field, target, executor.submit(translate_text, client, text, source, target, deadline))
+            for field, text, target in jobs
+        ]
         for field, target, future in futures:
             result = future.result()
             if len(result) > (180 if field == "name" else 4000):

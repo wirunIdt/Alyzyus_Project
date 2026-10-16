@@ -1,4 +1,5 @@
 """บันทึกกิจกรรมที่ตรวจสอบได้ โดยไม่เก็บรหัสผ่าน โทเค็น หรือข้อมูลจัดส่ง"""
+
 import json
 import logging
 import re
@@ -11,6 +12,7 @@ from flask import current_app, g, request
 from .config import commerce_configured
 from .database import db
 from .errors import ApiError
+from .validation import pagination
 
 CATEGORIES = ("product", "inventory", "order", "account", "security", "system")
 SERVER_ACTIONS = {
@@ -55,7 +57,9 @@ def structured(event, *, severity="info", **fields):
 
 
 def mark_error(code):
-    g.audit_error_code = code if isinstance(code, str) and _CODE.fullmatch(code) else "INTERNAL_ERROR"
+    g.audit_error_code = (
+        code if isinstance(code, str) and _CODE.fullmatch(code) else "INTERNAL_ERROR"
+    )
 
 
 def _safe_uuid(value):
@@ -75,7 +79,9 @@ def record_server_event(action):
     request_id = _safe_uuid(getattr(g, "request_id", None))
     structured(action, actor_id=actor, request_id=request_id)
     # การทดสอบเดิมไม่ทำ outbound write โดยปริยาย; ชุด audit เปิดตรวจจริงด้วย MockTransport
-    if not current_app.config.get("AUDIT_PERSIST", not current_app.testing) or not commerce_configured(current_app.config):
+    if not current_app.config.get(
+        "AUDIT_PERSIST", not current_app.testing
+    ) or not commerce_configured(current_app.config):
         return
     key = current_app.config["SUPABASE_SERVICE_ROLE_KEY"]
     headers = {"apikey": key, "Accept": "application/json", "Cookie": ""}
@@ -84,12 +90,28 @@ def record_server_event(action):
     body = {"p_action": action, "p_actor_id": actor, "p_request_id": request_id}
     try:
         # ไม่สร้าง background thread และไม่ retry: ตั้ง network timeout งานเสริมไว้ 2 วินาที
-        response = db().client.request("POST", current_app.config["SUPABASE_URL"] + "/rest/v1/rpc/record_activity_event", headers=headers, json=body, timeout=2)
+        response = db().client.request(
+            "POST",
+            current_app.config["SUPABASE_URL"] + "/rest/v1/rpc/record_activity_event",
+            headers=headers,
+            json=body,
+            timeout=2,
+        )
         if response.is_error:
-            structured("audit.persist_failed", severity="warning", request_id=request_id, status=response.status_code)
+            structured(
+                "audit.persist_failed",
+                severity="warning",
+                request_id=request_id,
+                status=response.status_code,
+            )
     except Exception as exc:
         # บันทึกเฉพาะชนิดข้อผิดพลาด ไม่ดึงข้อความ provider หรือ URL ที่อาจมี secret
-        structured("audit.persist_failed", severity="warning", request_id=request_id, error_type=type(exc).__name__[:64])
+        structured(
+            "audit.persist_failed",
+            severity="warning",
+            request_id=request_id,
+            error_type=type(exc).__name__[:64],
+        )
 
 
 def init_audit(app):
@@ -108,41 +130,53 @@ def init_audit(app):
         if action and 200 <= response.status_code < 300:
             record_server_event(action)
         # ไฟล์ static และ health check ปกติไม่ต้องสร้าง log ถี่ ๆ
-        if (request.endpoint == "static" or request.endpoint == "api.health") and response.status_code < 400:
+        if (
+            request.endpoint == "static" or request.endpoint == "api.health"
+        ) and response.status_code < 400:
             return response
-        severity = "error" if response.status_code >= 500 else "warning" if response.status_code >= 400 else "info"
+        severity = (
+            "error"
+            if response.status_code >= 500
+            else "warning"
+            if response.status_code >= 400
+            else "info"
+        )
         fields = {
             "request_id": request_id,
-            "method": request.method if request.method in ("GET", "POST", "PATCH", "PUT", "DELETE", "HEAD", "OPTIONS") else "OTHER",
+            "method": request.method
+            if request.method in ("GET", "POST", "PATCH", "PUT", "DELETE", "HEAD", "OPTIONS")
+            else "OTHER",
             "route": route,
             "status": response.status_code,
-            "duration_ms": max(0, round((time.perf_counter() - getattr(g, "audit_started", time.perf_counter())) * 1000)),
+            "duration_ms": max(
+                0,
+                round(
+                    (time.perf_counter() - getattr(g, "audit_started", time.perf_counter())) * 1000
+                ),
+            ),
         }
         if getattr(g, "audit_error_code", None):
             fields["error_code"] = g.audit_error_code
         structured("http.request", severity=severity, **fields)
         return response
 
-    structured("app.started", environment="production" if app.config.get("SITE_URL", "").startswith("https://") else "local")
+    structured(
+        "app.started",
+        environment="production"
+        if app.config.get("SITE_URL", "").startswith("https://")
+        else "local",
+    )
 
 
 def read_logs():
     """ใช้ keyset pagination ป้องกัน offset ที่ไกลมากและไม่เปิด arbitrary SQL filters"""
-    if set(request.args) - {"limit", "cursor", "category"} or any(len(request.args.getlist(key)) != 1 for key in request.args):
-        raise ApiError("INVALID_INPUT", 400)
-    raw_limit = request.args.get("limit", "50")
-    if not raw_limit.isascii() or not raw_limit.isdecimal() or len(raw_limit) > 3 or not 1 <= int(raw_limit) <= 100:
-        raise ApiError("INVALID_INPUT", 400)
-    limit = int(raw_limit)
+    limit, cursor = pagination(50, filters=("category",))
     category = request.args.get("category", "all")
     if category != "all" and category not in CATEGORIES:
         raise ApiError("INVALID_INPUT", 400)
     params = {"select": LOG_COLUMNS, "order": "id.desc", "limit": str(limit + 1)}
-    cursor = request.args.get("cursor")
     if cursor is not None:
-        if not cursor.isascii() or not cursor.isdecimal() or len(cursor) > 19 or not 1 <= int(cursor) <= 9223372036854775807:
-            raise ApiError("INVALID_INPUT", 400)
-        params["id"] = "lt." + str(int(cursor))
+        params["id"] = "lt." + cursor
     if category != "all":
         params["category"] = "eq." + category
     # ใช้ JWT ของผู้ดูแลเพื่อให้ RLS ตรวจซ้ำ แทนการ bypass ด้วย service role

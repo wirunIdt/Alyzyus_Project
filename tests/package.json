@@ -6,6 +6,7 @@
     "test": "node --test *.test.mjs"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "0.5.9"
+    "@electric-sql/pglite": "0.5.9",
+    "prettier": "3.9.10"
   }
 }
