@@ -18,7 +18,7 @@
 | หลังบ้านสินค้า/คำสั่งซื้อ | `templates/admin.html`, `public/static/js/admin.js`, `public/static/css/admin.css` | `require_admin()`, RLS, validation ฝั่งเซิร์ฟเวอร์ |
 | อัปโหลดภาพและแปลรายละเอียด | `server/media.py`, `public/static/js/admin.js` | ขนาดไฟล์/พิกเซล, metadata, แปลล้มเหลวแล้วยังเก็บข้อความเดิม |
 | ประวัติและติดตามคำสั่งซื้อ | `templates/tracking.html`, `public/static/js/tracking.js` | เจ้าของออเดอร์, สถานะยกเลิก, ข้อมูลขนส่งจริง |
-| Customer Service | `server/support.py`, `templates/support.html`, `public/static/js/support.js`, `public/static/css/support.css` | อ่านเฉพาะเจ้าของ/Admin, retry, pagination, logout |
+| Customer Service | `server/support.py`, `server/support_context.py`, `templates/support.html`, `public/static/js/support.js`, `public/static/css/support.css` | อ่านเฉพาะเจ้าของ/Admin, retry, activity cursor, revision, logout |
 | บันทึกกิจกรรม | `server/audit.py`, `templates/logs.html`, `public/static/js/logs.js` | ห้ามเก็บเนื้อหาคำร้อง, รหัสผ่าน, token หรือที่อยู่ |
 | แต่งแอปเฉพาะสมาชิก | `server/preferences.py`, `public/static/js/experience.js`, `public/static/css/experience.css` | เซิร์ฟเวอร์ยืนยันสมาชิก, แยก UUID, ล้างสิ่งที่แสดงเมื่อ logout |
 | ติดตั้งแอปและออฟไลน์ | `templates/install.html`, `public/static/js/install.js`, `public/manifest.webmanifest`, `public/sw.js`, `public/offline.html` | HTTPS, ความสามารถของ browser, ห้าม cache ข้อมูลส่วนตัว |

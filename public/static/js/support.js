@@ -46,6 +46,11 @@
       'This request was not found or is not available to your account. Refresh the list.',
       '未找到此咨询，或您的账户无权查看。请刷新列表。',
     ],
+    SUPPORT_STALE: [
+      'บทสนทนามีการเปลี่ยนแปลง กรุณาอัปเดตและอ่านข้อความล่าสุดก่อนเปลี่ยนสถานะอีกครั้ง ข้อความร่างยังอยู่',
+      'This conversation changed. Refresh and read the latest messages before changing its status again. Your draft is still here.',
+      '此对话已有更新。请先刷新并阅读最新消息，再次更改状态。草稿仍会保留。',
+    ],
     IDEMPOTENCY_CONFLICT: [
       'คำขอครั้งก่อนอาจถูกบันทึกแล้ว กรุณากดอัปเดตข้อมูลและตรวจสอบก่อนส่งอีกครั้ง',
       'Your earlier request may already have been saved. Refresh and check the conversation before sending again.',
@@ -77,6 +82,10 @@
     detailBusy = false,
     writeBusy = false,
     status = 'all',
+    category = 'all',
+    query = '',
+    searchDraft = '',
+    searchError = '',
     selected = null;
   let messages = [],
     messageCursor = null,
@@ -86,6 +95,7 @@
     notice = '';
   let listRequest = 0,
     detailRequest = 0,
+    orderRequest = 0,
     authRequest = 0,
     identityEpoch = 0,
     authTimer = null;
@@ -93,14 +103,24 @@
     newOpen = false,
     orders = [],
     ordersFailed = false;
+  let relatedOrder = null,
+    orderBusy = false,
+    orderError = false,
+    staleTicketId = null,
+    queryOrderApplied = false,
+    preservedFocus = null;
   let draft = { category: 'order', subject: '', message: '', orderId: '' };
   let createKey = uuid();
   let recovery = null,
     recoveryPrepared = '';
   const replyDrafts = new Map(),
     replyKeys = new Map();
-  const queryId = new URLSearchParams(location.search).get('ticket');
+  const parameters = new URLSearchParams(location.search),
+    queryId = parameters.get('ticket'),
+    queryOrder = String(parameters.get('order') || '').toLowerCase();
   const validId = (value) => /^[1-9]\d{0,18}$/.test(String(value || ''));
+  const validOrderId = (value) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
   const date = (value) => {
     const parsed = new Date(value);
     return Number.isNaN(+parsed)
@@ -153,7 +173,13 @@
       return `<div class="support-state"><h2>${e(L('ยังเชื่อมต่อบัญชีไม่ได้', 'We could not check your account.', '暂时无法检查账户。'))}</h2><p>${e(L('ตรวจสอบการเชื่อมต่อ แล้วลองอีกครั้ง', 'Check your connection and try again.', '请检查网络连接后重试。'))}</p><button type="button" class="button" data-support-auth>${e(L('ลองอีกครั้ง', 'Try again', '重试'))}</button></div>`;
     if (!user) {
       const path = admin ? '/admin/support' : '/support';
-      return `<div class="support-state"><div class="support-state-icon">${S.icon('user', 28)}</div><h2>${e(admin ? L('เข้าสู่ระบบผู้ดูแลร้าน', 'Sign in to your store studio.', '登录商店管理。') : L('ให้เราดูแลเรื่องของคุณ', 'Let’s take care of your question.', '让我们用心处理您的问题。'))}</h2><p>${e(admin ? L('กล่องข้อความบริการลูกค้าเปิดให้ผู้ดูแลร้านที่ได้รับสิทธิ์เท่านั้น', 'The customer service inbox is available only to authorized store admins.', '客户服务收件箱仅供获授权的商店管理员使用。') : L('เข้าสู่ระบบหรือสมัครสมาชิก เพื่อส่งเรื่องและติดตามบทสนทนาเฉพาะบัญชีของคุณ', 'Sign in or create an account to send a request and keep your conversation private.', '登录或注册后即可提交咨询，并私密地跟进您的对话。'))}</p><div class="support-state-actions"><a class="button" href="/account?next=${path}">${e(L('เข้าสู่ระบบ', 'Sign in', '登录'))}${S.icon('arrow', 16)}</a>${!admin ? `<a class="button secondary" href="/account?mode=signup&next=${path}">${e(L('สมัครสมาชิกใหม่', 'Create an account', '注册新账户'))}</a>` : ''}</div></div>`;
+      const nextParameters = new URLSearchParams();
+      if (validId(queryId)) nextParameters.set('ticket', queryId);
+      if (!admin && validOrderId(queryOrder)) nextParameters.set('order', queryOrder);
+      const next = nextParameters.toString()
+        ? encodeURIComponent(`${path}?${nextParameters}`)
+        : path;
+      return `<div class="support-state"><div class="support-state-icon">${S.icon('user', 28)}</div><h2>${e(admin ? L('เข้าสู่ระบบผู้ดูแลร้าน', 'Sign in to your store studio.', '登录商店管理。') : L('ให้เราดูแลเรื่องของคุณ', 'Let’s take care of your question.', '让我们用心处理您的问题。'))}</h2><p>${e(admin ? L('กล่องข้อความบริการลูกค้าเปิดให้ผู้ดูแลร้านที่ได้รับสิทธิ์เท่านั้น', 'The customer service inbox is available only to authorized store admins.', '客户服务收件箱仅供获授权的商店管理员使用。') : L('เข้าสู่ระบบหรือสมัครสมาชิก เพื่อส่งเรื่องและติดตามบทสนทนาเฉพาะบัญชีของคุณ', 'Sign in or create an account to send a request and keep your conversation private.', '登录或注册后即可提交咨询，并私密地跟进您的对话。'))}</p><div class="support-state-actions"><a class="button" href="/account?next=${e(next)}">${e(L('เข้าสู่ระบบ', 'Sign in', '登录'))}${S.icon('arrow', 16)}</a>${!admin ? `<a class="button secondary" href="/account?mode=signup&next=${e(next)}">${e(L('สมัครสมาชิกใหม่', 'Create an account', '注册新账户'))}</a>` : ''}</div></div>`;
     }
     if (admin && user.role !== 'admin')
       return `<div class="support-state"><h2>${e(L('พื้นที่นี้สำหรับผู้ดูแลร้าน', 'This space is for store admins.', '此区域仅供商店管理员使用。'))}</h2><p>${e(L('คุณยังติดต่อทีมร้านผ่านศูนย์บริการลูกค้าได้ตามปกติ', 'You can contact the store team from customer service.', '您仍可通过客户服务联系商店团队。'))}</p><a href="/support" class="button">${e(L('ไปศูนย์บริการลูกค้า', 'Open customer service', '打开客户服务'))}</a></div>`;
@@ -174,17 +200,36 @@
         ''
       )}</select></label><label class="support-field" for="support-order">${e(L('คำสั่งซื้อที่เกี่ยวข้อง (ไม่บังคับ)', 'Related order (optional)', '相关订单（选填）'))}<select id="support-order" name="orderId" ${writeBusy ? 'disabled' : ''}><option value="">${e(L('ไม่ระบุคำสั่งซื้อ', 'No order selected', '不选择订单'))}</option>${orders.map((order) => `<option value="${e(order.id)}" ${draft.orderId === order.id ? 'selected' : ''}>${e(order.order_number)}</option>`).join('')}</select><small>${e(ordersFailed ? L('ยังโหลดคำสั่งซื้อไม่ได้ คุณสามารถระบุเลขคำสั่งซื้อในข้อความแทนได้', 'Orders could not be loaded. You can include your order number in the message.', '暂时无法加载订单，可在消息中填写订单号。') : L('แสดงคำสั่งซื้อล่าสุดของบัญชีนี้เท่านั้น', 'Only recent orders belonging to this account are shown.', '仅显示此账户最近的订单。'))}</small></label><label class="support-field support-field-wide" for="support-subject">${e(L('หัวข้อเรื่อง', 'Subject', '咨询主题'))}<input id="support-subject" name="subject" value="${e(draft.subject)}" minlength="5" maxlength="120" autocomplete="off" required ${writeBusy ? 'disabled' : ''} aria-describedby="support-subject-help"><span class="support-field-caption" id="support-subject-help"><span>${e(L('สรุปสั้น ๆ 5–120 ตัวอักษร', 'A short summary, 5–120 characters', '简短概述，5–120 个字符'))}</span><span class="support-counter" data-support-count="subject">${draft.subject.length}/120</span></span></label><label class="support-field support-field-wide" for="support-message">${e(L('รายละเอียดที่ต้องการให้ช่วย', 'How can we help?', '请描述您的问题'))}<textarea id="support-message" name="message" minlength="10" maxlength="4000" required ${writeBusy ? 'disabled' : ''} aria-describedby="support-message-help">${e(draft.message)}</textarea><span class="support-field-caption" id="support-message-help"><span>${e(L('10–4,000 ตัวอักษร ไม่ต้องส่งข้อมูลลับ', '10–4,000 characters. Keep sensitive details out.', '10–4,000 个字符，请勿包含敏感信息。'))}</span><span class="support-counter" data-support-count="message">${draft.message.length}/4000</span></span></label></div>${submissionFeedback('create')}<div class="support-form-end"><p>${e(L('ทีมร้านจะตอบในบทสนทนานี้ คุณกดอัปเดตข้อมูลเพื่อตรวจคำตอบได้', 'The store team replies in this conversation. Use Refresh to check for a reply.', '商店团队将在此对话中回复，请点击刷新查看新消息。'))}</p><button type="submit" class="button" ${writeBusy || recovery?.kind === 'create' ? 'disabled' : ''}>${e(writeBusy ? L('กำลังส่ง…', 'Sending…', '发送中…') : L('ส่งเรื่องให้ทีมร้าน', 'Send request', '提交咨询'))}${S.icon('arrow', 17)}</button></div></form></section>`;
   }
+  function filterSelect(id, title, options, value) {
+    return `<label for="${id}">${e(title)}<select id="${id}" ${listBusy || writeBusy ? 'disabled' : ''}>${options.map(([key, text]) => `<option value="${key}" ${value === key ? 'selected' : ''}>${e(text)}</option>`).join('')}</select></label>`;
+  }
   function inbox() {
-    return `<aside class="support-inbox" aria-labelledby="support-inbox-title"><div class="support-panel-top"><div class="support-panel-title"><h2 id="support-inbox-title">${e(admin ? L('กล่องข้อความ', 'Service inbox', '服务收件箱') : L('เรื่องของฉัน', 'My requests', '我的咨询'))}</h2>${!admin ? `<button type="button" class="button" data-support-new ${writeBusy ? 'disabled' : ''}>${S.icon('plus', 14)}${e(L('ส่งเรื่องใหม่', 'New request', '新建咨询'))}</button>` : ''}</div><div class="support-filters"><label for="support-filter">${e(L('สถานะ', 'Status', '状态'))}<select id="support-filter" ${listBusy || writeBusy ? 'disabled' : ''}><option value="all" ${status === 'all' ? 'selected' : ''}>${e(L('ทั้งหมด', 'All requests', '全部咨询'))}</option>${Object.entries(
-      statuses
-    )
-      .map(
-        ([key, values]) =>
-          `<option value="${key}" ${status === key ? 'selected' : ''}>${e(tr(values))}</option>`
-      )
-      .join(
-        ''
-      )}</select></label><button type="button" class="support-refresh" data-support-refresh ${listBusy || detailBusy || writeBusy ? 'disabled' : ''} aria-label="${e(L('อัปเดตรายการและบทสนทนา', 'Refresh requests and conversation', '刷新咨询列表和对话'))}" title="${e(L('อัปเดตข้อมูล', 'Refresh', '刷新'))}">${refreshIcon}</button></div><p class="support-inbox-note">${e(L('อัปเดตเมื่อกดปุ่มรีเฟรช ไม่มีการเชื่อมต่อแชตสด', 'Updated when you refresh. This is a message inbox, without live chat.', '点击刷新后更新。此处为留言收件箱，无实时聊天连接。'))}${updated ? `<br>${e(L('อัปเดตล่าสุด', 'Last checked', '最近检查'))} ${e(date(updated))}` : ''}</p></div>${feedback(listError)}${tickets.length ? `<ol class="support-ticket-list">${tickets.map((ticket) => `<li><button type="button" class="support-ticket-button" data-support-ticket="${e(ticket.id)}" aria-current="${selected?.id === ticket.id}" ${writeBusy ? 'disabled' : ''}><span class="support-ticket-meta"><span>${e(ticket.ticket_number)}</span><time datetime="${e(ticket.updated_at)}">${e(date(ticket.updated_at))}</time></span><h3>${e(ticket.subject)}</h3><span class="support-ticket-bottom"><span>${e(labels[ticket.category] ? tr(labels[ticket.category]) : tr(labels.other))}</span>${badge(ticket.status)}</span></button></li>`).join('')}</ol>` : `<div class="support-list-empty" ${listBusy ? 'role="status"' : ''}>${e(listBusy ? L('กำลังโหลดเรื่อง…', 'Loading requests…', '正在加载咨询…') : listLoaded ? L('ยังไม่มีเรื่องในสถานะนี้', 'No requests with this status yet.', '暂无此状态的咨询。') : L('กดอัปเดตข้อมูลเพื่อลองอีกครั้ง', 'Use Refresh to try again.', '请点击刷新重试。'))}</div>`}<div class="support-list-end">${cursor ? `<button type="button" class="button secondary small" data-support-more ${listBusy || writeBusy ? 'disabled' : ''}>${e(listBusy ? L('กำลังโหลด…', 'Loading…', '加载中…') : L('ดูเรื่องก่อนหน้า', 'Load earlier requests', '查看更早咨询'))}</button>` : ''}<span>${e(L(`แสดง ${tickets.length} เรื่อง เรียงเรื่องใหม่ก่อน`, `Showing ${tickets.length} requests, newest requests first`, `显示 ${tickets.length} 条咨询，最新咨询优先`))}</span></div></aside>`;
+    const statusOptions = [
+      ['all', L('ทั้งหมด', 'All requests', '全部咨询')],
+      ...Object.entries(statuses).map(([key, values]) => [key, tr(values)]),
+    ];
+    const categoryOptions = [
+      ['all', L('ทุกหมวดหมู่', 'All topics', '全部类别')],
+      ...Object.entries(labels).map(([key, values]) => [key, tr(values)]),
+    ];
+    return `<aside class="support-inbox" aria-labelledby="support-inbox-title">
+      <div class="support-panel-top">
+        <div class="support-panel-title"><h2 id="support-inbox-title">${e(admin ? L('กล่องข้อความ', 'Service inbox', '服务收件箱') : L('เรื่องของฉัน', 'My requests', '我的咨询'))}</h2>${!admin ? `<button type="button" class="button" data-support-new ${writeBusy ? 'disabled' : ''}>${S.icon('plus', 14)}${e(L('ส่งเรื่องใหม่', 'New request', '新建咨询'))}</button>` : ''}</div>
+        <form class="support-search" id="support-search-form" role="search" aria-label="${e(L('ค้นหาเรื่องของบริการลูกค้า', 'Search service requests', '搜索客户咨询'))}">
+          <label for="support-search">${e(L('ค้นหาเลขเรื่อง', 'Find a request number', '查找咨询编号'))}</label>
+          <div><input type="search" id="support-search" name="ticketSearch" value="${e(searchDraft)}" placeholder="ALY-S-123" maxlength="25" autocomplete="off" aria-describedby="support-search-help" aria-invalid="${Boolean(searchError)}" ${listBusy || writeBusy ? 'disabled' : ''}><button type="submit" ${listBusy || writeBusy ? 'disabled' : ''}>${S.icon('search', 17)}<span class="support-sr-only">${e(L('ค้นหา', 'Search', '搜索'))}</span></button>${query ? `<button type="button" data-support-clear-search ${listBusy || writeBusy ? 'disabled' : ''} aria-label="${e(L('ล้างการค้นหา', 'Clear search', '清除搜索'))}">${S.icon('close', 16)}</button>` : ''}</div>
+          <small id="support-search-help" ${searchError ? 'role="alert"' : ''}>${e(searchError || L('กรอกเลขเรื่องเต็มหรือเฉพาะตัวเลข แล้วกดค้นหา', 'Enter the full request number or its digits, then search.', '输入完整咨询编号或其中的数字，然后搜索。'))}</small>
+        </form>
+        <div class="support-filters">
+          ${filterSelect('support-filter', L('สถานะ', 'Status', '状态'), statusOptions, status)}
+          ${filterSelect('support-category-filter', L('หมวดหมู่', 'Topic', '类别'), categoryOptions, category)}
+          <button type="button" class="support-refresh" data-support-refresh ${listBusy || detailBusy || writeBusy ? 'disabled' : ''} aria-label="${e(L('อัปเดตรายการและบทสนทนา', 'Refresh requests and conversation', '刷新咨询列表和对话'))}" title="${e(L('อัปเดตข้อมูล', 'Refresh', '刷新'))}">${refreshIcon}</button>
+        </div>
+        <p class="support-inbox-note">${e(L('เรียงตามความเคลื่อนไหวล่าสุด เรื่องที่มีคำตอบใหม่จะกลับขึ้นด้านบน', 'Latest activity first. A new reply brings a request back to the top.', '按最近动态排序，新回复会使咨询回到顶部。'))}<br>${e(L('กดรีเฟรชเพื่อตรวจข้อความใหม่ ไม่มีแชตสด', 'Refresh to check for new messages. No live chat.', '点击刷新查看新消息，无实时聊天。'))}${updated ? `<br>${e(L('ตรวจล่าสุด', 'Last checked', '最近检查'))} ${e(date(updated))}` : ''}</p>
+      </div>${feedback(listError)}
+      ${tickets.length ? `<ol class="support-ticket-list">${tickets.map((ticket) => `<li><button type="button" class="support-ticket-button" data-support-ticket="${e(ticket.id)}" aria-current="${selected?.id === ticket.id}" ${writeBusy ? 'disabled' : ''}><span class="support-ticket-meta"><span>${e(ticket.ticket_number)}</span><time datetime="${e(ticket.updated_at)}" title="${e(L('ความเคลื่อนไหวล่าสุด', 'Latest activity', '最近动态'))}">${e(date(ticket.updated_at))}</time></span><h3>${e(ticket.subject)}</h3><span class="support-ticket-bottom"><span>${e(labels[ticket.category] ? tr(labels[ticket.category]) : tr(labels.other))}</span>${badge(ticket.status)}</span></button></li>`).join('')}</ol>` : `<div class="support-list-empty" ${listBusy ? 'role="status"' : ''}>${e(listBusy ? L('กำลังโหลดเรื่อง…', 'Loading requests…', '正在加载咨询…') : listLoaded ? L('ไม่พบเรื่องที่ตรงกับตัวกรองนี้', 'No requests match these filters.', '未找到符合筛选条件的咨询。') : L('กดอัปเดตข้อมูลเพื่อลองอีกครั้ง', 'Use Refresh to try again.', '请点击刷新重试。'))}</div>`}
+      <div class="support-list-end">${cursor ? `<button type="button" class="button secondary small" data-support-more ${listBusy || writeBusy ? 'disabled' : ''}>${e(listBusy ? L('กำลังโหลด…', 'Loading…', '加载中…') : L('ดูเรื่องเพิ่มเติม', 'Load more requests', '查看更多咨询'))}</button>` : ''}<span>${e(L(`แสดง ${tickets.length} เรื่อง · เคลื่อนไหวล่าสุดก่อน`, `Showing ${tickets.length} requests · latest activity first`, `显示 ${tickets.length} 条咨询 · 最近动态优先`))}</span></div>
+    </aside>`;
   }
   function ticketActions(ticket) {
     const items = [];
@@ -195,15 +240,41 @@
     if (admin && ticket.status !== 'closed')
       items.push(['close', L('ปิดเรื่อง', 'Close request', '关闭咨询')]);
     return items.length
-      ? `<div class="support-ticket-actions">${items.map(([action, text]) => `<button type="button" data-support-action="${action}" ${writeBusy || detailBusy ? 'disabled' : ''}>${e(text)}</button>`).join('')}</div>`
+      ? `<div class="support-ticket-actions">${items.map(([action, text]) => `<button type="button" data-support-action="${action}" ${writeBusy || detailBusy || staleTicketId === ticket.id ? 'disabled' : ''}>${e(text)}</button>`).join('')}</div>`
       : '';
+  }
+  // ขอข้อมูลคำสั่งซื้อเฉพาะเรื่องที่เปิดอยู่ และแสดงเพียงข้อมูลที่ API อนุญาต
+  function orderContext() {
+    if (!selected?.order_id) return '';
+    if (orderBusy || (detailBusy && !relatedOrder && !orderError))
+      return `<div class="support-order-context" role="status">${e(L('กำลังตรวจสอบคำสั่งซื้อที่เกี่ยวข้อง…', 'Checking the related order…', '正在检查相关订单…'))}</div>`;
+    if (orderError || !relatedOrder)
+      return `<div class="support-order-context"><p>${e(L('ยังแสดงข้อมูลคำสั่งซื้อไม่ได้ การสนทนายังใช้งานได้ตามปกติ', 'The related order could not be shown. You can continue this conversation.', '暂时无法显示相关订单，您仍可继续此对话。'))}</p><button type="button" class="button secondary small" data-support-order-refresh>${e(L('ลองโหลดคำสั่งซื้ออีกครั้ง', 'Retry related order', '重新加载相关订单'))}</button></div>`;
+    const order = relatedOrder;
+    const orderStates = {
+      pending: ['รับคำสั่งซื้อแล้ว', 'Order received', '订单已收到'],
+      confirmed: ['ยืนยันคำสั่งซื้อแล้ว', 'Confirmed', '已确认'],
+      processing: ['กำลังเตรียมสินค้า', 'Preparing your order', '备货中'],
+      shipped: ['จัดส่งแล้ว', 'Shipped', '已发货'],
+      delivered: ['ส่งสำเร็จ', 'Delivered', '已送达'],
+      cancelled: ['ยกเลิกแล้ว', 'Cancelled', '已取消'],
+    };
+    const paymentStates = {
+      pending: ['รอชำระเงิน', 'Awaiting payment', '待支付'],
+      paid: ['ชำระเงินแล้ว', 'Paid', '已支付'],
+      failed: ['ชำระไม่สำเร็จ', 'Payment failed', '支付失败'],
+      expired: ['การชำระเงินหมดเวลา', 'Payment expired', '支付已过期'],
+      refund_required: ['อยู่ระหว่างดำเนินการคืนเงิน', 'Refund required', '需要退款'],
+    };
+    const orderUrl = `${admin ? '/admin' : '/tracking'}?order=${encodeURIComponent(order.id)}`;
+    return `<section class="support-order-context" aria-label="${e(L('คำสั่งซื้อที่เกี่ยวข้อง', 'Related order', '相关订单'))}"><div class="support-order-heading"><span>${S.icon('package', 19)}<strong>${e(order.order_number)}</strong></span><strong>${e(S.money(order.total))}</strong></div><p>${e(orderStates[order.status] ? tr(orderStates[order.status]) : '—')} · ${e(paymentStates[order.payment_status] ? tr(paymentStates[order.payment_status]) : '—')}</p>${order.tracking_number ? `<p>${e(L('เลขพัสดุ', 'Tracking number', '运单号'))}: ${e(order.carrier || '')} ${e(order.tracking_number)}</p>` : ''}<div class="support-order-links"><a href="${e(orderUrl)}">${e(L('ดูรายละเอียดคำสั่งซื้อ', 'View order details', '查看订单详情'))}${S.icon('arrow', 13)}</a><a href="/simulation?mode=product&amp;order=${encodeURIComponent(order.id)}" target="_blank" rel="noopener">${e(L('เส้นทางสินค้า 3D', '3D product journey', '3D 商品旅程'))}${S.icon('arrow-up', 13)}</a></div></section>`;
   }
   function conversation() {
     if (!selected)
       return `<section class="support-conversation"><div class="support-conversation-empty">${S.icon('user', 38)}<h2>${e(admin ? L('พื้นที่สำหรับการดูแล', 'Room for a thoughtful reply.', '用心回复，从这里开始。') : L('ทุกคำถามมีพื้นที่ตรงนี้', 'Every question has a home.', '每个问题都值得倾听。'))}</h2><p>${e(admin ? L('เลือกเรื่องจากกล่องข้อความเพื่ออ่านและตอบลูกค้า', 'Choose a request from the inbox to read and reply.', '从收件箱中选择咨询以查看和回复客户。') : L('เลือกเรื่องเพื่อดูคำตอบ หรือส่งเรื่องใหม่ให้ทีมร้านช่วยตรวจสอบ', 'Choose a request to read the reply, or start a new conversation with the store team.', '选择咨询以查看回复，或向商店团队提交新的咨询。'))}</p>${!admin ? `<button type="button" class="button secondary" data-support-new style="margin-top:22px">${e(L('ส่งเรื่องแรกของคุณ', 'Start a request', '提交咨询'))}</button>` : ''}</div></section>`;
     const ticket = selected,
       reply = replyDrafts.get(ticket.id) || '';
-    return `<section class="support-conversation" aria-labelledby="support-conversation-title" aria-busy="${detailBusy}"><header class="support-conversation-top"><div class="support-ticket-meta"><span>${e(ticket.ticket_number)}</span>${badge(ticket.status)}</div><h2 id="support-conversation-title" tabindex="-1">${e(ticket.subject)}</h2><div class="support-conversation-details"><span>${e(labels[ticket.category] ? tr(labels[ticket.category]) : tr(labels.other))}</span><span>·</span><span>${e(L('เริ่มเรื่อง', 'Opened', '提交于'))} ${e(date(ticket.created_at))}</span>${ticket.order_id ? `<a class="support-order-reference" href="${admin ? '/admin' : '/tracking?order=' + encodeURIComponent(ticket.order_id)}">${e(L('คำสั่งซื้อที่เกี่ยวข้อง', 'Related order', '相关订单'))} · ${e(String(ticket.order_id).slice(0, 8))}${S.icon('arrow', 12)}</a>` : ''}</div>${ticketActions(ticket)}</header>${feedback(detailError)}${messageCursor ? `<div class="support-thread-more"><button type="button" class="button secondary small" data-support-message-more ${detailBusy || writeBusy ? 'disabled' : ''}>${e(L('อ่านข้อความก่อนหน้า', 'Read earlier messages', '查看更早消息'))}</button></div>` : ''}${
+    return `<section class="support-conversation" aria-labelledby="support-conversation-title" aria-busy="${detailBusy}"><header class="support-conversation-top"><div class="support-ticket-meta"><span>${e(ticket.ticket_number)}</span>${badge(ticket.status)}</div><h2 id="support-conversation-title" tabindex="-1">${e(ticket.subject)}</h2><div class="support-conversation-details"><span>${e(labels[ticket.category] ? tr(labels[ticket.category]) : tr(labels.other))}</span><span>·</span><span>${e(L('เริ่มเรื่อง', 'Opened', '提交于'))} ${e(date(ticket.created_at))}</span></div>${ticketActions(ticket)}</header>${orderContext()}${feedback(detailError)}${staleTicketId === ticket.id ? `<div class="support-stale-actions"><button type="button" class="button secondary" data-support-refresh ${listBusy || detailBusy || writeBusy ? 'disabled' : ''}>${e(L('อัปเดตและอ่านบทสนทนาล่าสุด', 'Refresh and read the latest conversation', '刷新并阅读最新对话'))}</button></div>` : ''}${messageCursor ? `<div class="support-thread-more"><button type="button" class="button secondary small" data-support-message-more ${detailBusy || writeBusy ? 'disabled' : ''}>${e(L('อ่านข้อความก่อนหน้า', 'Read earlier messages', '查看更早消息'))}</button></div>` : ''}${
       detailBusy && !messages.length
         ? `<p class="support-list-empty" role="status">${e(L('กำลังโหลดบทสนทนา…', 'Loading conversation…', '正在加载对话…'))}</p>`
         : `<ol class="support-thread" aria-label="${e(L('บทสนทนา', 'Conversation', '对话'))}">${messages
@@ -216,20 +287,43 @@
     }${ticket.status === 'closed' ? `<div class="support-closed-note">${e(admin ? L('เรื่องนี้ปิดแล้ว เปิดเรื่องอีกครั้งเพื่อส่งข้อความเพิ่มเติม', 'This request is closed. Reopen it to send another reply.', '此咨询已关闭，重新开启后可继续回复。') : L('เรื่องนี้ปิดแล้ว หากยังต้องการความช่วยเหลือ คุณสามารถส่งเรื่องใหม่และระบุเลขเรื่องนี้ได้', 'This request is closed. If you need more help, start a new request and include this request number.', '此咨询已关闭。如仍需帮助，请提交新咨询并附上此咨询编号。'))}</div>` : `<form id="support-reply-form" class="support-reply"><h3>${e(admin ? L('ตอบกลับลูกค้า', 'Reply to the customer', '回复客户') : L('ตอบกลับทีมร้าน', 'Reply to the store team', '回复商店团队'))}</h3><label class="support-field" for="support-reply"><span class="support-sr-only">${e(L('ข้อความตอบกลับ', 'Your reply', '回复内容'))}</span><textarea id="support-reply" name="reply" minlength="10" maxlength="4000" required ${writeBusy || detailBusy ? 'disabled' : ''} aria-describedby="support-reply-help">${e(reply)}</textarea><span class="support-field-caption" id="support-reply-help"><span>${e(L('10–4,000 ตัวอักษร', '10–4,000 characters', '10–4,000 个字符'))}</span><span class="support-counter" data-support-count="reply">${reply.length}/4000</span></span></label>${!newOpen ? submissionFeedback('reply') : ''}<div class="support-form-end"><p>${e(admin ? L('ข้อความจะบันทึกในบัญชีของลูกค้า ไม่ส่งอีเมลแจ้งเตือนอัตโนมัติ', 'Your reply is saved to the customer’s account. No automatic email notification is sent.', '回复会保存到客户账户，不会自动发送邮件通知。') : L('ทีมร้านจะเห็นข้อความเมื่อเปิดกล่องบริการลูกค้า ไม่ใช่บริการแชตสด', 'The store team sees your message in its service inbox. This is not live chat.', '商店团队可在服务收件箱中查看此消息，此处并非实时聊天。'))}</p><button class="button" type="submit" ${writeBusy || detailBusy || (recovery?.kind === 'reply' && recovery.ticketId === ticket.id) ? 'disabled' : ''}>${e(writeBusy ? L('กำลังส่ง…', 'Sending…', '发送中…') : L('ส่งข้อความ', 'Send reply', '发送回复'))}${S.icon('arrow', 16)}</button></div></form>`}</section>`;
   }
   function render() {
+    const active = document.activeElement;
+    if (active && root.contains?.(active))
+      preservedFocus = active.id
+        ? { id: active.id, start: active.selectionStart, end: active.selectionEnd }
+        : null;
+    const oldThread = root.querySelector('.support-thread');
+    const scrollTop = oldThread?.scrollTop || 0;
     root.setAttribute('aria-busy', String(checking || listBusy || detailBusy || writeBusy));
     const access = permissionState();
     root.innerHTML =
       access ||
       `${notice ? `<div class="support-issue-area">${feedback(notice, 'success')}</div>` : ''}${detailError && !selected ? `<div class="support-issue-area">${feedback(detailError)}</div>` : ''}${createForm()}<div class="support-workspace">${inbox()}${conversation()}</div>`;
+    const thread = root.querySelector('.support-thread');
+    if (thread) thread.scrollTop = scrollTop;
+    const focus = preservedFocus;
+    const restored = focus && document.getElementById(focus.id);
+    if (restored && !restored.disabled) {
+      restored.focus({ preventScroll: true });
+      if (typeof focus.start === 'number' && restored.setSelectionRange)
+        restored.setSelectionRange(focus.start, focus.end);
+    } else if (!restored && !checking) preservedFocus = null;
   }
   // ล้างข้อมูลส่วนตัวทันทีเมื่อออกจากระบบ รวมถึงยกเลิกผลลัพธ์เก่าที่อาจกลับมาทีหลัง
   function clearPrivate() {
     identityEpoch++;
     listRequest++;
     detailRequest++;
+    orderRequest++;
     tickets = [];
     cursor = null;
     selected = null;
+    relatedOrder = null;
+    orderBusy = false;
+    orderError = false;
+    staleTicketId = null;
+    queryOrderApplied = false;
+    preservedFocus = null;
     messages = [];
     messageCursor = null;
     listLoaded = false;
@@ -239,6 +333,11 @@
     listError = '';
     detailError = '';
     formError = '';
+    status = 'all';
+    category = 'all';
+    query = '';
+    searchDraft = '';
+    searchError = '';
     notice = '';
     updated = null;
     newOpen = false;
@@ -296,7 +395,8 @@
     listError = '';
     render();
     try {
-      const params = new URLSearchParams({ limit: '20', status });
+      const params = new URLSearchParams({ limit: '20', status, category });
+      if (query) params.set('q', query);
       if (more && cursor) params.set('cursor', cursor);
       const data = await S.api(`${base}?${params}`, { cache: 'no-store' });
       if (token !== listRequest || epoch !== identityEpoch) return;
@@ -323,7 +423,16 @@
     if (!validId(id) || writeBusy) return;
     const token = ++detailRequest,
       epoch = identityEpoch;
+    const oldThread = root.querySelector('.support-thread');
+    const oldPosition =
+      more && oldThread ? { top: oldThread.scrollTop, height: oldThread.scrollHeight } : null;
+    let loaded = false;
     if (!more && selected?.id !== id) {
+      orderRequest++;
+      relatedOrder = null;
+      orderBusy = false;
+      orderError = false;
+      staleTicketId = null;
       messages = [];
       messageCursor = null;
       selected = tickets.find((ticket) => ticket.id === id) || null;
@@ -339,6 +448,7 @@
         cache: 'no-store',
       });
       if (token !== detailRequest || epoch !== identityEpoch) return;
+      const previousUpdatedAt = selected?.updated_at;
       rememberTicket(data.ticket);
       const rows = Array.isArray(data.messages)
         ? data.messages.filter((message) => validId(message.id))
@@ -347,6 +457,16 @@
         BigInt(a.id) < BigInt(b.id) ? -1 : BigInt(a.id) > BigInt(b.id) ? 1 : 0
       );
       messageCursor = data.nextCursor || null;
+      // การโหลดข้อความเก่าไม่ถือว่าอ่านความเคลื่อนไหวล่าสุดแล้ว
+      if (
+        more &&
+        (staleTicketId === id ||
+          (previousUpdatedAt && data.ticket?.updated_at !== previousUpdatedAt))
+      ) {
+        staleTicketId = id;
+        detailError = 'SUPPORT_STALE';
+      } else if (!more && staleTicketId === id) staleTicketId = null;
+      loaded = true;
     } catch (err) {
       if (token === detailRequest && epoch === identityEpoch && !loseAuth(err))
         detailError = err.code || 'default';
@@ -354,12 +474,47 @@
       if (token === detailRequest) {
         detailBusy = false;
         render();
-        if (focus)
-          document.getElementById('support-conversation-title')?.focus({ preventScroll: true });
-        if (!more) {
-          const thread = root.querySelector('.support-thread');
-          if (thread) thread.scrollTop = thread.scrollHeight;
+        const title = document.getElementById('support-conversation-title');
+        if (focus) {
+          title?.focus({ preventScroll: true });
+          if (window.matchMedia?.('(max-width: 760px)')?.matches)
+            title
+              ?.closest('.support-conversation')
+              ?.scrollIntoView({ block: 'start', behavior: 'auto' });
         }
+        const thread = root.querySelector('.support-thread');
+        if (thread && !more) thread.scrollTop = thread.scrollHeight;
+        if (thread && loaded && oldPosition)
+          thread.scrollTop = oldPosition.top + thread.scrollHeight - oldPosition.height;
+      }
+    }
+    if (loaded && !more && token === detailRequest && epoch === identityEpoch && selected?.order_id)
+      void loadRelatedOrder(id);
+  }
+  async function loadRelatedOrder(id) {
+    if (!selected?.order_id || selected.id !== id || !user?.emailVerified) return;
+    const token = ++orderRequest,
+      epoch = identityEpoch,
+      orderId = selected.order_id;
+    orderBusy = true;
+    orderError = false;
+    render();
+    try {
+      const data = await S.api(`${base}/${encodeURIComponent(id)}/order`, { cache: 'no-store' });
+      if (token !== orderRequest || epoch !== identityEpoch || selected?.id !== id) return;
+      relatedOrder = data.order && data.order.id === orderId ? data.order : null;
+    } catch (err) {
+      if (
+        token === orderRequest &&
+        epoch === identityEpoch &&
+        selected?.id === id &&
+        !loseAuth(err)
+      )
+        orderError = true;
+    } finally {
+      if (token === orderRequest && epoch === identityEpoch && selected?.id === id) {
+        orderBusy = false;
+        render();
       }
     }
   }
@@ -370,6 +525,16 @@
       if (epoch !== identityEpoch) return;
       orders = Array.isArray(data.orders) ? data.orders : [];
       ordersFailed = false;
+      // พารามิเตอร์ URL ช่วยเลือกได้เฉพาะออเดอร์ที่ API ยืนยันว่าเป็นของบัญชีนี้
+      if (!queryOrderApplied && !queryId && validOrderId(queryOrder)) {
+        queryOrderApplied = true;
+        const ownOrder = orders.find((order) => order.id === queryOrder);
+        if (ownOrder && !draft.subject && !draft.message) {
+          draft.orderId = ownOrder.id;
+          draft.category = 'order';
+          newOpen = true;
+        }
+      }
     } catch {
       if (epoch === identityEpoch) ordersFailed = true;
     }
@@ -422,6 +587,11 @@
       if (epoch !== identityEpoch) return;
       saved = data.ticket;
       rememberTicket(saved);
+      status = 'all';
+      category = 'all';
+      query = '';
+      searchDraft = '';
+      searchError = '';
       draft = { category: 'order', subject: '', message: '', orderId: '' };
       createKey = uuid();
       newOpen = false;
@@ -495,24 +665,35 @@
     }
   }
   async function changeStatus(action) {
-    if (writeBusy || detailBusy || !selected || !['resolve', 'reopen', 'close'].includes(action))
+    if (
+      writeBusy ||
+      detailBusy ||
+      !selected ||
+      staleTicketId === selected.id ||
+      !['resolve', 'reopen', 'close'].includes(action)
+    )
       return;
-    const epoch = identityEpoch;
+    const epoch = identityEpoch,
+      id = selected.id,
+      expectedUpdatedAt = selected.updated_at;
     writeBusy = true;
     detailError = '';
     notice = '';
     render();
     let saved = false;
     try {
-      const data = await S.api(`${base}/${encodeURIComponent(selected.id)}`, {
+      const data = await S.api(`${base}/${encodeURIComponent(id)}`, {
         method: 'PATCH',
-        body: { action },
+        body: { action, expectedUpdatedAt },
       });
       if (epoch !== identityEpoch) return;
       rememberTicket(data.ticket);
       saved = true;
     } catch (err) {
-      if (epoch === identityEpoch && !loseAuth(err)) detailError = err.code || 'default';
+      if (epoch === identityEpoch && !loseAuth(err)) {
+        detailError = err.code || 'default';
+        if (err.code === 'SUPPORT_STALE') staleTicketId = id;
+      }
     } finally {
       if (epoch === identityEpoch) {
         writeBusy = false;
@@ -527,6 +708,10 @@
       pending = recovery;
     if (kind === 'create') {
       status = 'all';
+      category = 'all';
+      query = '';
+      searchDraft = '';
+      searchError = '';
       cursor = null;
     }
     await loadList();
@@ -559,6 +744,7 @@
   // เก็บฉบับร่างเฉพาะหน้านี้ ไม่ใส่ข้อความส่วนตัวลง localStorage หรือ service worker
   root.addEventListener('input', (event) => {
     const field = event.target;
+    if (field.id === 'support-search' || field.name === 'ticketSearch') searchDraft = field.value;
     if (field.form?.id === 'support-create-form' && Object.hasOwn(draft, field.name))
       draft[field.name] = field.value;
     if (field.id === 'support-reply' && selected) replyDrafts.set(selected.id, field.value);
@@ -569,8 +755,15 @@
       counter.textContent = `${field.value.length}/${field.name === 'subject' ? 120 : 4000}`;
   });
   root.addEventListener('change', (event) => {
-    if (event.target.id === 'support-filter') {
-      status = event.target.value;
+    if (['support-filter', 'support-category-filter'].includes(event.target.id)) {
+      if (listBusy || writeBusy) return;
+      if (event.target.id === 'support-filter') {
+        if (event.target.value !== 'all' && !Object.hasOwn(statuses, event.target.value)) return;
+        status = event.target.value;
+      } else {
+        if (event.target.value !== 'all' && !Object.hasOwn(labels, event.target.value)) return;
+        category = event.target.value;
+      }
       cursor = null;
       tickets = [];
       listLoaded = false;
@@ -580,6 +773,30 @@
       draft[event.target.name] = event.target.value;
   });
   root.addEventListener('submit', (event) => {
+    if (event.target.id === 'support-search-form') {
+      event.preventDefault();
+      if (listBusy || writeBusy) return;
+      const value = searchDraft.trim().toUpperCase();
+      if (
+        value &&
+        (!/^(?:ALY-S-)?[1-9]\d{0,18}$/.test(value) ||
+          BigInt(value.replace(/^ALY-S-/, '')) > 9223372036854775807n)
+      ) {
+        searchError = L(
+          'ใช้เลขเรื่อง เช่น ALY-S-123 หรือ 123',
+          'Use a request number such as ALY-S-123 or 123.',
+          '请输入咨询编号，例如 ALY-S-123 或 123。'
+        );
+        render();
+        return;
+      }
+      query = value;
+      searchError = '';
+      cursor = null;
+      tickets = [];
+      listLoaded = false;
+      loadList();
+    }
     if (event.target.id === 'support-create-form') {
       event.preventDefault();
       createTicket();
@@ -597,6 +814,21 @@
       return;
     }
     if (writeBusy) return;
+    if (target.hasAttribute('data-support-order-refresh')) {
+      if (!orderBusy && selected) await loadRelatedOrder(selected.id);
+      return;
+    }
+    if (target.hasAttribute('data-support-clear-search')) {
+      if (listBusy) return;
+      query = '';
+      searchDraft = '';
+      searchError = '';
+      cursor = null;
+      tickets = [];
+      listLoaded = false;
+      await loadList();
+      return;
+    }
     if (target.dataset.supportCheckConflict) {
       await checkConflict(target.dataset.supportCheckConflict);
       return;

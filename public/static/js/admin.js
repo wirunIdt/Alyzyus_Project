@@ -8,6 +8,9 @@
   const e = S.escape,
     L = (th, en, zh) => S.t({ th, en, zh }),
     demo = !S.configured;
+  const orderParameters = new URLSearchParams(location.search).getAll('order');
+  let requestedOrder = !demo && orderParameters.length === 1 ? orderParameters[0] : null,
+    orderLinkMissing = false;
   let section = 'overview',
     data = null,
     loading = true,
@@ -417,6 +420,10 @@
       );
     }
   }
+  function linkedOrderNotice() {
+    if (!orderLinkMissing) return '';
+    return `<div class="adm-demo-banner" role="status"><p>${e(L('ไม่พบคำสั่งซื้อที่เชื่อมไว้ในรายการล่าสุดของร้าน ออเดอร์เก่าอาจอยู่นอกช่วงข้อมูลที่แสดง กรุณากลับไปดูสรุปในเรื่องบริการลูกค้า หรือลองรีเฟรชรายการ', 'The linked order is not in the store’s latest loaded orders. Older orders may be outside this list. Return to the service conversation for its summary, or refresh the list.', '关联订单不在商店最新加载的订单中，较早订单可能不在此列表范围内。请返回服务对话查看摘要，或刷新列表。'))} <a href="/admin/support">${e(L('กลับไปบริการลูกค้า', 'Back to customer service', '返回客户服务'))}</a></p></div>`;
+  }
   function render() {
     if (access !== 'allowed') {
       root.innerHTML = `<div class="adm-access page-shell"><div class="adm-empty-icon">${S.icon('user', 28)}</div><span class="adm-eyebrow">ALYZYUS / STUDIO</span><h1>${e(access === 'denied' ? L('พื้นที่สำหรับผู้ดูแลร้านค้า', 'Your store, behind the scenes.', '商店管理空间') : access === 'unavailable' ? L('พื้นที่จัดการร้านยังไม่เปิดให้บริการ', 'Store studio is not available yet.', '商店管理暂未开放。') : L('ยังโหลดข้อมูลไม่ได้', 'We could not load your store.', '无法加载商店数据'))}</h1><p>${e(access === 'denied' ? L('เข้าสู่ระบบด้วยบัญชีที่ได้รับสิทธิ์ผู้ดูแล เพื่อจัดการสินค้าและคำสั่งซื้อ', 'Sign in with an authorized administrator account to manage products and orders.', '请使用已获授权的管理员账户登录，以管理商品和订单。') : access === 'unavailable' ? L('ร้านยังตั้งค่าระบบจัดการไม่ครบ กรุณาลองใหม่ภายหลัง', 'Store management setup is still in progress. Please check back shortly.', '商店管理尚未配置完成，请稍后再试。') : L('ตรวจสอบการเชื่อมต่อแล้วลองใหม่อีกครั้ง', 'Check your connection and try again.', '请检查网络连接后重试。'))}</p><div class="adm-inline-actions">${access === 'denied' ? `<a class="button" href="/account?next=/admin">${e(L('เข้าสู่ระบบ', 'Sign in', '登录'))}${S.icon('arrow', 16)}</a>` : `<button type="button" class="button" data-refresh>${e(L('ลองอีกครั้ง', 'Try again', '重试'))}</button>`}<a href="/" class="button secondary">${e(L('กลับหน้าร้าน', 'Back to store', '返回商店'))}</a></div></div>`;
@@ -453,7 +460,7 @@
       )
       .join(
         ''
-      )}</nav><div class="adm-sidebar-bottom"><div class="adm-workspace-note">${S.icon('package', 21)}<strong>${e(L('ดูแลร้านจากที่เดียว', 'A little more in control.', '轻松掌握店铺动态'))}</strong><p>${e(L('จัดการสินค้าและออเดอร์ ให้ทุกวันเป็นวันที่ง่ายขึ้น', 'Your products, orders, and the details that make a difference.', '商品、订单与每一个重要细节，尽在掌握。'))}</p></div><a class="adm-back-store" href="/">${S.icon('arrow-up', 17)}${e(L('ดูหน้าร้าน', 'Visit storefront', '访问商店'))}</a><div class="adm-admin-profile"><span>AY</span><div><strong>Alyzyus Studio</strong><small>${e(demo ? L('โหมดตัวอย่าง', 'Preview workspace', '预览工作空间') : L('ผู้ดูแลร้านค้า', 'Store administrator', '商店管理员'))}</small></div></div></div></aside><div class="adm-main"><div class="adm-topbar"><div><span>${e(L('พื้นที่ร้านค้า', 'Workspace', '工作空间'))}</span>${S.icon('arrow', 13)}<strong>${e(S.t(sections[section]))}</strong></div><span class="adm-connection ${demo ? 'preview' : ''}"><i></i>${e(demo ? L('พรีวิวร้านค้า', 'Store preview', '商店预览') : L('เชื่อมต่อร้านค้าแล้ว', 'Store connected', '商店已连接'))}</span></div><div class="adm-content">${demo ? `<div class="adm-demo-banner"><span class="adm-demo-label">DEMO</span><p>${e(L('พื้นที่ตัวอย่าง: ยังไม่ได้เชื่อมต่อฐานข้อมูล สินค้าเป็นตัวอย่าง ไม่มีคำสั่งซื้อจริง สถิติเป็นศูนย์และการบันทึกถูกปิดไว้', 'Preview workspace: the database is not connected. Products are samples, no real orders exist, statistics are zero, and saving is disabled.', '预览空间：数据库尚未连接。商品为示例，无真实订单，统计为零，保存功能已禁用。'))}</p></div>` : ''}${limited ? `<div class="adm-demo-banner"><p>${e(L(`แสดง ${all.length} คำสั่งซื้อล่าสุดจากทั้งหมด ${total} รายการ การค้นหา กราฟ ยอดชำระ และไฟล์ส่งออกคำนวณจากรายการที่แสดง`, `Showing the latest ${all.length} of ${total} orders. Search, charts, collected amounts, and exports cover these displayed orders.`, `显示全部 ${total} 个订单中最新的 ${all.length} 个。搜索、图表、收款金额和导出仅涵盖这些订单。`))}</p></div>` : ''}<header class="adm-page-header"><div><span class="adm-eyebrow">ALYZYUS / STORE STUDIO</span><h1>${e(section === 'overview' ? L('ทุกอย่างอยู่ในมือคุณ', 'Let us make a good day.', '美好一天，从这里开始。') : S.t(sections[section]))}<span class="adm-title-dot">.</span></h1><p>${e(description)}</p></div><div class="adm-inline-actions"><button class="adm-icon-button adm-refresh" type="button" data-refresh ${loading ? 'disabled' : ''} aria-label="${e(L('รีเฟรชข้อมูล', 'Refresh data', '刷新数据'))}">${'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6.1 7a7 7 0 0 1 11.8-2L20 8M4 16l2.1 3a7 7 0 0 0 11.8-2"/></svg>'}</button>${section === 'orders' ? `<button type="button" class="button secondary adm-compact-button" data-export ${demo || !visibleOrders().length ? 'disabled' : ''}>${S.icon('down', 16)}${e(L('ส่งออก CSV', 'Export CSV', '导出 CSV'))}</button>` : `<button type="button" class="button adm-compact-button" data-add-product>${S.icon('plus', 17)}${e(L('เพิ่มสินค้า', 'Add product', '添加商品'))}</button>`}</div></header>${loading && !data && !demo ? `<div class="adm-loading" role="status">${e(L('กำลังโหลดร้านค้า…', 'Loading your store…', '正在加载商店…'))}</div>` : section === 'overview' ? overview() : `<section class="adm-panel">${toolbar()}<div id="admin-list"></div><div class="adm-table-footer" id="admin-list-footer"></div></section>`}<footer class="adm-footer"><span>Alyzyus Studio</span><span>${e(L('ใส่ใจทุกรายละเอียด', 'Thoughtfully, down to the details.', '每个细节，都用心对待。'))}<span>✦</span></span></footer></div></div></div>`;
+      )}</nav><div class="adm-sidebar-bottom"><div class="adm-workspace-note">${S.icon('package', 21)}<strong>${e(L('ดูแลร้านจากที่เดียว', 'A little more in control.', '轻松掌握店铺动态'))}</strong><p>${e(L('จัดการสินค้าและออเดอร์ ให้ทุกวันเป็นวันที่ง่ายขึ้น', 'Your products, orders, and the details that make a difference.', '商品、订单与每一个重要细节，尽在掌握。'))}</p></div><a class="adm-back-store" href="/">${S.icon('arrow-up', 17)}${e(L('ดูหน้าร้าน', 'Visit storefront', '访问商店'))}</a><div class="adm-admin-profile"><span>AY</span><div><strong>Alyzyus Studio</strong><small>${e(demo ? L('โหมดตัวอย่าง', 'Preview workspace', '预览工作空间') : L('ผู้ดูแลร้านค้า', 'Store administrator', '商店管理员'))}</small></div></div></div></aside><div class="adm-main"><div class="adm-topbar"><div><span>${e(L('พื้นที่ร้านค้า', 'Workspace', '工作空间'))}</span>${S.icon('arrow', 13)}<strong>${e(S.t(sections[section]))}</strong></div><span class="adm-connection ${demo ? 'preview' : ''}"><i></i>${e(demo ? L('พรีวิวร้านค้า', 'Store preview', '商店预览') : L('เชื่อมต่อร้านค้าแล้ว', 'Store connected', '商店已连接'))}</span></div><div class="adm-content">${demo ? `<div class="adm-demo-banner"><span class="adm-demo-label">DEMO</span><p>${e(L('พื้นที่ตัวอย่าง: ยังไม่ได้เชื่อมต่อฐานข้อมูล สินค้าเป็นตัวอย่าง ไม่มีคำสั่งซื้อจริง สถิติเป็นศูนย์และการบันทึกถูกปิดไว้', 'Preview workspace: the database is not connected. Products are samples, no real orders exist, statistics are zero, and saving is disabled.', '预览空间：数据库尚未连接。商品为示例，无真实订单，统计为零，保存功能已禁用。'))}</p></div>` : ''}${limited ? `<div class="adm-demo-banner"><p>${e(L(`แสดง ${all.length} คำสั่งซื้อล่าสุดจากทั้งหมด ${total} รายการ การค้นหา กราฟ ยอดชำระ และไฟล์ส่งออกคำนวณจากรายการที่แสดง`, `Showing the latest ${all.length} of ${total} orders. Search, charts, collected amounts, and exports cover these displayed orders.`, `显示全部 ${total} 个订单中最新的 ${all.length} 个。搜索、图表、收款金额和导出仅涵盖这些订单。`))}</p></div>` : ''}${linkedOrderNotice()}<header class="adm-page-header"><div><span class="adm-eyebrow">ALYZYUS / STORE STUDIO</span><h1>${e(section === 'overview' ? L('ทุกอย่างอยู่ในมือคุณ', 'Let us make a good day.', '美好一天，从这里开始。') : S.t(sections[section]))}<span class="adm-title-dot">.</span></h1><p>${e(description)}</p></div><div class="adm-inline-actions"><button class="adm-icon-button adm-refresh" type="button" data-refresh ${loading ? 'disabled' : ''} aria-label="${e(L('รีเฟรชข้อมูล', 'Refresh data', '刷新数据'))}">${'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6.1 7a7 7 0 0 1 11.8-2L20 8M4 16l2.1 3a7 7 0 0 0 11.8-2"/></svg>'}</button>${section === 'orders' ? `<button type="button" class="button secondary adm-compact-button" data-export ${demo || !visibleOrders().length ? 'disabled' : ''}>${S.icon('down', 16)}${e(L('ส่งออก CSV', 'Export CSV', '导出 CSV'))}</button>` : `<button type="button" class="button adm-compact-button" data-add-product>${S.icon('plus', 17)}${e(L('เพิ่มสินค้า', 'Add product', '添加商品'))}</button>`}</div></header>${loading && !data && !demo ? `<div class="adm-loading" role="status">${e(L('กำลังโหลดร้านค้า…', 'Loading your store…', '正在加载商店…'))}</div>` : section === 'overview' ? overview() : `<section class="adm-panel">${toolbar()}<div id="admin-list"></div><div class="adm-table-footer" id="admin-list-footer"></div></section>`}<footer class="adm-footer"><span>Alyzyus Studio</span><span>${e(L('ใส่ใจทุกรายละเอียด', 'Thoughtfully, down to the details.', '每个细节，都用心对待。'))}<span>✦</span></span></footer></div></div></div>`;
     renderList();
   }
   function draftFrom(p) {
@@ -925,6 +932,8 @@
     access = 'denied';
     busy = false;
     search = '';
+    requestedOrder = null;
+    orderLinkMissing = false;
     shipment = { carrier: '', tracking_number: '' };
     closeDialog();
     render();
@@ -949,6 +958,16 @@
       }
       data = result;
       access = 'allowed';
+      if (requestedOrder) {
+        section = 'orders';
+        // ลิงก์เลือกได้เฉพาะข้อมูลจริงที่ API ตรวจสิทธิ์ Admin และส่งกลับมาแล้ว
+        const linkedOrder = result.orders.find((order) => order.id === requestedOrder);
+        orderLinkMissing = !linkedOrder;
+        if (linkedOrder) {
+          requestedOrder = null;
+          openOrder(linkedOrder);
+        }
+      }
       if (selected) {
         const updated = result.orders.find((o) => o.id === selected.id);
         if (updated) selected = updated;

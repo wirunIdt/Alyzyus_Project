@@ -32,7 +32,7 @@ Mr. Wirun Earmvorakul ระยะเวลาประมาณ 5 ถึง 7 �
 
 ## สไลด์ 8
 
-35 วินาที แสดงคำสั่ง python scripts/check.py รุ่น QC วันที่ 16 ตุลาคม 2026 ผ่าน Python 55 และ Node 41 กรณี รวม 96 กรณี พร้อม lint, formatter, syntax และ template checks ครอบคลุมธุรกรรม/RLS, Customer Service, สิทธิ์แต่งแอป, การล้างข้อมูลเมื่อออกจากระบบ, PWA และแบบจำลองคิว อย่าอ้างว่าปราศจากข้อผิดพลาด Security advisor ไม่พบปัญหา RLS ของ Log แต่ยังมีคำเตือน Leaked Password Protection ที่เจ้าของบัญชีต้องตรวจตั้งค่า ดู docs/ACTIVITY_LOGS.md การตรวจนี้ไม่ใช่การตรวจเจาะระบบเต็มรูปแบบ
+35 วินาที แสดงคำสั่ง python scripts/check.py รุ่น Customer Service workflow วันที่ 17 ตุลาคม 2026 ผ่าน Python 67 และ Node 58 กรณี รวม 125 กรณี พร้อม lint, formatter, syntax และ template checks ครอบคลุมธุรกรรม/RLS, การจัดคิวบริการลูกค้าตามกิจกรรมล่าสุด, การตรวจ revision ก่อนปิดเรื่อง, สิทธิ์แต่งแอป, การล้างข้อมูลเมื่อออกจากระบบ, PWA และแบบจำลองคิว อย่าอ้างว่าปราศจากข้อผิดพลาด Security advisor ไม่พบปัญหา RLS ของ workflow ใหม่ แต่ยังมีคำเตือน Leaked Password Protection ที่เจ้าของบัญชีต้องตรวจตั้งค่า ดู docs/CUSTOMER_SERVICE.md การตรวจนี้ไม่ใช่การตรวจเจาะระบบเต็มรูปแบบ
 
 ## สไลด์ 9
 

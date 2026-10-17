@@ -186,9 +186,61 @@
   gap: 7px;
 }
 .support-filters {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
   align-items: end;
   gap: 8px;
+}
+.support-filters label:first-child {
+  grid-column: 1 / -1;
+}
+.support-search {
+  margin-bottom: 17px;
+  min-width: 0;
+}
+.support-search > label {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.support-search > div {
+  display: flex;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.support-search input {
+  min-width: 0;
+  width: 100%;
+  flex: 1;
+  min-height: 44px;
+  border: 0;
+  padding: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+}
+.support-search button {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--ink);
+}
+.support-search button:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.support-search small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-top: 6px;
 }
 .support-filters label {
   display: flex;
@@ -476,6 +528,51 @@
   color: var(--muted);
   font-size: 11px;
   overflow-wrap: anywhere;
+}
+.support-order-context {
+  padding: 18px 23px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.support-order-context p {
+  margin-top: 7px;
+}
+.support-order-context .button {
+  margin-top: 10px;
+}
+.support-order-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: var(--ink);
+}
+.support-order-heading > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.support-order-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-top: 9px;
+}
+.support-order-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 5px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.support-stale-actions {
+  padding: 0 23px 18px;
 }
 .support-order-reference {
   padding: 8px 10px;

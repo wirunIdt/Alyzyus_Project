@@ -1,5 +1,6 @@
 """ตรวจเส้นทาง Support, ตัวตนจริง, ขอบเขตข้อมูล และ safe error mapping"""
 
+import base64
 import json
 import unittest
 
@@ -13,6 +14,7 @@ USER = "61111111-1111-4111-8111-111111111111"
 OTHER = "62222222-2222-4222-8222-222222222222"
 KEY = "63333333-3333-4333-8333-333333333333"
 BIG_ID = 9007199254740993
+UPDATED_AT = "2026-10-17T10:20:30.123456+00:00"
 
 
 class SupportTests(unittest.TestCase):
@@ -21,6 +23,7 @@ class SupportTests(unittest.TestCase):
         self.role = "customer"
         self.confirmed = True
         self.failure = None
+        self.ticket_rows = None
         self.transport = httpx.Client(transport=httpx.MockTransport(self.provider))
         self.app = create_app(
             {
@@ -59,7 +62,9 @@ class SupportTests(unittest.TestCase):
                 return httpx.Response(200, json=[])
             return httpx.Response(
                 200,
-                json=[
+                json=self.ticket_rows
+                if self.ticket_rows is not None
+                else [
                     {
                         "id": BIG_ID,
                         "ticket_number": "ALY-S-" + str(BIG_ID),
@@ -67,6 +72,7 @@ class SupportTests(unittest.TestCase):
                         "subject": "Product question",
                         "status": "open",
                         "category": "product",
+                        "updated_at": UPDATED_AT,
                     }
                 ],
             )
@@ -134,12 +140,12 @@ class SupportTests(unittest.TestCase):
 
     def test_customer_list_and_detail_read_with_jwt_and_owner_filter(self):
         self.sign_in()
-        result = self.client.get("/api/support/tickets?status=open&limit=10&cursor=45")
+        result = self.client.get("/api/support/tickets?status=open&limit=10")
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.json["tickets"][0]["id"], str(BIG_ID))
         call = next(call for call in self.calls if call.url.path.endswith("support_tickets"))
         self.assertEqual(call.url.params["user_id"], "eq." + USER)
-        self.assertEqual(call.url.params["id"], "lt.45")
+        self.assertEqual(call.url.params["order"], "updated_at.desc,id.desc")
         self.assertEqual(call.url.params["status"], "eq.open")
         self.assertEqual(call.headers["Authorization"], "Bearer verified-session")
         self.assertEqual(call.headers["apikey"], "sb_publishable_test")
@@ -163,6 +169,12 @@ class SupportTests(unittest.TestCase):
             "?offset=50",
             "?status=unknown",
             "?cursor=9223372036854775808",
+            "?cursor=45",
+            "?category=order&category=payment",
+            "?category=not-valid",
+            "?q=ALY-S-1)&or=(id.gt.0",
+            "?q=0",
+            "?q=ALY-S-9223372036854775808",
             "/not-an-id",
             "/0",
         )
@@ -238,6 +250,7 @@ class SupportTests(unittest.TestCase):
             ("SUPPORT_RATE_LIMITED", 429),
             ("SUPPORT_CLOSED", 409),
             ("IDEMPOTENCY_CONFLICT", 409),
+            ("SUPPORT_STALE", 409),
         ):
             self.failure = code
             result = self.post("/api/support/tickets", self.payload())
@@ -247,16 +260,101 @@ class SupportTests(unittest.TestCase):
         self.failure = None
         self.assertEqual(
             self.client.patch(
-                "/api/support/tickets/1", json={"action": "close"}, headers={"Origin": ORIGIN}
+                "/api/support/tickets/1",
+                json={"action": "close", "expectedUpdatedAt": UPDATED_AT},
+                headers={"Origin": ORIGIN},
             ).status_code,
             400,
         )
         self.assertEqual(
             self.client.patch(
-                "/api/support/tickets/1", json={"action": "resolve"}, headers={"Origin": ORIGIN}
+                "/api/support/tickets/1",
+                json={"action": "resolve", "expectedUpdatedAt": UPDATED_AT},
+                headers={"Origin": ORIGIN},
             ).status_code,
             200,
         )
+
+    def test_activity_cursor_preserves_microseconds_and_bigint_tie_breaker(self):
+        self.sign_in()
+        self.ticket_rows = [
+            {"id": BIG_ID, "updated_at": UPDATED_AT},
+            {"id": BIG_ID - 1, "updated_at": UPDATED_AT},
+        ]
+        result = self.client.get("/api/support/tickets?limit=1")
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.json["tickets"][0]["id"], str(BIG_ID))
+        cursor = result.json["nextCursor"]
+        self.assertTrue(result.json["hasMore"])
+        self.assertNotEqual(cursor, str(BIG_ID))
+        self.calls.clear()
+        result = self.client.get("/api/support/tickets", query_string={"cursor": cursor})
+        self.assertEqual(result.status_code, 200)
+        call = next(call for call in self.calls if call.url.path.endswith("support_tickets"))
+        self.assertEqual(
+            call.url.params["or"],
+            f"(updated_at.lt.{UPDATED_AT},and(updated_at.eq.{UPDATED_AT},id.lt.{BIG_ID}))",
+        )
+        self.assertEqual(call.url.params["order"], "updated_at.desc,id.desc")
+
+    def test_ticket_filters_use_exact_number_and_enum_without_arbitrary_search(self):
+        self.sign_in()
+        for query in (str(BIG_ID), "ALY-S-" + str(BIG_ID), "aly-s-" + str(BIG_ID)):
+            self.calls.clear()
+            result = self.client.get(
+                "/api/support/tickets",
+                query_string={"q": query, "category": "payment", "status": "pending"},
+            )
+            self.assertEqual(result.status_code, 200)
+            call = next(call for call in self.calls if call.url.path.endswith("support_tickets"))
+            self.assertEqual(call.url.params["id"], "eq." + str(BIG_ID))
+            self.assertEqual(call.url.params["category"], "eq.payment")
+            self.assertEqual(call.url.params["status"], "eq.pending")
+            self.assertEqual(call.url.params["user_id"], "eq." + USER)
+            self.assertFalse(any("ilike" in value for value in call.url.params.values()))
+
+    def test_invalid_activity_cursors_never_reach_support_table(self):
+        self.sign_in()
+        values = [
+            "not-json",
+            "x" * 241,
+            {"v": 1, "at": "2026-10-17T10:20:30Z),id.gt.0", "id": "1"},
+            {"v": 1, "at": "2026-10-17T10:20:30Z", "id": "9223372036854775808"},
+            {"v": True, "at": "2026-10-17T10:20:30Z", "id": "1"},
+            {"v": 1, "at": "2026-10-17T10:20:30Z", "id": "1", "extra": 1},
+        ]
+        for value in values:
+            cursor = value
+            if isinstance(value, dict):
+                cursor = base64.urlsafe_b64encode(json.dumps(value).encode()).decode().rstrip("=")
+            result = self.client.get("/api/support/tickets", query_string={"cursor": cursor})
+            self.assertEqual(result.status_code, 400)
+        self.assertFalse(any(call.url.path.endswith("support_tickets") for call in self.calls))
+
+    def test_status_action_requires_a_valid_revision_and_uses_guarded_rpc(self):
+        self.sign_in()
+        for body in (
+            {"action": "resolve"},
+            {"action": "resolve", "expectedUpdatedAt": "yesterday"},
+            {"action": "resolve", "expectedUpdatedAt": "2026-02-30T10:00:00Z"},
+            {"action": "resolve", "expectedUpdatedAt": "2026-10-17T10:00:00"},
+        ):
+            response = self.client.patch(
+                "/api/support/tickets/1", json=body, headers={"Origin": ORIGIN}
+            )
+            self.assertEqual(response.status_code, 400)
+        self.assertFalse(any("/rpc/" in str(call.url) for call in self.calls))
+        response = self.client.patch(
+            "/api/support/tickets/1",
+            json={"action": "resolve", "expectedUpdatedAt": "2026-10-17T17:20:30.123456+07:00"},
+            headers={"Origin": ORIGIN},
+        )
+        self.assertEqual(response.status_code, 200)
+        call = next(
+            call for call in self.calls if call.url.path.endswith("change_support_ticket_revision")
+        )
+        self.assertEqual(json.loads(call.content)["p_expected_updated_at"], UPDATED_AT)
+        self.assertFalse(json.loads(call.content)["p_as_staff"])
 
 
 if __name__ == "__main__":

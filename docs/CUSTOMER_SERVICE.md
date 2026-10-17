@@ -10,18 +10,32 @@
 4. ลูกค้าหรือผู้ดูแลเลือกแก้ไขแล้วเป็น `resolved` ลูกค้ายังตอบหรือเปิดเรื่องเดิมต่อได้
 5. ผู้ดูแลปิดเป็น `closed` บทสนทนาจะอ่านได้อย่างเดียว ผู้ดูแลเท่านั้นที่เปิดเรื่องที่ปิดแล้วกลับมาได้ ลูกค้าสามารถสร้างเรื่องใหม่ได้
 
+รายการเรียงตามกิจกรรมล่าสุด เรื่องเก่าที่ลูกค้าตอบเพิ่มจึงกลับขึ้นมาด้านบน กรองสถานะ/หมวดหมู่หรือค้นหาด้วยเลขเรื่อง เช่น `ALY-S-123` หรือ `123` ได้ การค้นหาใช้ปุ่มส่งฟอร์ม ไม่เรียกเซิร์ฟเวอร์ทุกครั้งที่พิมพ์
+
 ไม่มีการรับประกันเวลาตอบ ไม่ได้แสดงว่ามีเจ้าหน้าที่ออนไลน์ ไม่มีอัปโหลดไฟล์แนบและการคืนเงินจริงอัตโนมัติ หมวดคืนสินค้าใช้รับเรื่องให้ผู้ดูแลตรวจสอบเท่านั้น ข้อความใหม่จะเห็นเมื่อกดรีเฟรชหรือเปิดเรื่องอีกครั้ง
+
+## จากคำสั่งซื้อไปยังทีมร้าน
+
+- ปุ่มขอความช่วยเหลือในหน้าติดตามคำสั่งซื้อเปิด `/support?order=<UUID>` ระบบเลือกออเดอร์ให้หลังตรวจว่าอยู่ในรายการของบัญชีที่เข้าสู่ระบบแล้วเท่านั้น URL ไม่สามารถเปลี่ยนเจ้าของเรื่องหรือข้ามสิทธิ์ออเดอร์ได้
+- ในบทสนทนาที่ผูกออเดอร์ จะแสดงเลขคำสั่งซื้อ สถานะ ยอดรวม และข้อมูลขนส่งที่บันทึกจริง พร้อมลิงก์ไปหน้าคำสั่งซื้อและเส้นทาง 3D ข้อมูลสรุปไม่รวมชื่อ อีเมล เบอร์โทร หรือที่อยู่
+- ลิงก์ Admin เปิด `/admin?order=<UUID>` โดยเลือกจากข้อมูลที่ API อนุญาตแล้วเท่านั้น หากออเดอร์อยู่นอก 500 รายการที่หลังบ้านโหลดมา จะมีข้อความแจ้งให้ตรวจในรายการคำสั่งซื้อ ไม่สร้างรายละเอียดสมมติ
+- ลิงก์เข้าสู่ระบบรักษาเลขเรื่อง/ออเดอร์ที่ถูกต้อง แต่ข้อความร่างเก็บในหน่วยความจำของหน้าเท่านั้น และถูกล้างเมื่อออกจากระบบ
+
+## ป้องกันการปิดเรื่องที่มีข้อความเข้ามาใหม่
+
+ทุกการเปลี่ยนสถานะส่ง `expectedUpdatedAt` จากเรื่องที่กำลังแสดง เซิร์ฟเวอร์เปรียบเทียบ revision ขณะถือ row lock หากอีกฝ่ายตอบหรือเปลี่ยนสถานะไปแล้ว ระบบตอบ `SUPPORT_STALE` (409) และให้รีเฟรชเพื่อตรวจข้อความล่าสุดก่อนทำรายการใหม่ ข้อความร่างยังอยู่ และระบบไม่ปิดเรื่องซ้ำโดยอัตโนมัติ การส่งสถานะเดิมซ้ำหลังสำเร็จเป็น no-op โดยไม่เพิ่ม audit หรือ quota ซ้ำ
 
 ## API
 
-- `GET /api/support/tickets?limit=20&cursor=<id>&status=all|open|pending|resolved|closed`
+- `GET /api/support/tickets?limit=20&cursor=<opaque>&status=all|open|pending|resolved|closed&category=all|order|payment|return|product|account|other&q=ALY-S-123`
 - `POST /api/support/tickets` รับ `{category,subject,message,orderId:null|UUID,idempotencyKey:UUID}` คืน `{ticket}`
 - `GET /api/support/tickets/<id>?limit=40&cursor=<message-id>` คืน `{ticket,messages,nextCursor,hasMore,limit}`
 - `POST /api/support/tickets/<id>/messages` รับ `{message,idempotencyKey}` คืน `{ticket,message}`
-- `PATCH /api/support/tickets/<id>` รับ `{action:'resolve'|'reopen'}`
+- `GET /api/support/tickets/<id>/order` คืน `{order:null|summary}` หลังตรวจสิทธิ์เรื่องและออเดอร์ด้วย JWT/RLS
+- `PATCH /api/support/tickets/<id>` รับ `{action:'resolve'|'reopen',expectedUpdatedAt:'<ticket.updated_at>'}`
 - ผู้ดูแลใช้เส้นทาง `/api/admin/support/tickets` แทนและเพิ่ม action `close` ได้ ไม่มี POST สร้างเรื่องแทนลูกค้า
 
-รายการและข้อความเรียงตาม ID ล่าสุดก่อน ใช้ keyset pagination สูงสุด 100 รายการต่อครั้ง ID แบบ bigint ส่งเป็น string เพื่อไม่เสียเลขเมื่อผ่าน JavaScript ระบบไม่ส่ง fingerprint หรือ idempotency key ออกมาในรายละเอียดเรื่อง
+รายการเรียง `updated_at DESC, id DESC` และใช้ cursor ทึบที่รวมเวลาเต็มความละเอียดกับ bigint ID ให้ส่ง `nextCursor` กลับโดยไม่แก้ไข (cursor เลข ID แบบเก่าใช้กับรายการเรื่องไม่ได้แล้ว) ข้อความยังเรียง ID ล่าสุดก่อนและใช้ cursor แบบ ID ทั้งสองรายการรับสูงสุด 100 รายการต่อครั้ง ID แบบ bigint ส่งเป็น string เพื่อไม่เสียเลขเมื่อผ่าน JavaScript ระบบไม่ส่ง fingerprint หรือ idempotency key ออกมาในรายละเอียดเรื่อง
 
 ## การป้องกันข้อมูล
 
@@ -36,10 +50,12 @@
 - Audit เก็บเฉพาะ ticket ID, หมวด, สถานะ และ role ผู้ตอบ ไม่คัดลอกชื่อเรื่อง ข้อความ อีเมลหรือข้อมูลติดต่อ
 - บทสนทนาอยู่ในฐานข้อมูลหลัก ไม่รวมลงไฟล์ Public/GitHub ไม่เพิ่มสิทธิ์ guest ให้เข้าถึงข้อมูล
 
+ผล Security Advisor วันที่ 17 ตุลาคม 2026 ไม่พบปัญหา RLS/สิทธิ์ของ workflow ใหม่ แต่ยังมีคำเตือนเดิมว่า Leaked Password Protection ไม่ได้เปิด เจ้าของโปรเจกต์ควรตรวจ [การป้องกันรหัสผ่านที่รั่วไหลใน Supabase](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection) ตามแผนที่ใช้งาน
+
 ## ติดตั้งและทดสอบ
 
-Migration: `supabase/migrations/20261015104835_customer_service.sql` ต้องลงหลัง migration activity log ก่อน Deploy โค้ดใหม่ ใช้เครื่องมือ migration ที่ได้รับสิทธิ์สำหรับโปรเจกต์จริง ห้ามลบตารางเพื่อ rollback เพราะจะทำลายบทสนทนา; ถ้าจำเป็นให้ปิดลิงก์/route ชั่วคราวและเก็บข้อมูลไว้
+Migration พื้นฐาน: `supabase/migrations/20261015104835_customer_service.sql` ต้องลงหลัง migration activity log ส่วน `20261017120952_customer_service_workflow.sql` เพิ่มดัชนีกิจกรรมและ RPC `change_support_ticket_revision` ที่เรียกได้เฉพาะ service role ให้ลงก่อน Deploy โค้ด workflow รุ่นใหม่ ใช้เครื่องมือ migration ที่ได้รับสิทธิ์สำหรับโปรเจกต์จริง ห้ามลบตารางเพื่อ rollback เพราะจะทำลายบทสนทนา; ถ้าจำเป็นให้ย้อน deployment และเก็บข้อมูลไว้
 
 ทดสอบ Flask: `.venv/Scripts/python.exe -m unittest discover -s tests -p test_support.py`
 
-ทดสอบ PostgreSQL: ในโฟลเดอร์ `tests` รัน `node --test support.test.mjs` ใช้ PGlite เฉพาะงานพัฒนา ตรวจ SQL จริงสำหรับ RLS, service_role, เจ้าของออเดอร์, idempotency, สถานะ, quota และ audit ที่ไม่เก็บเนื้อหา
+ทดสอบ PostgreSQL: ในโฟลเดอร์ `tests` รัน `node --test support.test.mjs support-workflow.test.mjs` ใช้ PGlite เฉพาะงานพัฒนา ตรวจ SQL จริงสำหรับ RLS, service_role, เจ้าของออเดอร์, idempotency, สถานะ, quota, revision และ audit ที่ไม่เก็บเนื้อหา ชุด `test_support_context.py` ตรวจข้อมูลสรุปออเดอร์ และ `service-context.test.mjs`/`support-ui.test.mjs` ตรวจการส่งต่อจากหน้าคำสั่งซื้อและ UI

@@ -11,7 +11,8 @@
   let user = null,
     loading = true,
     orders = [],
-    expanded = parameters.get('order') || null,
+    expanded = null,
+    requestedOrder = parameters.get('order') || null,
     query = '',
     error = '',
     bank = null,
@@ -86,7 +87,7 @@
       })
       .join(
         ''
-      )}</div><dl class="order-detail-totals"><div><dt>${e(L('ยอดสินค้า', 'Subtotal', '商品小计'))}</dt><dd>${e(S.money(order.subtotal))}</dd></div><div><dt>${e(L('ค่าจัดส่ง', 'Shipping', '运费'))}</dt><dd>${e(S.money(order.shipping))}</dd></div>${Number(order.discount) > 0 ? `<div><dt>${e(L('ส่วนลด', 'Discount', '折扣'))}</dt><dd>−${e(S.money(order.discount))}</dd></div>` : ''}<div class="order-detail-total"><dt>${e(L('ยอดรวม', 'Total', '总计'))}</dt><dd>${e(S.money(order.total))}</dd></div></dl></div><div class="order-info"><section><h3>${S.icon('user', 15)}${e(L('ผู้รับและที่อยู่', 'Delivery details', '收货信息'))}</h3><strong>${e(order.customer_name)}</strong><p>${e(order.email)}<br>${e(order.phone)}</p><p class="order-address">${e(order.address)}</p></section><section><h3>${S.icon('card', 15)}${e(L('การชำระเงิน', 'Payment', '支付'))}</h3><strong>${e(label(methods, order.payment_method))}</strong><span class="payment-status ${order.payment_status === 'paid' ? 'is-paid' : ''}">${order.payment_status === 'paid' ? '✓' : ''}${e(label(payment, order.payment_status))}</span>${order.payment_method === 'cod' && order.payment_status !== 'paid' ? `<p>${e(L('ชำระเงินเมื่อได้รับสินค้า', 'Pay when your order arrives.', '收到商品时付款。'))}</p>` : ''}</section></div></div>${pendingBank && bank ? `<div class="order-bank-info">${S.icon('card', 20)}<div><strong>${e(L('รายละเอียดสำหรับโอนเงิน', 'Bank transfer details', '银行转账信息'))}</strong><p>${e(bank.bank)} · ${e(bank.accountName)}<br><span class="customer-mono">${e(bank.accountNumber)}</span></p><small>${e(L(`ยอดโอน ${S.money(order.total)} · เลขอ้างอิง ${order.order_number}`, `Transfer ${S.money(order.total)} · Reference ${order.order_number}`, `转账 ${S.money(order.total)} · 参考编号 ${order.order_number}`))}</small><small>${e(L('เก็บหลักฐานการโอนจนกว่าร้านจะยืนยันการชำระเงิน', 'Keep your transfer receipt until the store confirms payment.', '请保留转账凭证直到商店确认付款。'))}</small></div></div>` : ''}<div class="order-journey-link"><a href="/simulation?mode=product&order=${encodeURIComponent(order.id)}" target="_blank" rel="noopener" class="button secondary">${S.icon('package', 17)}${e(L('เส้นทางสินค้า 3D', '3D product journey', '3D 商品旅程'))}${S.icon('arrow-up', 14)}</a><p>${e(L('แสดงข้อมูลสถานะล่าสุดจากคำสั่งซื้อของคุณ', 'Shows the latest recorded status of your order.', '显示您订单最新记录的状态。'))}</p></div>`;
+      )}</div><dl class="order-detail-totals"><div><dt>${e(L('ยอดสินค้า', 'Subtotal', '商品小计'))}</dt><dd>${e(S.money(order.subtotal))}</dd></div><div><dt>${e(L('ค่าจัดส่ง', 'Shipping', '运费'))}</dt><dd>${e(S.money(order.shipping))}</dd></div>${Number(order.discount) > 0 ? `<div><dt>${e(L('ส่วนลด', 'Discount', '折扣'))}</dt><dd>−${e(S.money(order.discount))}</dd></div>` : ''}<div class="order-detail-total"><dt>${e(L('ยอดรวม', 'Total', '总计'))}</dt><dd>${e(S.money(order.total))}</dd></div></dl></div><div class="order-info"><section><h3>${S.icon('user', 15)}${e(L('ผู้รับและที่อยู่', 'Delivery details', '收货信息'))}</h3><strong>${e(order.customer_name)}</strong><p>${e(order.email)}<br>${e(order.phone)}</p><p class="order-address">${e(order.address)}</p></section><section><h3>${S.icon('card', 15)}${e(L('การชำระเงิน', 'Payment', '支付'))}</h3><strong>${e(label(methods, order.payment_method))}</strong><span class="payment-status ${order.payment_status === 'paid' ? 'is-paid' : ''}">${order.payment_status === 'paid' ? '✓' : ''}${e(label(payment, order.payment_status))}</span>${order.payment_method === 'cod' && order.payment_status !== 'paid' ? `<p>${e(L('ชำระเงินเมื่อได้รับสินค้า', 'Pay when your order arrives.', '收到商品时付款。'))}</p>` : ''}</section></div></div>${pendingBank && bank ? `<div class="order-bank-info">${S.icon('card', 20)}<div><strong>${e(L('รายละเอียดสำหรับโอนเงิน', 'Bank transfer details', '银行转账信息'))}</strong><p>${e(bank.bank)} · ${e(bank.accountName)}<br><span class="customer-mono">${e(bank.accountNumber)}</span></p><small>${e(L(`ยอดโอน ${S.money(order.total)} · เลขอ้างอิง ${order.order_number}`, `Transfer ${S.money(order.total)} · Reference ${order.order_number}`, `转账 ${S.money(order.total)} · 参考编号 ${order.order_number}`))}</small><small>${e(L('เก็บหลักฐานการโอนจนกว่าร้านจะยืนยันการชำระเงิน', 'Keep your transfer receipt until the store confirms payment.', '请保留转账凭证直到商店确认付款。'))}</small></div></div>` : ''}<div class="order-journey-link"><a href="/support?order=${encodeURIComponent(order.id)}" class="button">${S.icon('user', 17)}${e(L('ขอความช่วยเหลือเกี่ยวกับออเดอร์นี้', 'Get help with this order', '获取此订单帮助'))}</a><a href="/simulation?mode=product&order=${encodeURIComponent(order.id)}" target="_blank" rel="noopener" class="button secondary">${S.icon('package', 17)}${e(L('เส้นทางสินค้า 3D', '3D product journey', '3D 商品旅程'))}${S.icon('arrow-up', 14)}</a><p>${e(L('แสดงข้อมูลสถานะล่าสุดจากคำสั่งซื้อของคุณ', 'Shows the latest recorded status of your order.', '显示您订单最新记录的状态。'))}</p></div>`;
   }
   function list() {
     const target = document.getElementById('tracking-list');
@@ -200,6 +201,7 @@
     user = null;
     orders = [];
     expanded = null;
+    requestedOrder = null;
     query = '';
     error = '';
     loading = false;
@@ -225,6 +227,11 @@
         if (!Array.isArray(data.orders)) throw new Error('orders');
         if (token !== loadToken) return;
         orders = data.orders;
+        if (requestedOrder) {
+          // เปิดเฉพาะออเดอร์ของบัญชีนี้ที่เซิร์ฟเวอร์ส่งมาแล้ว ไม่อ่านข้อมูลจาก URL โดยตรง
+          expanded = orders.some((order) => order.id === requestedOrder) ? requestedOrder : null;
+          requestedOrder = null;
+        }
         if (expanded && !orders.some((o) => o.id === expanded)) expanded = null;
         if (!expanded) expanded = orders[0]?.id || null;
       } else orders = [];

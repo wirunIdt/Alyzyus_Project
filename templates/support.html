@@ -15,8 +15,8 @@
     <div>
       <span class="eyebrow">ALYZYUS / {% if admin_mode %}SERVICE STUDIO{% else %}HERE TO HELP{% endif %}
       </span>
-      {% if admin_mode %}{{tr('ดูแลทุกคำถาม\nด้วยความใส่ใจ','A little care.\nEvery conversation.','用心照顾\n每一次咨询。','h1')}}{{tr('ตอบคำถาม ตรวจสอบเรื่องที่เกี่ยวข้อง และติดตามสถานะในพื้นที่เดียว ข้อมูลการสนทนานี้เปิดให้ผู้ดูแลที่ได้รับสิทธิ์เท่านั้น','Reply to customers, review related orders, and keep each conversation in view. This inbox is available only to authorized admins.','回复客户，查看相关订单，并集中跟进每次咨询。此收件箱仅供获授权的管理员使用。','p')}}
-      {% else %}{{tr('เรื่องของคุณ\nเราพร้อมรับฟัง','A little help.\nA better day.','您的问题，\n我们用心倾听。','h1')}}{{tr('สอบถามเรื่องสินค้า คำสั่งซื้อ หรือบัญชีของคุณ ส่งเรื่องไว้และกลับมาติดตามคำตอบจากทีมร้านได้ที่นี่','Questions about a product, an order, or your account? Send a request and follow the store team’s reply here.','对商品、订单或账户有疑问？提交咨询后，可在这里查看商店团队的回复。','p')}}{% endif %}
+      {% if admin_mode %}{{tr('ดูแลทุกคำถาม\nด้วยความใส่ใจ','A little care.\nEvery conversation.','用心照顾\n每一次咨询。','h1')}}{{tr('เริ่มจากเรื่องที่รอทีมร้านตอบ ตรวจคำสั่งซื้อที่เกี่ยวข้อง แล้วตอบและติดตามจนแก้ไขเรียบร้อย กล่องข้อความนี้เปิดให้ผู้ดูแลที่ได้รับสิทธิ์เท่านั้น','Start with requests awaiting a store reply, review the related order, and follow each conversation through to resolution. This inbox is available only to authorized admins.','先处理等待商店回复的咨询，查看相关订单，并跟进对话直到问题解决。此收件箱仅供获授权的管理员使用。','p')}}
+      {% else %}{{tr('เรื่องของคุณ\nเราพร้อมรับฟัง','A little help.\nA better day.','您的问题，\n我们用心倾听。','h1')}}{{tr('เลือกคำสั่งซื้อหรือเรื่องที่ต้องการให้ช่วย ส่งคำถาม แล้วกลับมาอ่านข้อความและตอบทีมร้านได้ที่นี่ เมื่อได้รับความช่วยเหลือครบแล้ว คุณทำเครื่องหมายว่าแก้ไขเรียบร้อยได้','Choose an order or topic, send your question, and return here to read and reply to the store team. Mark the request as resolved when you have the help you need.','选择订单或咨询类别，提交问题，然后回到这里阅读并回复商店团队。获得所需帮助后，可将咨询标记为已解决。','p')}}{% endif %}
     </div>
     <div class="support-emblem" aria-hidden="true">
       <svg width="116" height="116" viewBox="0 0 116 116" fill="none">

@@ -47,6 +47,7 @@ def create_app(overrides=None):
     from .media import bp as media
     from .preferences import bp as appearance
     from .support import bp as support
+    from .support_context import bp as support_context
     from .views import bp as pages
 
     app.register_blueprint(api)
@@ -55,6 +56,7 @@ def create_app(overrides=None):
     app.register_blueprint(media)
     app.register_blueprint(appearance)
     app.register_blueprint(support)
+    app.register_blueprint(support_context)
 
     @app.before_request
     def protect_mutations():

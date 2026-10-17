@@ -25,6 +25,7 @@ STATUS = {
     "SUPPORT_NOT_FOUND": 404,
     "SUPPORT_CLOSED": 409,
     "SUPPORT_RATE_LIMITED": 429,
+    "SUPPORT_STALE": 409,
 }
 MESSAGES = {
     "STORE_NOT_CONFIGURED": "The store is not connected yet. Please try again later.",
@@ -47,6 +48,7 @@ MESSAGES = {
     "SUPPORT_NOT_FOUND": "This support request could not be found.",
     "SUPPORT_CLOSED": "This request is closed. Please open a new request or ask staff to reopen it.",
     "SUPPORT_RATE_LIMITED": "The hourly support limit has been reached. Please try again later.",
+    "SUPPORT_STALE": "This conversation changed. Refresh and review it before changing its status.",
 }
 
 

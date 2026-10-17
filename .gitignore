@@ -6,6 +6,7 @@ node_modules/
 *.tsbuildinfo
 __pycache__/
 .ruff_cache/
+supabase/.temp/
 .venv/
 legacy/private/
 legacy/empty-build-folders/
