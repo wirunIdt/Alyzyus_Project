@@ -37,3 +37,9 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Check code style, syntax, templates, privacy and behavior
         run: python scripts/check.py
+      - name: Scan shareable source for credential patterns
+        run: python scripts/security-scan.py
+      - name: Audit Python runtime dependencies
+        run: python -m pip_audit -r requirements.txt
+      - name: Audit browser development dependencies
+        run: npm --prefix tests audit --audit-level=low

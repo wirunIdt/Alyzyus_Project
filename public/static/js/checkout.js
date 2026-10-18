@@ -190,7 +190,14 @@
     if (!value) return '';
     try {
       const url = new URL(value, location.origin);
-      return url.protocol === 'https:' && !url.username && !url.password ? url.href : '';
+      // ใช้ Hosted Checkout ของ Stripe เท่านั้น เพิ่มโดเมนอื่นเมื่อเชื่อมผู้ให้บริการจริงแล้ว
+      return url.protocol === 'https:' &&
+        url.hostname === 'checkout.stripe.com' &&
+        !url.port &&
+        !url.username &&
+        !url.password
+        ? url.href
+        : '';
     } catch {
       return '';
     }

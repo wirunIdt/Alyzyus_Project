@@ -219,7 +219,7 @@ class BackendTests(unittest.TestCase):
         self.assertFalse(self.requests)
 
     def test_vercel_proxy_scheme_without_trusting_forwarded_host(self):
-        with patch.dict(os.environ, {"VERCEL": "1"}):
+        with patch.dict(os.environ, {"VERCEL": "1", "VERCEL_URL": "preview.vercel.app"}):
             app = create_app({**CONFIG, "HTTP_CLIENT": self.transport})
         client = app.test_client()
         response = client.post(
@@ -376,10 +376,14 @@ class BackendTests(unittest.TestCase):
         self.assertFalse(self.requests)
 
     def test_recovery_token_callback(self):
+        self.assertEqual(self.post("/api/auth/reset", {"email": USER["email"]}).status_code, 200)
         response = self.get("/auth/confirm?token_hash=valid-hash&type=recovery&next=/admin")
         self.assertEqual(response.headers["Location"], "/account?recovery=1")
+        verification = next(
+            request for request in self.requests if request.url.path == "/auth/v1/verify"
+        )
         self.assertEqual(
-            json.loads(self.requests[-1].content), {"token_hash": "valid-hash", "type": "recovery"}
+            json.loads(verification.content), {"token_hash": "valid-hash", "type": "recovery"}
         )
 
     def test_provider_diagnostics_are_redacted(self):

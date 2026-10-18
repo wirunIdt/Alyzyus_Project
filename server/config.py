@@ -42,10 +42,17 @@ def environment() -> dict:
 
 
 def valid_origin(value: str) -> str | None:
+    if (
+        not isinstance(value, str)
+        or "\\" in value
+        or any(ord(character) <= 32 or ord(character) == 127 for character in value)
+    ):
+        return None
     try:
         parsed = urlsplit(value)
         if (
             not parsed.netloc
+            or not parsed.hostname
             or parsed.username
             or parsed.password
             or parsed.query
@@ -57,6 +64,7 @@ def valid_origin(value: str) -> str | None:
             parsed.scheme == "http" and parsed.hostname in ("localhost", "127.0.0.1", "::1")
         ):
             return None
+        _ = parsed.port
         return f"{parsed.scheme}://{parsed.netloc}"
     except ValueError:
         return None

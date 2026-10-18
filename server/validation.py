@@ -134,6 +134,34 @@ def localized(value):
     return {key: string(value[key], 1, 4000) for key in ("th", "en", "zh")}
 
 
+def image_url(value):
+    """ไม่รับ URL ที่เบราว์เซอร์ตีความต่างจากตัวตรวจฝั่งเซิร์ฟเวอร์"""
+    value = string(value, 1, 2048)
+    if "\\" in value or any(ord(character) < 32 or ord(character) == 127 for character in value):
+        raise ApiError("INVALID_INPUT")
+    try:
+        parsed = urlsplit(value)
+        if (
+            value.startswith("/")
+            and not value.startswith("//")
+            and not parsed.netloc
+            and not parsed.scheme
+        ):
+            return value
+        if (
+            parsed.scheme == "https"
+            and parsed.hostname
+            and not parsed.username
+            and not parsed.password
+        ):
+            # ให้ตัว parser ตรวจรูปแบบ port ด้วย โดยไม่อนุญาตค่าที่เบราว์เซอร์ปฏิเสธ
+            _ = parsed.port
+            return value
+    except ValueError as exc:
+        raise ApiError("INVALID_INPUT") from exc
+    raise ApiError("INVALID_INPUT")
+
+
 def checkout(value):
     value = object_fields(
         value,
@@ -228,20 +256,14 @@ def product(value, partial=False):
         elif key == "images":
             if not isinstance(item, list) or not 1 <= len(item) <= 10:
                 raise ApiError("INVALID_INPUT")
-            result[key] = [string(image, 1, 2048) for image in item]
-            for image in result[key]:
-                parsed = urlsplit(image)
-                if not (image.startswith("/") and not image.startswith("//")) and not (
-                    parsed.scheme == "https"
-                    and parsed.netloc
-                    and not parsed.username
-                    and not parsed.password
-                ):
-                    raise ApiError("INVALID_INPUT")
+            result[key] = [image_url(image) for image in item]
         elif key == "colors":
             if not isinstance(item, list) or len(item) > 20:
                 raise ApiError("INVALID_INPUT")
-            result[key] = [string(color, 1, 30) for color in item]
+            colors = [string(color, 7, 7) for color in item]
+            if any(not re.fullmatch(r"#[0-9a-fA-F]{6}", color) for color in colors):
+                raise ApiError("INVALID_INPUT")
+            result[key] = [color.lower() for color in colors]
     return result
 
 

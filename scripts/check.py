@@ -98,10 +98,12 @@ def main():
         run("Apply safe Python lint fixes", [*ruff, "check", "--fix", *PYTHON_TARGETS])
         run("Format Python", [*ruff, "format", *PYTHON_TARGETS])
         run("Format browser source", [node, str(prettier), "--write", *PRETTIER_TARGETS])
+        run("Update static security headers", [python, "scripts/security-headers.py", "--write"])
 
     run("Python lint", [*ruff, "check", *PYTHON_TARGETS])
     run("Python format", [*ruff, "format", "--check", *PYTHON_TARGETS])
     run("Browser format", [node, str(prettier), "--check", *PRETTIER_TARGETS])
+    run("Static browser security policy", [python, "scripts/security-headers.py", "--check"])
     browser_files = [*sorted((ROOT / "public/static/js").glob("*.js")), ROOT / "public/sw.js"]
     for file in browser_files:
         run(f"JavaScript syntax: {file.relative_to(ROOT)}", [node, "--check", str(file)])
@@ -128,6 +130,7 @@ def main():
         quiet=True,
     )
     run("Deployment file allowlist", [python, "scripts/package-vercel.py"], quiet=True)
+    run("Redacted credential pattern scan", [python, "scripts/security-scan.py"])
     if not options.fast:
         run(
             "Python behavior and authorization",

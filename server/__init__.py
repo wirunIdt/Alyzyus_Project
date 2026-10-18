@@ -32,6 +32,9 @@ def create_app(overrides=None):
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=0, x_proto=1, x_host=0, x_port=0, x_prefix=0)
     app.json.ensure_ascii = False
     app.json.sort_keys = False
+    from .security import init_security
+
+    init_security(app)
     pool = Supabase(app.config, client=app.config.get("HTTP_CLIENT"))
     app.extensions["supabase"] = pool
     if not app.config.get("HTTP_CLIENT"):
@@ -88,12 +91,6 @@ def create_app(overrides=None):
         if not request.path.startswith("/static/"):
             response.headers["Cache-Control"] = "private, no-store"
             response.headers["Pragma"] = "no-cache"
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["X-Frame-Options"] = "DENY"
-        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
-        if request.is_secure:
-            response.headers["Strict-Transport-Security"] = "max-age=31536000"
         return response
 
     @app.errorhandler(ApiError)

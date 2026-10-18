@@ -149,6 +149,8 @@ npm --prefix tests test
 
 อ่านการแก้โค้ดและเพิ่มภาษา/หน้าจอใน `CODE_GUIDE.md`
 
+แนวทางรักษาความปลอดภัย การตรวจคีย์ลับ/แพ็กเกจ การอัปเดต CSP และรายการตั้งค่าที่เจ้าของบัญชีต้องตรวจ อยู่ใน [คู่มือความปลอดภัย](docs/SECURITY.md) ลิงก์ยืนยันอีเมลและกู้รหัสผ่านต้องเปิดในเบราว์เซอร์เดียวกับที่ส่งคำขอ
+
 เอกสารอ้างอิง: [Flask on Vercel](https://vercel.com/docs/frameworks/backend/flask), [Supabase Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security), [Stripe Checkout](https://docs.stripe.com/payments/checkout)
 
 

@@ -1182,7 +1182,7 @@
                 ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและการรองรับ WebGL ของเบราว์เซอร์
                 แล้วลองโหลดหน้านี้อีกครั้ง
               </p>
-              <button class="btn" onclick="location.reload()">ลองอีกครั้ง</button>
+              <button class="btn" id="scene-retry" type="button">ลองอีกครั้ง</button>
             </div>
           </div>
           <div class="scene-foot" id="legend">
@@ -1291,6 +1291,9 @@
         productFps: 18,
         congestionThreshold: 5,
         cdn: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js',
+        // ค่า SRI ของไฟล์รุ่นนี้จาก cdnjs: เบราว์เซอร์ปฏิเสธทันทีหากเนื้อหา CDN เปลี่ยน
+        cdnIntegrity:
+          'sha512-vnmn/Qqn6aG0POAc9mIGzjq0IybrvxJXYDafNvp9JSnDGxeF3pbkSqLvf+YGd5ku63pT7sa/jxHn7/d0mU8+tA==',
       };
       (() => {
         'use strict';
@@ -2970,9 +2973,13 @@
           needFrame();
         });
         if (storedTheme === 'dark') document.body.classList.add('dark');
+        $('scene-retry').addEventListener('click', () => location.reload());
         // โหลดไลบรารีเพียงตัวเดียวจาก cdnjs และแสดงข้อความเมื่อ CDN หรือ WebGL ใช้งานไม่ได้
         const library = document.createElement('script');
         library.src = PARAMETERS.cdn;
+        library.integrity = PARAMETERS.cdnIntegrity;
+        library.crossOrigin = 'anonymous';
+        library.referrerPolicy = 'no-referrer';
         library.onload = () => (typeof THREE !== 'undefined' ? init() : showError());
         library.onerror = () =>
           showError(

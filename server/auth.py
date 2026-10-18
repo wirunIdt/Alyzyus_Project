@@ -2,6 +2,7 @@
 
 import base64
 import hashlib
+import hmac
 import secrets
 from urllib.parse import urlsplit
 
@@ -17,6 +18,7 @@ bp = Blueprint("auth", __name__)
 ACCESS = "alyzyus_access"
 REFRESH = "alyzyus_refresh"
 VERIFIER = "alyzyus_pkce"
+FLOW_MAX_AGE = 3600
 
 
 def configured():
@@ -55,7 +57,7 @@ def apply_cookies(response):
         response.set_cookie(ACCESS, session["access_token"], max_age=30 * 86400, **options)
         response.set_cookie(REFRESH, session["refresh_token"], max_age=30 * 86400, **options)
     if getattr(g, "new_verifier", None):
-        response.set_cookie(VERIFIER, g.new_verifier, max_age=3600, **options)
+        response.set_cookie(VERIFIER, g.new_verifier, max_age=FLOW_MAX_AGE, **options)
     if getattr(g, "clear_verifier", False):
         response.delete_cookie(VERIFIER, **options)
     return response
@@ -134,13 +136,60 @@ def require_admin():
     return user
 
 
-def pkce(kind):
+def email_fingerprint(email):
+    """ผูก callback กับอีเมลที่เริ่มไว้ โดยไม่ใส่อีเมลจริงใน cookie"""
+    return hmac.new(
+        current_app.config["APP_SECRET_KEY"].encode(),
+        b"alyzyus-auth-email-v1\0" + email.encode(),
+        hashlib.sha256,
+    ).hexdigest()
+
+
+def pkce(kind, email):
     verifier = secrets.token_urlsafe(48)
     challenge = (
         base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b"=").decode()
     )
-    g.new_verifier = serializer().dumps({"verifier": verifier, "kind": kind})
+    g.new_verifier = serializer().dumps(
+        {"verifier": verifier, "kind": kind, "email_fingerprint": email_fingerprint(email)}
+    )
     return {"code_challenge": challenge, "code_challenge_method": "s256"}
+
+
+def flow_state():
+    state = v.object_fields(
+        serializer().loads(request.cookies.get(VERIFIER, ""), max_age=FLOW_MAX_AGE), None
+    )
+    verifier = state.get("verifier")
+    if (
+        state.get("kind") not in ("signup", "recovery")
+        or not isinstance(verifier, str)
+        or not 43 <= len(verifier) <= 128
+        or not set(verifier)
+        <= set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
+    ):
+        raise ApiError("INVALID_INPUT")
+    return state
+
+
+def token_hash_session(token_hash, kind):
+    """Token hash เป็น bearer credential จึงต้องตรวจ state ก่อนตั้ง session เสมอ"""
+    state = flow_state()
+    expected_kind = "recovery" if kind == "recovery" else "signup"
+    fingerprint = state.get("email_fingerprint")
+    if state["kind"] != expected_kind or not isinstance(fingerprint, str):
+        raise ApiError("INVALID_INPUT")
+    session = db().auth(
+        "POST", "verify", body={"token_hash": v.string(token_hash, 1, 2048), "type": kind}
+    )
+    if not isinstance(session, dict) or not session.get("access_token"):
+        raise ApiError("AUTH_UNAVAILABLE", 503)
+    user = db().auth("GET", "user", token=session["access_token"])
+    email = v.email(user.get("email") if isinstance(user, dict) else None)
+    if not hmac.compare_digest(fingerprint, email_fingerprint(email)):
+        raise ApiError("INVALID_INPUT")
+    session["user"] = user
+    return session
 
 
 @bp.get("/api/auth/me")
@@ -171,11 +220,12 @@ def signup():
     value = v.object_fields(
         v.read_json(), {"email", "password", "name"}, {"email", "password", "name"}
     )
+    email = v.email(value["email"])
     body = {
-        "email": v.email(value["email"]),
+        "email": email,
         "password": v.password(value["password"], new=True),
         "data": {"name": v.string(value["name"], 2, 120)},
-        **pkce("signup"),
+        **pkce("signup", email),
     }
     result = db().auth(
         "POST",
@@ -213,10 +263,11 @@ def logout():
 def reset():
     configured()
     value = v.object_fields(v.read_json(), {"email"}, {"email"})
+    email = v.email(value["email"])
     db().auth(
         "POST",
         "recover",
-        body={"email": v.email(value["email"]), **pkce("recovery")},
+        body={"email": email, **pkce("recovery", email)},
         params={"redirect_to": valid_origin(current_app.config["SITE_URL"]) + "/auth/callback"},
     )
     return jsonify(message="If the account exists, a recovery link has been sent.")
@@ -274,8 +325,12 @@ def callback():
         token_hash = request.args.get("token_hash")
         kind = request.args.get("type")
         next_path = safe_next(request.args.get("next", "/account"))
+        if (code and token_hash) or any(
+            len(request.args.getlist(key)) != 1 for key in request.args
+        ):
+            raise ApiError("INVALID_INPUT")
         if code:
-            verifier = serializer().loads(request.cookies.get(VERIFIER, ""), max_age=3600)
+            verifier = flow_state()
             session = db().auth(
                 "POST",
                 "token",
@@ -283,10 +338,8 @@ def callback():
                 body={"auth_code": v.string(code, 1, 2048), "code_verifier": verifier["verifier"]},
             )
             kind = verifier.get("kind")
-        elif token_hash and kind in ("signup", "email", "recovery", "invite", "email_change"):
-            session = db().auth(
-                "POST", "verify", body={"token_hash": v.string(token_hash, 1, 2048), "type": kind}
-            )
+        elif token_hash and kind in ("signup", "email", "recovery"):
+            session = token_hash_session(token_hash, kind)
         else:
             raise ApiError("INVALID_INPUT")
         set_session(session)

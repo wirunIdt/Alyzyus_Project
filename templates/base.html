@@ -23,7 +23,7 @@
     {% block extra_css %}{% endblock %}
     <link rel="stylesheet" href="/static/css/install.css">
     <link rel="stylesheet" href="/static/css/experience.css">
-    <script>try{document.documentElement.dataset.theme=localStorage.getItem('alyzyus-theme')||'light';document.documentElement.lang=localStorage.getItem('alyzyus-locale')||'th'}catch(e){}
+    <script nonce="{{ csp_nonce }}">try{document.documentElement.dataset.theme=localStorage.getItem('alyzyus-theme')||'light';document.documentElement.lang=localStorage.getItem('alyzyus-locale')||'th'}catch(e){}
     </script>
   </head>
   <body>
@@ -192,7 +192,7 @@
     </dialog>
     <div class="toast" id="toast" role="status" aria-live="polite">
     </div>
-    <script>window.__SHOP__={{bootstrap|tojson}};
+    <script nonce="{{ csp_nonce }}">window.__SHOP__={{bootstrap|tojson}};
     </script>
     <script src="/static/js/app.js" defer>
     </script>
