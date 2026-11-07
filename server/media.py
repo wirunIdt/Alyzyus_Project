@@ -43,7 +43,7 @@ def optimized_image(raw: bytes) -> bytes:
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("error", Image.DecompressionBombWarning)
-            with Image.open(io.BytesIO(raw)) as source:
+            with Image.open(io.BytesIO(raw), formats=("JPEG", "PNG", "WEBP")) as source:
                 if (
                     source.format not in ("JPEG", "PNG", "WEBP")
                     or source.width * source.height > MAX_PIXELS
