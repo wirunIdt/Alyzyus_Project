@@ -1,8 +1,6 @@
 """Commerce routes keep privileged writes behind verified server authorization."""
 
-import hashlib
 import hmac
-import json
 from datetime import datetime, timezone
 
 from flask import Blueprint, current_app, g, jsonify, request
@@ -14,6 +12,8 @@ from .config import commerce_configured
 from .database import catalog, db, map_order, map_product, single
 from .errors import ApiError
 from .payments import EVENTS, close_before_cancellation, open_checkout, settings, verify_webhook
+from .repositories.orders import OrderRepository
+from .services.checkout import create_checkout_order
 
 bp = Blueprint("api", __name__)
 
@@ -53,54 +53,17 @@ def checkout():
     user = require_user()
     if not payment["payments"][value["paymentMethod"]]:
         raise ApiError("PAYMENT_UNAVAILABLE", 409)
-    canonical = {
-        "items": sorted(value["items"], key=lambda item: item["productId"]),
-        "customer": value["customer"],
-        "paymentMethod": value["paymentMethod"],
-        "coupon": value["coupon"],
-    }
-    fingerprint = hashlib.sha256(
-        json.dumps(canonical, ensure_ascii=False, separators=(",", ":")).encode()
-    ).hexdigest()
-    order_id = db().rpc(
-        "create_order",
-        {
-            "p_user_id": user["id"],
-            "p_items": value["items"],
-            "p_customer": value["customer"],
-            "p_payment_method": value["paymentMethod"],
-            "p_coupon": value["coupon"] or None,
-            "p_idempotency_key": value["idempotencyKey"],
-            "p_request_fingerprint": fingerprint,
-        },
-    )
-    rows, _ = db().select(
-        "orders",
-        admin=True,
-        params={
-            "select": "*,order_items(*)",
-            "id": "eq." + order_id,
-            "user_id": "eq." + user["id"],
-            "limit": "1",
-        },
-    )
-    row = single(rows)
-    order = map_order(row)
-    if order["status"] == "cancelled":
-        raise ApiError("ORDER_CANCELLED", 409)
-    if order["payment_status"] == "paid" or value["paymentMethod"] == "cod":
-        return jsonify(order=order)
-    if value["paymentMethod"] == "bank_transfer":
-        return jsonify(
-            order=order,
-            paymentInstructions={
-                "type": "bank_transfer",
-                **payment["bankDetails"],
-                "reference": order["order_number"],
-                "amount": order["total"],
-            },
+    repository = OrderRepository(db())
+    return jsonify(
+        create_checkout_order(
+            value,
+            user,
+            payment,
+            repository=repository,
+            hosted_checkout=open_checkout,
+            order_mapper=repository.to_order,
         )
-    return jsonify(open_checkout(row, order, user))
+    )
 
 
 @bp.get("/api/admin")

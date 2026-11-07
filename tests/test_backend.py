@@ -394,11 +394,14 @@ class BackendTests(unittest.TestCase):
         self.assertNotIn("secret diagnostic", response.get_data(as_text=True))
         self.assertNotIn("must-not-leak", response.get_data(as_text=True))
 
-    def test_configured_catalog_does_not_fall_back_to_demo(self):
+    def test_unavailable_catalog_is_labeled_as_browse_only_sample_data(self):
         self.provider_failure = True
         response = self.get("/api/products")
-        self.assertEqual(response.status_code, 503)
-        self.assertNotIn("Form Wireless", response.get_data(as_text=True))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.json["configured"])
+        self.assertTrue(response.json["catalogFallback"])
+        self.assertTrue(response.json["products"])
+        self.assertNotIn("secret diagnostic", response.get_data(as_text=True))
 
     def test_payment_settings_and_public_health_do_not_leak(self):
         self.assertFalse(self.get("/api/settings").json["payments"]["card"])

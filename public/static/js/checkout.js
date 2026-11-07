@@ -130,7 +130,8 @@
     get('checkout-payments').innerHTML =
       `<legend class="customer-sr-only">${e(L('วิธีชำระเงิน', 'Payment method', '支付方式'))}</legend>${options
         .map((option) => {
-          const available = !!settings?.configured && !!settings.payments?.[option.id];
+          const available =
+            S.configured && !!settings?.configured && !!settings.payments?.[option.id];
           return `<label class="payment-option ${available && method === option.id ? 'selected' : ''} ${!available ? 'unavailable' : ''}"><input type="radio" name="paymentMethod" value="${option.id}" ${method === option.id && available ? 'checked' : ''} ${!available || busy ? 'disabled' : ''}><span class="payment-icon">${S.icon(option.icon, 22)}</span><span class="payment-copy"><strong>${e(S.t(option.name))}</strong><small>${e(available ? S.t(option.detail) : settingsLoading ? L('กำลังตรวจสอบช่องทาง…', 'Checking availability…', '正在检查支付方式…') : L('ยังไม่เปิดให้บริการ — ร้านต้องตั้งค่าช่องทางนี้ก่อน', 'Not available yet — the store needs to enable this method.', '暂未开通 — 商店需先配置此支付方式。'))}</small></span>${available && method === option.id ? '<span class="payment-check">✓</span>' : ''}</label>`;
         })
         .join('')}`;
@@ -316,7 +317,14 @@
   });
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (busy || !user || !settings?.configured || !settings.payments?.[method] || !S.cart.length)
+    if (
+      !S.configured ||
+      busy ||
+      !user ||
+      !settings?.configured ||
+      !settings.payments?.[method] ||
+      !S.cart.length
+    )
       return;
     const epoch = sessionEpoch;
     const fields = new FormData(form),

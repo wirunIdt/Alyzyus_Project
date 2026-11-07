@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="description" content="ทดลองระบบ Alyzyus ด้วยข้อมูลจำลอง แยกจากคำสั่งซื้อและการชำระเงินจริง">
+    <title>Alyzyus — Portfolio Demo</title>
+    <link rel="icon" href="/static/images/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/static/css/store.css">
+    <link rel="stylesheet" href="/static/css/demo.css">
+    <script id="demo-data" type="application/json" nonce="{{ csp_nonce }}">{{ demo_products|tojson }}</script>
+    <script src="/static/js/demo.js" type="module"></script>
+  </head>
+  <body>
+    <a class="demo-skip" href="#demo-main" data-copy="skip">ข้ามไปเนื้อหา</a>
+    <header class="demo-header">
+      <a class="demo-brand" href="/" aria-label="Alyzyus home">alyzyus<span>®</span></a>
+      <span class="demo-badge">PORTFOLIO DEMO</span>
+      <div class="demo-header-tools">
+        <label for="demo-language" class="sr-only">ภาษา / Language / 语言</label>
+        <select id="demo-language" aria-label="ภาษา / Language / 语言">
+          <option value="th">TH</option><option value="en">EN</option><option value="zh">中文</option>
+        </select>
+        <button id="demo-theme" class="demo-tool" type="button" data-copy="theme">สลับธีม</button>
+        <a href="/shop" class="demo-store-link" data-copy="realStore">กลับหน้าร้าน</a>
+      </div>
+    </header>
+    <main id="demo-main" class="demo-main">
+      <section class="demo-intro">
+        <p class="demo-eyebrow">ALYZYUS / TRY THE PROCESS</p>
+        <h1 data-copy="title">ลองเป็นลูกค้า แล้วสลับไปดูแลร้าน</h1>
+        <p class="demo-lead" data-copy="intro">เลือกสินค้า สร้างออเดอร์ตัวอย่าง แล้วสลับเป็นผู้ดูแลเพื่อเปลี่ยนสถานะและดูเส้นทางสินค้า</p>
+        <div class="demo-notice" role="note">
+          <strong data-copy="noticeTitle">ข้อมูลจำลองทั้งหมด</strong>
+          <span data-copy="notice">ไม่ต้องสมัคร ไม่มีการเก็บเงินจริง ไม่ส่งข้อมูลเข้าฐานข้อมูล รีเฟรชหน้านี้เพื่อเริ่มใหม่ กรุณาใช้ข้อความสมมติเท่านั้น</span>
+        </div>
+      </section>
+      <div class="demo-toolbar">
+        <div class="demo-tabs" role="tablist" aria-label="Demo role">
+          <button id="demo-customer-tab" role="tab" aria-selected="true" aria-controls="demo-customer-panel" type="button" data-copy="customer">ฝั่งลูกค้า</button>
+          <button id="demo-admin-tab" role="tab" aria-selected="false" aria-controls="demo-admin-panel" type="button" data-copy="admin">ฝั่งผู้ดูแลจำลอง</button>
+        </div>
+        <button id="demo-reset" class="demo-text-button" type="button" data-copy="reset">เริ่มตัวอย่างใหม่</button>
+      </div>
+      <section id="demo-customer-panel" role="tabpanel" aria-labelledby="demo-customer-tab">
+        <div class="demo-workspace">
+          <section aria-labelledby="demo-products-title">
+            <div class="demo-section-heading"><h2 id="demo-products-title" data-copy="products">เลือกชิ้นที่ชอบ</h2><span data-copy="stepOne">01 / สินค้าและถุง</span></div>
+            <div id="demo-products" class="demo-products"></div>
+          </section>
+          <aside class="demo-cart-card" aria-labelledby="demo-cart-title">
+            <p class="demo-eyebrow" data-copy="bagEyebrow">YOUR DEMO BAG</p>
+            <h2 id="demo-cart-title" data-copy="bag">ถุงสินค้าจำลอง</h2>
+            <div id="demo-cart"></div>
+            <p class="demo-small" data-copy="shipping">ค่าจัดส่งตัวอย่าง ฿80 ส่งฟรีเมื่อยอดสินค้าถึง ฿2,500</p>
+            <button id="demo-checkout" class="demo-primary" type="button" data-copy="checkout">สร้างออเดอร์จำลอง</button>
+            <p class="demo-small" data-copy="payment">จำลองวิธีเก็บเงินปลายทาง ไม่มีการเรียกเก็บเงินจริง</p>
+          </aside>
+        </div>
+      </section>
+      <section id="demo-admin-panel" role="tabpanel" aria-labelledby="demo-admin-tab" hidden>
+        <div class="demo-admin-heading"><div><p class="demo-eyebrow">DEMO WORKSPACE</p><h2 data-copy="adminTitle">รับออเดอร์และขยับงานทีละขั้น</h2></div><p data-copy="adminNote">หน้าตัวอย่างนี้ไม่ใช่สิทธิ์ Admin จริง ทุกการเปลี่ยนแปลงเกิดในเบราว์เซอร์นี้เท่านั้น</p></div>
+        <div id="demo-admin-orders" class="demo-admin-orders"></div>
+      </section>
+      <section class="demo-order-section" aria-labelledby="demo-tracking-title">
+        <div class="demo-section-heading"><h2 id="demo-tracking-title" data-copy="tracking">เส้นทางของออเดอร์ตัวอย่าง</h2><span data-copy="stepTwo">02 / สถานะคำสั่งซื้อ</span></div>
+        <div id="demo-order"></div>
+      </section>
+      <section class="demo-support-section" aria-labelledby="demo-support-title">
+        <div><p class="demo-eyebrow">CUSTOMER SERVICE / DEMO</p><h2 id="demo-support-title" data-copy="supportTitle">ลองส่งคำถามให้ทีมร้าน</h2><p data-copy="supportIntro">คำถามนี้เก็บเฉพาะในหน้านี้ เพื่อสาธิตการเปิดเรื่อง ไม่มีทีมงานได้รับข้อความจริง</p></div>
+        <form id="demo-support-form"><label for="demo-question" data-copy="question">ข้อความสมมติ</label><textarea id="demo-question" maxlength="300" minlength="5" required rows="3"></textarea><button class="demo-secondary" type="submit" data-copy="send">เปิดเรื่องจำลอง</button></form>
+        <div id="demo-tickets" class="demo-tickets"></div>
+      </section>
+      <p id="demo-feedback" class="demo-feedback" role="status" aria-live="polite"></p>
+      <footer class="demo-footer"><a href="/" data-copy="back">กลับเว็บไซต์ Alyzyus</a><span data-copy="footer">ข้อมูลสาธิตแยกจากระบบจริง ไม่มีบัญชีหรือรหัสผ่านสำหรับแชร์</span></footer>
+    </main>
+    <noscript><p class="demo-notice">เปิด JavaScript เพื่อทดลองถุงสินค้าและสถานะคำสั่งซื้อ / Enable JavaScript to try this demo.</p></noscript>
+  </body>
+</html>

@@ -47,6 +47,7 @@ def create_app(overrides=None):
     from .api import bp as api
     from .auth import apply_cookies
     from .auth import bp as auth
+    from .demo import bp as demo
     from .media import bp as media
     from .preferences import bp as appearance
     from .support import bp as support
@@ -56,6 +57,7 @@ def create_app(overrides=None):
     app.register_blueprint(api)
     app.register_blueprint(auth)
     app.register_blueprint(pages)
+    app.register_blueprint(demo)
     app.register_blueprint(media)
     app.register_blueprint(appearance)
     app.register_blueprint(support)

@@ -144,7 +144,7 @@
       </form>
     </header>
     {% if not bootstrap.configured %}
-    <div class="preview-note">{{tr('ร้านค้าตัวอย่าง · สำรวจสินค้าและลองจัดถุงได้ ยังไม่เปิดรับคำสั่งซื้อ','Store preview · Explore the collection. Orders are not open yet.','商店预览 · 欢迎浏览和体验购物袋，暂未开放下单。')}}
+    <div class="preview-note">{% if bootstrap.catalogFallback %}{{tr('บริการร้านค้าชั่วคราวไม่พร้อม · กำลังแสดงสินค้าตัวอย่างเพื่อให้สำรวจได้ ยังสั่งซื้อจริงไม่ได้','Store service temporarily unavailable · Showing sample products for browsing. Real checkout is unavailable.','商店服务暂时不可用 · 当前显示示例商品，可浏览但无法真实下单。')}}{% else %}{{tr('ร้านค้าตัวอย่าง · สำรวจสินค้าและลองจัดถุงได้ ยังไม่เปิดรับคำสั่งซื้อ','Store preview · Explore the collection. Orders are not open yet.','商店预览 · 欢迎浏览和体验购物袋，暂未开放下单。')}}{% endif %}
     </div>
     {% endif %}
     <main id="main">

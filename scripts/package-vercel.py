@@ -28,6 +28,7 @@ TEMPLATES = [
     "install.html",
     "logs.html",
     "support.html",
+    "demo.html",
 ]
 
 

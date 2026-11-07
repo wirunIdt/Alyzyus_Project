@@ -42,6 +42,8 @@ scripts/            → QC และสร้างรายการไฟล�
 - `app.py` เป็น entrypoint สำหรับรันในเครื่องและ Vercel
 - `server/__init__.py` ประกอบแอป, ลงทะเบียน Blueprint, ตรวจ Origin/ชนิดข้อมูล และจัดการ error
 - `server/security.py` ดูแล CSP, nonce, trusted hosts และขอบเขต multipart; `server/csp_hashes.py` สร้างอัตโนมัติด้วย `scripts/security-headers.py` หลังแก้ HTML ของหน้า 3D/ออฟไลน์ ดูขั้นตอนใน [SECURITY.md](docs/SECURITY.md)
+- เส้นทาง checkout แยก Controller ใน `server/api.py`, Service ใน `server/services/checkout.py` และ Repository ใน `server/repositories/orders.py` ส่วน transaction/row lock อยู่ใน SQL เดิม ดู [ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- `/demo` ใช้ `server/demo.py`, `templates/demo.html` และ `public/static/js/demo.js` แยกจากบัญชีและออเดอร์จริง เปลี่ยนข้อมูลจำลองใน `data/demo-products.json` ไม่สร้าง mock order ในฐานข้อมูล Production ดู [DEMO.md](docs/DEMO.md)
 - `server/database.py` เป็นจุดสำหรับ HTTP ไป Supabase และแปลงชื่อฟิลด์ข้อมูลเป็นรูปแบบที่หน้าเว็บใช้
 - `templates/base.html` เป็นโครงทุกหน้า; `templates/macros.html` รวมข้อความ 3 ภาษา ไอคอน และการ์ดสินค้า
 - `public/static/js/app.js` สร้าง `window.Shop` ให้สคริปต์ของแต่ละหน้าใช้ร่วมกัน

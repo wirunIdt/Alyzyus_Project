@@ -167,14 +167,25 @@ def map_order(row):
     return result
 
 
+def sample_products():
+    """Read public fixtures for isolated demo/browse-only fallback, never private records."""
+    with (ROOT / "data/demo-products.json").open(encoding="utf-8") as source:
+        return json.load(source)
+
+
 def catalog():
     if not database_configured(current_app.config):
-        with (ROOT / "data" / "demo-products.json").open(encoding="utf-8") as source:
-            return {"products": json.load(source), "configured": False}
-    rows, _ = db().select(
-        "products",
-        params={"select": "*", "active": "eq.true", "order": "featured.desc,created_at.desc"},
-    )
+        return {"products": sample_products(), "configured": False}
+    try:
+        rows, _ = db().select(
+            "products",
+            params={"select": "*", "active": "eq.true", "order": "featured.desc,created_at.desc"},
+        )
+    except ApiError as error:
+        if error.code not in ("DATABASE_ERROR", "STORE_NOT_CONFIGURED"):
+            raise
+        # หน้าเว็บยังเปิดอ่านได้ แต่ต้องระบุชัดว่าเป็นสินค้าตัวอย่างและปิด checkout
+        return {"products": sample_products(), "configured": False, "catalogFallback": True}
     return {"products": [map_product(row) for row in rows or []], "configured": True}
 
 

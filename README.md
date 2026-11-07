@@ -1,5 +1,9 @@
 # Alyzyus
 
+สำหรับกรรมการและผู้ชมพอร์ต: [ทดลองระบบโดยไม่สมัครบัญชี](https://alyzyus.vercel.app/demo) เลือกสินค้า สั่งซื้อจำลอง และสลับมุมมองผู้ดูแลได้ ข้อมูลอยู่เฉพาะในแท็บ ไม่มีการชำระเงินจริงหรือเขียนออเดอร์เข้า Supabase
+
+สไลด์ฉบับเรียบเรียงใหม่วันที่ 7 พฤศจิกายน 2026 อยู่ใน [PowerPoint](portfolio/Alyzyus_Portfolio.pptx) และ [PDF](portfolio/Alyzyus_Presentation.pdf) พร้อม [บทพูด](docs/PRESENTATION_NOTES.md), [คู่มือซ้อมอธิบาย](docs/PORTFOLIO_GUIDE.md) และ [Sequence Diagram กับโครงสร้างโค้ด](docs/ARCHITECTURE.md)
+
 ร้านค้าออนไลน์สำหรับสินค้าหลายหมวดหมู่ ใช้ **Python + Flask** ฝั่งเซิร์ฟเวอร์ และ **HTML/Jinja2 + CSS + JavaScript ปกติ** ฝั่งหน้าเว็บ ไม่มี React/Next.js ในเว็บที่นำขึ้นใช้งาน
 
 ฐานข้อมูลและบัญชีสมาชิกใช้ Supabase PostgreSQL/Auth และ Deploy บน Vercel Python runtime แล้ว
