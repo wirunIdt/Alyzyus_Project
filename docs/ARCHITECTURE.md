@@ -84,7 +84,7 @@ sequenceDiagram
 
 บัตรและ PromptPay มีส่วนต่อท้ายคือ service เปิด Stripe Checkout หลัง transaction ออเดอร์สำเร็จ
 ระบบยืนยันสถานะจ่ายจาก webhook ที่ตรวจลายเซ็นและตรวจยอดแล้ว ไม่ใช้การกลับมายัง success URL เป็นหลักฐาน
-การเรียก Stripe กับ PostgreSQL เป็นคนละระบบและไม่ได้อยู่ใน transaction เดียวกัน จึงใช้ idempotency, retry และ reconciliation รองรับความล้มเหลวระหว่างทาง
+การเรียก Stripe กับ PostgreSQL เป็นคนละระบบและไม่ได้อยู่ใน transaction เดียวกัน โค้ดใช้ idempotency, retry และ webhook เพื่อลดผลซ้ำ ส่วนงานตรวจยอดค้างและกระทบยอดอัตโนมัติยังต้องพัฒนาก่อนเปิดรับเงินจริงเต็มรูปแบบ
 
 ## ทำไมต้องล็อกสินค้า
 
